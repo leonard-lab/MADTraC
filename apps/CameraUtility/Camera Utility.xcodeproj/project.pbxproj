@@ -1,0 +1,297 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3797F8261130A3BC006F6055 /* CameraUtility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3797F8181130A219006F6055 /* CameraUtility.cpp */; };
+		3797FAA01130A5F3006F6055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FA9F1130A5F3006F6055 /* AGL.framework */; };
+		3797FAA21130A5F3006F6055 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAA11130A5F3006F6055 /* AppKit.framework */; };
+		3797FAA41130A5F3006F6055 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAA31130A5F3006F6055 /* Carbon.framework */; };
+		3797FAA61130A5F3006F6055 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAA51130A5F3006F6055 /* IOKit.framework */; };
+		3797FAA81130A5F3006F6055 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAA71130A5F3006F6055 /* OpenGL.framework */; };
+		3797FAAA1130A5F3006F6055 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAA91130A5F3006F6055 /* QuickTime.framework */; };
+		3797FAAC1130A60A006F6055 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAAB1130A60A006F6055 /* libiconv.dylib */; };
+		3797FAAE1130A60A006F6055 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAAD1130A60A006F6055 /* libz.dylib */; };
+		3797FAB21130A61B006F6055 /* libMT_Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAAF1130A61B006F6055 /* libMT_Core.a */; };
+		3797FAB31130A61B006F6055 /* libMT_GUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAB01130A61B006F6055 /* libMT_GUI.a */; };
+		3797FAB41130A61B006F6055 /* libMT_Tracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAB11130A61B006F6055 /* libMT_Tracking.a */; };
+		3797FAB61130A629006F6055 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAB51130A629006F6055 /* OpenCV.framework */; };
+		3797FAB91130A63F006F6055 /* libAR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAB71130A63F006F6055 /* libAR.a */; };
+		3797FABA1130A63F006F6055 /* libARvideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAB81130A63F006F6055 /* libARvideo.a */; };
+		3797FABD1130A666006F6055 /* libwx_mac_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FABC1130A666006F6055 /* libwx_mac_static.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3797F8181130A219006F6055 /* CameraUtility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CameraUtility.cpp; sourceTree = "<group>"; };
+		3797F8191130A219006F6055 /* CameraUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraUtility.h; sourceTree = "<group>"; };
+		3797F81F1130A3AA006F6055 /* Camera Utility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Camera Utility.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3797F8221130A3AB006F6055 /* Camera Utility-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Camera Utility-Info.plist"; sourceTree = "<group>"; };
+		3797FA9F1130A5F3006F6055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
+		3797FAA11130A5F3006F6055 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		3797FAA31130A5F3006F6055 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		3797FAA51130A5F3006F6055 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		3797FAA71130A5F3006F6055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		3797FAA91130A5F3006F6055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
+		3797FAAB1130A60A006F6055 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /usr/lib/libiconv.dylib; sourceTree = "<absolute>"; };
+		3797FAAD1130A60A006F6055 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		3797FAAF1130A61B006F6055 /* libMT_Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_Core.a; path = ../../lib/libMT_Core.a; sourceTree = SOURCE_ROOT; };
+		3797FAB01130A61B006F6055 /* libMT_GUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_GUI.a; path = ../../lib/libMT_GUI.a; sourceTree = SOURCE_ROOT; };
+		3797FAB11130A61B006F6055 /* libMT_Tracking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_Tracking.a; path = ../../lib/libMT_Tracking.a; sourceTree = SOURCE_ROOT; };
+		3797FAB51130A629006F6055 /* OpenCV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCV.framework; path = ../../OpenCV.framework; sourceTree = SOURCE_ROOT; };
+		3797FAB71130A63F006F6055 /* libAR.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAR.a; path = ../../../../ARlib/lib/libAR.a; sourceTree = SOURCE_ROOT; };
+		3797FAB81130A63F006F6055 /* libARvideo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libARvideo.a; path = ../../../../ARlib/lib/libARvideo.a; sourceTree = SOURCE_ROOT; };
+		3797FABC1130A666006F6055 /* libwx_mac_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwx_mac_static.a; path = ../../../../wxLib/lib/libwx_mac_static.a; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3797F81D1130A3AA006F6055 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3797FAA01130A5F3006F6055 /* AGL.framework in Frameworks */,
+				3797FAA21130A5F3006F6055 /* AppKit.framework in Frameworks */,
+				3797FAA41130A5F3006F6055 /* Carbon.framework in Frameworks */,
+				3797FAA61130A5F3006F6055 /* IOKit.framework in Frameworks */,
+				3797FAA81130A5F3006F6055 /* OpenGL.framework in Frameworks */,
+				3797FAAA1130A5F3006F6055 /* QuickTime.framework in Frameworks */,
+				3797FAAC1130A60A006F6055 /* libiconv.dylib in Frameworks */,
+				3797FAAE1130A60A006F6055 /* libz.dylib in Frameworks */,
+				3797FAB21130A61B006F6055 /* libMT_Core.a in Frameworks */,
+				3797FAB31130A61B006F6055 /* libMT_GUI.a in Frameworks */,
+				3797FAB41130A61B006F6055 /* libMT_Tracking.a in Frameworks */,
+				3797FAB61130A629006F6055 /* OpenCV.framework in Frameworks */,
+				3797FAB91130A63F006F6055 /* libAR.a in Frameworks */,
+				3797FABA1130A63F006F6055 /* libARvideo.a in Frameworks */,
+				3797FABD1130A666006F6055 /* libwx_mac_static.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3797F7FE1130A1DF006F6055 = {
+			isa = PBXGroup;
+			children = (
+				3797FABC1130A666006F6055 /* libwx_mac_static.a */,
+				3797FAB71130A63F006F6055 /* libAR.a */,
+				3797FAB81130A63F006F6055 /* libARvideo.a */,
+				3797FAB51130A629006F6055 /* OpenCV.framework */,
+				3797FAAF1130A61B006F6055 /* libMT_Core.a */,
+				3797FAB01130A61B006F6055 /* libMT_GUI.a */,
+				3797FAB11130A61B006F6055 /* libMT_Tracking.a */,
+				3797F8171130A219006F6055 /* src */,
+				3797F8201130A3AA006F6055 /* Products */,
+				3797F8221130A3AB006F6055 /* Camera Utility-Info.plist */,
+				3797FA9F1130A5F3006F6055 /* AGL.framework */,
+				3797FAA11130A5F3006F6055 /* AppKit.framework */,
+				3797FAA31130A5F3006F6055 /* Carbon.framework */,
+				3797FAA51130A5F3006F6055 /* IOKit.framework */,
+				3797FAA71130A5F3006F6055 /* OpenGL.framework */,
+				3797FAA91130A5F3006F6055 /* QuickTime.framework */,
+				3797FAAB1130A60A006F6055 /* libiconv.dylib */,
+				3797FAAD1130A60A006F6055 /* libz.dylib */,
+			);
+			sourceTree = "<group>";
+		};
+		3797F8171130A219006F6055 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				3797F8181130A219006F6055 /* CameraUtility.cpp */,
+				3797F8191130A219006F6055 /* CameraUtility.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		3797F8201130A3AA006F6055 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3797F81F1130A3AA006F6055 /* Camera Utility.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3797F81E1130A3AA006F6055 /* Camera Utility */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3797F8251130A3AC006F6055 /* Build configuration list for PBXNativeTarget "Camera Utility" */;
+			buildPhases = (
+				3797F81B1130A3AA006F6055 /* Resources */,
+				3797F81C1130A3AA006F6055 /* Sources */,
+				3797F81D1130A3AA006F6055 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Camera Utility";
+			productName = "Camera Utility";
+			productReference = 3797F81F1130A3AA006F6055 /* Camera Utility.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3797F8001130A1DF006F6055 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 3797F8031130A1DF006F6055 /* Build configuration list for PBXProject "Camera Utility" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 0;
+			mainGroup = 3797F7FE1130A1DF006F6055;
+			productRefGroup = 3797F8201130A3AA006F6055 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3797F81E1130A3AA006F6055 /* Camera Utility */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3797F81B1130A3AA006F6055 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3797F81C1130A3AA006F6055 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3797F8261130A3BC006F6055 /* CameraUtility.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3797F8011130A1DF006F6055 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Debug;
+		};
+		3797F8021130A1DF006F6055 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Release;
+		};
+		3797F8231130A3AC006F6055 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				HEADER_SEARCH_PATHS = (
+					"~/src/ARlib/include",
+					"~/src/wxLib/include",
+				);
+				INFOPLIST_FILE = "Camera Utility-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../../ARlib/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../../wxLib/lib\"";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "Camera Utility";
+				USER_HEADER_SEARCH_PATHS = ../../include;
+			};
+			name = Debug;
+		};
+		3797F8241130A3AC006F6055 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				HEADER_SEARCH_PATHS = (
+					"~/src/ARlib/include",
+					"~/src/wxLib/include",
+				);
+				INFOPLIST_FILE = "Camera Utility-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../../ARlib/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../../wxLib/lib\"";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "Camera Utility";
+				USER_HEADER_SEARCH_PATHS = ../../include;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3797F8031130A1DF006F6055 /* Build configuration list for PBXProject "Camera Utility" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3797F8011130A1DF006F6055 /* Debug */,
+				3797F8021130A1DF006F6055 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3797F8251130A3AC006F6055 /* Build configuration list for PBXNativeTarget "Camera Utility" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3797F8231130A3AC006F6055 /* Debug */,
+				3797F8241130A3AC006F6055 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3797F8001130A1DF006F6055 /* Project object */;
+}

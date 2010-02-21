@@ -1,0 +1,146 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+%\usepackage{epstopdf}
+\usepackage{subfigure}
+\usepackage{listings}
+\usepackage[usenames]{color}
+\usepackage{hyperref}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\newcommand{\ku}{{\frak u}}
+\newcommand{\kq}{{\frak q}}
+\newcommand{\eqn}{\begin{equation}}
+\newcommand{\neqn}{\end{equation}}
+
+\newcommand{\onevec}{{\mathbf{1}}}
+
+\newcommand{\realpart}[1]{\mathrm{Re}\left\{ #1 \right\}}
+\newcommand{\imagpart}[1]{\mathrm{Im}\left\{ #1 \right\}}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\definecolor{darkgreen}{rgb}{0.0,0.45,0.0}
+\definecolor{kwcolor}{rgb}{0.67,0.05,0.57}
+\definecolor{idcolor}{rgb}{0.25,0.43,0.45}
+
+\usepackage{amsmath,amssymb}  % Better maths support & more symbols
+
+%\usepackage{pdfsync}  % enable tex source and pdf output syncronicity
+
+\title{MADTraC Coding Style ``Guidelines''}
+\author{Dan Swain}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+\lstset{basicstyle=\small,
+keywordstyle=\color{kwcolor}\bfseries,
+commentstyle=\color{darkgreen},
+identifierstyle=\color{idcolor},
+stringstyle=\ttfamily\color{red},
+language=c++}
+
+\maketitle
+
+This document contains the ``guidelines'' that I try to use and should be followed for coding in the MADTraC project.  I put quotes around ``guidelines'' because they are loose - you'll see that I often fail to follow them myself.  The truth is that probably neither you nor I are professionally trained c++ programmers and we are both still learning.  I've so far put over 2 years into the code base for this project and I learn new c++ tricks/caveats/nuances all the time.  Having said that, one of my goals in writing this is to convey \textit{to you} some of the lessons that \textit{I've} learned.
+
+\section{General}
+
+\begin{description}
+
+  \item[Strive For {\tt const}-correctness] \hfill \\
+    {\tt const}-correctness means using {\tt const} to declare function parameters, member functions, and member data as constant when appropriate and necessary.  The {\tt const} keyword assists the compiler in enforcing safe code, but does not affect the compiled code, so there is no performance penalty.  Think of it this way: by declaring something as {\tt const} you are ``promising'' not to modify it.  The \href{http://www.parashift.com/c++-faq-lite/const-correctness.html}{c++ FAQ-lite section on {\tt const}-correctness} has a good section on this.
+
+    However - don't go crazy with {\tt const}-correctness.  For example, there's usually no need to declare anything passed-by-value to a function as {\tt const}:
+    \begin{lstlisting}
+      /* BAD - i is already passed-by-value so no need for const */
+      void SomeFunction(const int i);
+    \end{lstlisting}
+    This is unnecessary because {\tt i} will be passed-by-value and therefore \textit{copied} before used in the function.  That is, we are \textit{unable} to modify so there's no need to promise not to:
+    \begin{lstlisting}
+      /* GOOD - pass-by-value doesn't need const */
+      void SomeFunction(int i);
+    \end{lstlisting}
+    
+  \item[Use {\tt const} instead of {\tt \#define} when possible] \hfill \\
+    When you define constants as {\tt const}, i.e.
+    \begin{lstlisting}
+      const double IN2CM = 2.54;
+    \end{lstlisting}
+    instead of
+    \begin{lstlisting}
+      #define IN2CM 2.54
+    \end{lstlisting}
+    People will give you lots of reasons why this is a big deal, but I think the best reason is that the result is \textit{typed} - therefore the compiler will check for correct usage.  The resulting {\tt const} variable may occupy space in memory (though some compilers will optimize this away), but the size of one variable is not generally a significant draw on system resources.
+
+    Be careful when defining pointers in this way.  For example you may need something like this
+    \begin{lstlisting}
+      const char* const NULL_STRING = NULL;
+    \end{lstlisting}
+    See the \href{http://www.parashift.com/c++-faq-lite/const-correctness.html#faq-18.5}{c++ FAQ-lite section on the difference between ``{\tt const Fred* p}'', ``{\tt Fred* const p}'' and ``{\tt const Fred* const p}''}.
+
+    There are a few places where I'm willing to break these rules.  These are probably not technically correct, but just feel right.  For {\tt int} and {\tt long} bit fields (e.g. {\tt \#define FLAG3 FLAG2 | FLAG1}) and macros (e.g. {\tt \#define MAX(a,b) (a)>(b)?(a):(b)}) seem to feel better as macros.  The macro does have the benefit of being type-generic.   
+\end{description}
+
+\section{Header Files}
+
+\begin{description}
+  \item[No Function Code In Header Files] \hfill \\
+    Header files should function as a quick reference to other developers to see what functions and classes (and how to interface the classes) are defined in the corresponding module.  Adding code in the headers makes them unnecessarily long and therefore obfuscates their use as a reference.  A decent exception is for functions that can be defined on a single line
+    \begin{lstlisting}
+      double SomeClass::GetDoubleMember() const {return m_dValue;};
+    \end{lstlisting}
+    or functions that are empty (i.e. virtual function placeholders)
+    \begin{lstlisting}
+      virtual void SomeClass::SomeFunction(){};
+    \end{lstlisting}
+
+\end{description}
+
+\section{Function Declarations}
+
+\begin{description}
+
+  \item[Pass-By-Pointer If You Will Modify A Parameter]\hfill \\
+    If you want to modify the value/contents of a parameter passed to a function, use pass-by-pointer.  This is more of a safety and readability issue than a performance issue - in the calling code it is clear that the value could be changed by the function.  Consider
+    \begin{lstlisting}
+      /* BAD - Second parameter is passed-by-reference */
+      void SomeFunction(SomeClass* x, SomeClass& y);
+      . . .
+      /* when called it's clear x could be modified but not y */
+      SomeFunction(&x, y);
+    \end{lstlisting}
+    versus
+    \begin{lstlisting}
+      /* GOOD - Both parameters passed-by-pointer */
+      void SomeFunction(SomeClass* x, SomeClass* y);
+      . . .
+      /* when called it's clear x and y could change */
+      SomeFunction(&x, &y);
+    \end{lstlisting}
+    In the former, it's not clear in the calling code that {\tt y} could be changed.  In the latter, it's clear.
+
+    Note that the caveat to this is that you often need to pass-by-pointer whether the argument will be modified or not.  When possible the function should declare the parameter as {\tt const}, but this isn't practical in some situations.
+
+  \item[Pass Objects By {\tt const} Reference] \hfill \\
+    When a function doesn't need to modify the value of a parameter (argument) passed to it, it should be passed by {\tt const} reference unless the the parameter is a basic data type (e.g. {\tt int}, {\tt void *}, etc).  The alternatives are pass-by-pointer and pass-by-value are both slower for different reasons.  Pass-by-value creates a copy of the argument, which is slow for all but the most basic data types and can actually be dangerous depending upon what the object's constructor/destructor and copy operators do.  Pass-by-pointer is slow because any access to the object requires dereferencing and can also be dangerous since you could inadvertently change the object.  For basic data types, the copy is quite efficient and safe, so pass-by-value is fine.  Example:
+    \begin{lstlisting}
+      void SomeFunction(const SomeClass& x, double y);
+    \end{lstlisting}
+
+
+
+\end{description}
+
+\end{document}  

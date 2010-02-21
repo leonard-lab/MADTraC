@@ -1,0 +1,6 @@
+Usage: PlaySwarm [-h] [-l <num>] [-w <num>] [-t] [-o] [Position data file.]
+  -h, --help               	Display this help message
+  -l, --object-length=<num>	Standard object length (drawing units).
+  -w, --object-width=<num> 	Standard object width (drawing units).
+  -t, --tails              	Draw trajectory tails.
+  -o, --occlusions         	Calculate and draw occlusions.

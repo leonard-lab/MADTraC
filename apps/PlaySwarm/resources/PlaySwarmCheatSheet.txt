@@ -1,0 +1,23 @@
+Keyboard Shortcuts (only work when display window has focus, 
+and are case sensitive):
+
+  p - Pause/Unpause
+  P - Display preferences
+  space/right arrow - Move forward one time step
+  backspace/delete/left arrow - Move backward one time step
+  r - Reset to beginning of file
+  o - Toggle occlusion calculation and display*
+  t - Toggle trajectory tail display
+  z - Toggle zoom cursor (draw a rectangle to zoom)
+  a - Toggle "auto-zoom" - Experimental!
+  Z - Reset to original zoom
+  q - Quit
+
+Mouse Behavior:
+
+ Right Click on an agent to display preferences for that agent (size and color)
+
+ When in zoom mode, draw a rectangle to zoom to that rectangle.  
+ The rectangle is automatically adjusted to fit the aspect ratio 
+ of the window.
+

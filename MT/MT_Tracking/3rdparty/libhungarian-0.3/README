@@ -1,0 +1,21 @@
+This package contains a C implementation of Harold Kuhn's well-known
+Hungarian Method for solving Optimal Assignment Problems.  The running time
+for this algorithm on an mXn problem is O(m*n^2), which correlates well
+with my own experience with this implementation.
+
+The API is straightforward; see test.c for an example.
+
+NOTE: 
+  hungarian_solve() seems to hang on certain extreme (degenerate?) inputs, 
+  especially when the rating matrix is non-square.  I don't what's causing
+  this problem.
+
+        - Brian Gerkey <gerkey@robotics.stanford.edu>
+
+PYTHON NOTE:
+  python bindings now in python/ directory. The makefile has two targets, one
+  being "python" and the other "pyinstall" which should build, or build and
+  install the "hungarian.so" bindings in your local site-packages directory.
+
+        - Dylan Shell <dshell@robotics.usc.edu>
+

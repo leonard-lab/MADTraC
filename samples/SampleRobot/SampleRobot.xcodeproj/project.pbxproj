@@ -1,0 +1,301 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3797FBC311319141006F6055 /* SampleRobot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3797FBB4113190B8006F6055 /* SampleRobot.cpp */; };
+		3797FBC51131921C006F6055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBC41131921C006F6055 /* AGL.framework */; };
+		3797FBC71131921C006F6055 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBC61131921C006F6055 /* AppKit.framework */; };
+		3797FBC91131921C006F6055 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBC81131921C006F6055 /* Carbon.framework */; };
+		3797FBCB1131921C006F6055 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBCA1131921C006F6055 /* IOKit.framework */; };
+		3797FBCD1131921C006F6055 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBCC1131921C006F6055 /* OpenGL.framework */; };
+		3797FBCF1131921C006F6055 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBCE1131921C006F6055 /* QuickTime.framework */; };
+		3797FBD11131921C006F6055 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBD01131921C006F6055 /* libiconv.dylib */; };
+		3797FBD31131921C006F6055 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBD21131921C006F6055 /* libz.dylib */; };
+		3797FBD51131922C006F6055 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBD41131922C006F6055 /* OpenCV.framework */; };
+		3797FBDA1131924D006F6055 /* libMT_Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBD61131924D006F6055 /* libMT_Core.a */; };
+		3797FBDB1131924D006F6055 /* libMT_GUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBD71131924D006F6055 /* libMT_GUI.a */; };
+		3797FBDC1131924D006F6055 /* libMT_Robot.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBD81131924D006F6055 /* libMT_Robot.a */; };
+		3797FBDD1131924D006F6055 /* libMT_Tracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBD91131924D006F6055 /* libMT_Tracking.a */; };
+		3797FBE011319263006F6055 /* libAR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBDE11319263006F6055 /* libAR.a */; };
+		3797FBE111319263006F6055 /* libARvideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBDF11319263006F6055 /* libARvideo.a */; };
+		3797FBE311319275006F6055 /* libwx_mac_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FBE211319275006F6055 /* libwx_mac_static.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3797FBB4113190B8006F6055 /* SampleRobot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SampleRobot.cpp; sourceTree = "<group>"; };
+		3797FBB5113190B8006F6055 /* SampleRobot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SampleRobot.h; sourceTree = "<group>"; };
+		3797FBBC1131912F006F6055 /* SampleRobot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleRobot.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3797FBBF1131912F006F6055 /* SampleRobot-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SampleRobot-Info.plist"; sourceTree = "<group>"; };
+		3797FBC41131921C006F6055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
+		3797FBC61131921C006F6055 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		3797FBC81131921C006F6055 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		3797FBCA1131921C006F6055 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		3797FBCC1131921C006F6055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		3797FBCE1131921C006F6055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
+		3797FBD01131921C006F6055 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /usr/lib/libiconv.dylib; sourceTree = "<absolute>"; };
+		3797FBD21131921C006F6055 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		3797FBD41131922C006F6055 /* OpenCV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCV.framework; path = ../../OpenCV.framework; sourceTree = SOURCE_ROOT; };
+		3797FBD61131924D006F6055 /* libMT_Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_Core.a; path = ../../lib/libMT_Core.a; sourceTree = SOURCE_ROOT; };
+		3797FBD71131924D006F6055 /* libMT_GUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_GUI.a; path = ../../lib/libMT_GUI.a; sourceTree = SOURCE_ROOT; };
+		3797FBD81131924D006F6055 /* libMT_Robot.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_Robot.a; path = ../../lib/libMT_Robot.a; sourceTree = SOURCE_ROOT; };
+		3797FBD91131924D006F6055 /* libMT_Tracking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_Tracking.a; path = ../../lib/libMT_Tracking.a; sourceTree = SOURCE_ROOT; };
+		3797FBDE11319263006F6055 /* libAR.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAR.a; path = ../../../../ARlib/lib/libAR.a; sourceTree = SOURCE_ROOT; };
+		3797FBDF11319263006F6055 /* libARvideo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libARvideo.a; path = ../../../../ARlib/lib/libARvideo.a; sourceTree = SOURCE_ROOT; };
+		3797FBE211319275006F6055 /* libwx_mac_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwx_mac_static.a; path = ../../../../wxLib/lib/libwx_mac_static.a; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3797FBBA1131912F006F6055 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3797FBC51131921C006F6055 /* AGL.framework in Frameworks */,
+				3797FBC71131921C006F6055 /* AppKit.framework in Frameworks */,
+				3797FBC91131921C006F6055 /* Carbon.framework in Frameworks */,
+				3797FBCB1131921C006F6055 /* IOKit.framework in Frameworks */,
+				3797FBCD1131921C006F6055 /* OpenGL.framework in Frameworks */,
+				3797FBCF1131921C006F6055 /* QuickTime.framework in Frameworks */,
+				3797FBD11131921C006F6055 /* libiconv.dylib in Frameworks */,
+				3797FBD31131921C006F6055 /* libz.dylib in Frameworks */,
+				3797FBD51131922C006F6055 /* OpenCV.framework in Frameworks */,
+				3797FBDA1131924D006F6055 /* libMT_Core.a in Frameworks */,
+				3797FBDB1131924D006F6055 /* libMT_GUI.a in Frameworks */,
+				3797FBDC1131924D006F6055 /* libMT_Robot.a in Frameworks */,
+				3797FBDD1131924D006F6055 /* libMT_Tracking.a in Frameworks */,
+				3797FBE011319263006F6055 /* libAR.a in Frameworks */,
+				3797FBE111319263006F6055 /* libARvideo.a in Frameworks */,
+				3797FBE311319275006F6055 /* libwx_mac_static.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3797FB971131903D006F6055 = {
+			isa = PBXGroup;
+			children = (
+				3797FBE211319275006F6055 /* libwx_mac_static.a */,
+				3797FBDE11319263006F6055 /* libAR.a */,
+				3797FBDF11319263006F6055 /* libARvideo.a */,
+				3797FBD61131924D006F6055 /* libMT_Core.a */,
+				3797FBD71131924D006F6055 /* libMT_GUI.a */,
+				3797FBD81131924D006F6055 /* libMT_Robot.a */,
+				3797FBD91131924D006F6055 /* libMT_Tracking.a */,
+				3797FBD41131922C006F6055 /* OpenCV.framework */,
+				3797FBB3113190B8006F6055 /* src */,
+				3797FBBD1131912F006F6055 /* Products */,
+				3797FBBF1131912F006F6055 /* SampleRobot-Info.plist */,
+				3797FBC41131921C006F6055 /* AGL.framework */,
+				3797FBC61131921C006F6055 /* AppKit.framework */,
+				3797FBC81131921C006F6055 /* Carbon.framework */,
+				3797FBCA1131921C006F6055 /* IOKit.framework */,
+				3797FBCC1131921C006F6055 /* OpenGL.framework */,
+				3797FBCE1131921C006F6055 /* QuickTime.framework */,
+				3797FBD01131921C006F6055 /* libiconv.dylib */,
+				3797FBD21131921C006F6055 /* libz.dylib */,
+			);
+			sourceTree = "<group>";
+		};
+		3797FBB3113190B8006F6055 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				3797FBB4113190B8006F6055 /* SampleRobot.cpp */,
+				3797FBB5113190B8006F6055 /* SampleRobot.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		3797FBBD1131912F006F6055 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3797FBBC1131912F006F6055 /* SampleRobot.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3797FBBB1131912F006F6055 /* SampleRobot */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3797FBC211319130006F6055 /* Build configuration list for PBXNativeTarget "SampleRobot" */;
+			buildPhases = (
+				3797FBB81131912F006F6055 /* Resources */,
+				3797FBB91131912F006F6055 /* Sources */,
+				3797FBBA1131912F006F6055 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SampleRobot;
+			productName = SampleRobot;
+			productReference = 3797FBBC1131912F006F6055 /* SampleRobot.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3797FB991131903D006F6055 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 3797FB9C1131903D006F6055 /* Build configuration list for PBXProject "SampleRobot" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 0;
+			mainGroup = 3797FB971131903D006F6055;
+			productRefGroup = 3797FBBD1131912F006F6055 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3797FBBB1131912F006F6055 /* SampleRobot */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3797FBB81131912F006F6055 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3797FBB91131912F006F6055 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3797FBC311319141006F6055 /* SampleRobot.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3797FB9A1131903D006F6055 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Debug;
+		};
+		3797FB9B1131903D006F6055 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Release;
+		};
+		3797FBC011319130006F6055 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				HEADER_SEARCH_PATHS = (
+					"~/src/ARlib/include",
+					"~/src/wxLib/include",
+				);
+				INFOPLIST_FILE = "SampleRobot-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../../ARlib/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../../wxLib/lib\"";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = SampleRobot;
+				USER_HEADER_SEARCH_PATHS = ../../include;
+			};
+			name = Debug;
+		};
+		3797FBC111319130006F6055 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				HEADER_SEARCH_PATHS = (
+					"~/src/ARlib/include",
+					"~/src/wxLib/include",
+				);
+				INFOPLIST_FILE = "SampleRobot-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../../ARlib/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../../wxLib/lib\"";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = SampleRobot;
+				USER_HEADER_SEARCH_PATHS = ../../include;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3797FB9C1131903D006F6055 /* Build configuration list for PBXProject "SampleRobot" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3797FB9A1131903D006F6055 /* Debug */,
+				3797FB9B1131903D006F6055 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3797FBC211319130006F6055 /* Build configuration list for PBXNativeTarget "SampleRobot" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3797FBC011319130006F6055 /* Debug */,
+				3797FBC111319130006F6055 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3797FB991131903D006F6055 /* Project object */;
+}

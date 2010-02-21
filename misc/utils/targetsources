@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Dan Swain dan.t.swain at gmail.com  9/15/09
+
+# Bash script to list the source files that are compiled for each target
+#  in an xcode project file.
+# If an argument is specified, it is taken to be the name of the
+#   xcode project - the program looks for argument.xcodeproj/project.pbxproj
+# If no argument is specified, the program searches for a .xcodeproject
+#   directory in the current directory.  This probably won't work
+#   if there is more than one .xcodeproj directory.
+
+# given the name of the project, this is the location of the project file
+if [ $1 ]
+then
+  PBXFILE=$1.xcodeproj/project.pbxproj
+else
+  XCODEPROJ=`find . -name '*.xcodeproj'`
+  PBXFILE=$XCODEPROJ/project.pbxproj
+fi
+
+# finds the lines defining the names of the targets
+LINES=`sed -n '/isa = PBXNativeTarget/=' $PBXFILE`
+
+# for each target
+for LINE in $LINES
+do
+  # the target name is on the previous line and is the second field 
+  #  delimited by *'s,  we also remove a leading and trailing space
+  TARGETNAME=`awk 'NR=='$((LINE-1)) $PBXFILE | awk -F\* '{print $2}' | sed 's/^[ ]//;s/[ ]$//'`
+
+  echo
+  echo Source Files for Target $TARGETNAME:
+  echo ====================================
+
+  # this is the hex code corresponding to the sources for this target
+  SOURCES=`awk 'NR=='$((LINE+4)) $PBXFILE | awk '{print $1}'`
+
+  # find the line numbers containing the hex code for the sources
+  SOURCESLINE=`sed -n '/'$SOURCES'/=' $PBXFILE`
+  # there are two of these, so this leaves us with just the last one
+  for SL in $SOURCESLINE
+  do
+    :   # just want the last one
+  done
+
+  # the first file is 4 lines below this
+  SL=$((SL+4))
+  # loop over the subsequent lines until the awk command fails
+  OK=0
+  while [ "$OK" = "0" ]
+  do
+    # the source file is the third field
+    FILE=`awk 'NR=='$SL $PBXFILE | awk '{print $3}'`
+    if [ $FILE ]
+    then
+      echo $FILE
+    else
+      OK=1
+    fi
+    # next line
+    SL=$((SL+1))
+  done
+done
+
+

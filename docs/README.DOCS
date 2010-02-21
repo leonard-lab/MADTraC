@@ -1,0 +1,4 @@
+This folder has three subfolders
+ - design - Various design-related documents
+ - doxygen - Support files (e.g. Doxyfile and extra documentation headers) for generating doxygen output for MT
+ - html - If this is empty, run Doxygen with the Doxyfile in the doxygen folder to generate the html help files.  You can then point your browser at html/index.html.

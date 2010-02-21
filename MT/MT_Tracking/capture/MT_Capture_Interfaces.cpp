@@ -1,0 +1,518 @@
+#include "MT_Capture_Interfaces.h"
+
+
+/*********************************************************************
+ *
+ * OpenCV File/AVI Iface
+ *
+ *********************************************************************/
+
+MT_Cap_Iface_CV_File::~MT_Cap_Iface_CV_File()
+{
+    if(m_pCapture)
+    {
+        cvReleaseCapture(&m_pCapture);
+    }
+    if(m_pCurrentFrame)
+    {
+        cvReleaseImage(&m_pCurrentFrame);
+    }
+}
+
+void MT_Cap_Iface_CV_File::doSafeInit()
+{
+    MT_Cap_Iface_Base::doSafeInit();
+    m_pCapture = NULL;
+}
+
+bool MT_Cap_Iface_CV_File::initFromFile(const char* filename)
+{
+    fprintf(stdout, "Opening video file %s...\n", filename);
+
+    m_pCapture = cvCreateFileCapture(filename);
+
+    if(!m_pCapture)
+    {
+        fprintf(stderr, "Could not open video file %s\n", filename);
+        m_Mode = MT_FC_MODE_OFF;
+        return false;
+    }
+
+    m_iFrameHeight = (int) cvGetCaptureProperty(m_pCapture, CV_CAP_PROP_FRAME_HEIGHT);
+    m_iFrameWidth = (int) cvGetCaptureProperty(m_pCapture, CV_CAP_PROP_FRAME_WIDTH);
+    m_iNFrames = (int) cvGetCaptureProperty(m_pCapture, CV_CAP_PROP_FRAME_COUNT);
+    m_dFPS = cvGetCaptureProperty(m_pCapture, CV_CAP_PROP_FPS);
+    m_iCurrentFrameNumber = (int) cvGetCaptureProperty(m_pCapture, CV_CAP_PROP_POS_FRAMES);
+
+    fprintf(stdout, 
+            "Loaded file %s\n  With %d frames of size %dx%d at %lf FPS\n",
+            filename,
+            m_iNFrames,
+            m_iFrameWidth,
+            m_iFrameHeight,
+            m_dFPS);
+    
+    m_Mode = MT_FC_MODE_AVI;
+
+    /* have to defer setting of m_iNChannelsPerFrame until we have a frame */
+
+    m_sTitle = std::string(filename);
+
+    return true;
+
+}
+
+int MT_Cap_Iface_CV_File::setFrameNumber(int frame_index)
+{
+    /* doubles as a check for proper initialization */
+    if(m_Mode == MT_FC_MODE_AVI)
+    {
+        cvSetCaptureProperty(m_pCapture, CV_CAP_PROP_POS_FRAMES, frame_index);
+        m_iCurrentFrameNumber = 
+            (int) cvGetCaptureProperty(m_pCapture, CV_CAP_PROP_POS_FRAMES);
+    }
+    return m_iCurrentFrameNumber;
+}
+
+IplImage* MT_Cap_Iface_CV_File::getFrame(int frame_index)
+{
+    if(m_Mode != MT_FC_MODE_AVI)
+    {
+        /* indication that something is wrong, so bail */
+        m_Mode = MT_FC_MODE_OFF;
+        return NULL;
+    }
+
+    if(frame_index == MT_FC_NEXT_FRAME)
+    {
+        m_iCurrentFrameNumber++;
+    }
+    else
+    {
+        m_iCurrentFrameNumber = setFrameNumber(frame_index);
+    }
+
+    /* the capture owns the memory pointed to by the
+       returned image, which could be somewhat volatile, so
+       we should create our own local copy */
+    IplImage* raw_frame = cvQueryFrame(m_pCapture);
+
+    if(!m_pCurrentFrame)
+    {
+        m_pCurrentFrame = cvCloneImage(raw_frame);
+        m_iNChannelsPerFrame = m_pCurrentFrame->nChannels;
+    }
+    else
+    {
+        cvCopy(raw_frame, m_pCurrentFrame);
+    }
+
+    return m_pCurrentFrame;
+
+}
+
+
+/*********************************************************************
+ *
+ * OpenCV Camera Iface
+ *
+ *********************************************************************/
+
+void MT_Cap_Iface_OpenCV_Camera::doSafeInit()
+{
+    MT_Cap_Iface_Base::doSafeInit();
+    m_pCapture = NULL;
+}
+
+MT_Cap_Iface_OpenCV_Camera::MT_Cap_Iface_OpenCV_Camera()
+{
+    doSafeInit();
+}
+
+MT_Cap_Iface_OpenCV_Camera::~MT_Cap_Iface_OpenCV_Camera()
+{
+    if(m_pCapture)
+    {
+        cvReleaseCapture(&m_pCapture);
+    }
+    if(m_pCurrentFrame)
+    {
+        cvReleaseImage(&m_pCurrentFrame);
+    }
+}
+
+bool MT_Cap_Iface_OpenCV_Camera::initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
+{
+    m_pCapture = cvCaptureFromCAM(CV_CAP_ANY);
+    if(!m_pCapture)
+    {
+        fprintf(stderr, "Could not initialize OpenCV camera capture.\n");
+        m_Mode = MT_FC_MODE_OFF;
+        return false;
+    }
+
+    /* m_pCapture won't know the frame size until it grabs a frame */
+    cvGrabFrame(m_pCapture);
+    IplImage* tframe = cvRetrieveFrame(m_pCapture);
+    m_iFrameHeight = tframe->height;
+    m_iFrameWidth = tframe->width;
+
+    m_sTitle = "OpenCV Camera Capture";
+
+    return true;
+}
+
+IplImage* MT_Cap_Iface_OpenCV_Camera::getFrame(int frame_index) /* arg is ignored */
+{
+    cvGrabFrame(m_pCapture);
+    IplImage* raw_frame = cvRetrieveFrame(m_pCapture);
+
+    if(!m_pCurrentFrame)
+    {
+        m_pCurrentFrame = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 3);
+        if(!m_pCurrentFrame)
+        {
+            fprintf(stderr, "Could not allocate camera frame.\n");
+            return NULL;
+        }
+    }
+
+    cvCopy(raw_frame, m_pCurrentFrame);
+
+    return m_pCurrentFrame;
+}
+
+
+/*********************************************************************
+ *
+ * ARToolKit Camera Iface
+ *
+ *********************************************************************/
+
+#ifdef MT_HAVE_ARTOOLKIT
+#include <AR/gsub.h>
+#include <AR/video.h>
+#include <AR/param.h>
+#include <AR/ar.h>
+#endif
+
+void MT_Cap_Iface_ARToolKit_Camera::doSafeInit()
+{
+    MT_Cap_Iface_Base::doSafeInit();
+}
+
+MT_Cap_Iface_ARToolKit_Camera::MT_Cap_Iface_ARToolKit_Camera()
+{
+    doSafeInit();
+}
+
+MT_Cap_Iface_ARToolKit_Camera::~MT_Cap_Iface_ARToolKit_Camera()
+{
+#ifdef MT_HAVE_ARTOOLKIT
+    arVideoCapStop();
+    arVideoClose();
+
+    if(m_pCurrentFrame)
+    {
+        cvReleaseImage(&m_pCurrentFrame);
+    }
+    if(m_pRframe)
+    {
+        /* note we don't release m_pRawFrame b/c it points to
+         * memory owned by the capture */
+        cvReleaseImage(&m_pRframe);
+        cvReleaseImage(&m_pGframe);
+        cvReleaseImage(&m_pBframe);
+        cvReleaseImage(&m_pAframe);
+    }
+#endif
+}
+
+bool MT_Cap_Iface_ARToolKit_Camera::initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
+{
+#ifdef MT_HAVE_ARTOOLKIT
+        // String to pass the grabber, contains various configuration options
+    char vconf[256] = "\0";
+    // temporary string used to build up vconf
+    char cconf[64] = "\0";
+  
+    /*---- NOTE - The following options are for OS X / Quicktime only! ----*/
+    // It would be great if someone made this more general, but this suits for now
+  
+    // override the default frame width
+    if(FW > 0)
+    {
+        sprintf(cconf,"-width=%d ",FW);
+        strcat(vconf,cconf);
+    }
+  
+    // override the default frame height
+    if(FH > 0)
+    {
+        sprintf(cconf,"-height=%d ",FH);
+        strcat(vconf,cconf);
+    }
+  
+    // override the default option (which is to show the config dialog)
+    if(ShowDialog == MT_FC_NODIALOG)
+    {
+        sprintf(cconf,"-nodialog ");
+        strcat(vconf,cconf);
+    }
+  
+    // flip the frame horizontally
+    if(FlipH == MT_FC_FLIP)
+    {
+        sprintf(cconf,"-fliph ");
+        strcat(vconf,cconf);
+    }
+  
+    // flip the frame vertically
+    if(FlipV == MT_FC_FLIP)
+    {
+        sprintf(cconf,"-flipv ");
+        strcat(vconf,cconf);
+    }
+
+    /*--- Slightly modified from the ARToolkit examples ---*/
+    /* open the video path */
+    if( arVideoOpen( vconf ) < 0 )
+    {
+        fprintf(stderr, "Could not open ARToolKit camera interface. \n");
+        return false;
+    }
+  
+    /* find the size of the window */
+    int t_framewidth, t_frameheight;
+    if( arVideoInqSize(&t_framewidth, &t_frameheight) < 0 )
+    {
+        fprintf(stderr, "Could not obtain frame size - will not open interface.\n");
+        return false;
+    }
+    else
+    {
+        m_iFrameWidth = t_framewidth;
+        m_iFrameHeight = t_frameheight;
+    }
+  
+    // set the capturing in motion
+    arVideoCapStart();
+    arVideoCapNext();
+
+    /* The camera grabs an alpha frame, but we only keep R, G, B */
+    m_iNChannelsPerFrame = 3;
+
+    m_pRawFrame = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 4);
+    m_pCurrentFrame = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 3);
+    m_pRframe = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 1);
+    m_pGframe = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 1);
+    m_pBframe = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 1);
+    m_pAframe = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 1);
+
+    fprintf(stdout, 
+            "Opened ARToolKit camera interface with image size %dx%d\n",
+            m_iFrameWidth,
+            m_iFrameHeight);
+
+    m_Mode = MT_FC_MODE_CAM;
+
+    return true;
+#else /* MT_HAVE_ARTOOLKIT not defined */
+    return false;
+#endif
+}
+
+IplImage* MT_Cap_Iface_ARToolKit_Camera::getFrame(int frame_index) /* arg is ignored */
+{
+#ifdef MT_HAVE_ARTOOLKIT
+    /* check for reasonable initialization */
+    if(m_Mode != MT_FC_MODE_CAM)
+    {
+        return NULL;
+    }
+
+    /*--- Slightly modified from the ARToolkit examples ---*/
+
+    ARUint8         *dataPtr;
+    unsigned int wait_count = 0;
+    /* grab a video frame */
+    while( (dataPtr = (ARUint8 *)arVideoGetImage()) == NULL ) {
+        arUtilSleep(2);
+        wait_count++;
+    }
+    /* capture the next video frame */
+    arVideoCapNext();
+
+    /*--- End ARToolkit setup from examples -------------*/
+
+    cvSetImageData(m_pRawFrame, dataPtr, m_iFrameWidth*4);
+
+#ifdef __APPLE__
+    /* on OS X the default pixel format for ARTK is ARGB, but
+     * everything else expects BGR */
+    cvSplit(m_pRawFrame, m_pAframe, m_pRframe, m_pGframe, m_pBframe);
+    cvMerge(m_pBframe, m_pGframe, m_pRframe, NULL, m_pCurrentFrame);
+#else
+    /* TODO */
+#endif
+
+    return m_pCurrentFrame;
+
+#else /* MT_HAVE_ARTOOLKIT not defined */
+    return NULL;
+#endif
+}
+
+
+/*********************************************************************
+ *
+ * AVT Camera Iface
+ *
+ *********************************************************************/
+
+void MT_Cap_Iface_AVT_Camera::doSafeInit()
+{
+    MT_Cap_Iface_Base::doSafeInit();
+}
+
+MT_Cap_Iface_AVT_Camera::MT_Cap_Iface_AVT_Camera()
+{
+    doSafeInit();
+}
+
+MT_Cap_Iface_AVT_Camera::~MT_Cap_Iface_AVT_Camera()
+{
+    if(m_pCurrentFrame)
+    {
+            cvReleaseImage(&m_pCurrentFrame);
+    }
+
+#ifdef MT_HAVE_AVT
+    /* cleanup of the FireGrab module */
+    m_Camera.StopDevice();
+    m_Camera.CloseCapture();
+    m_Camera.Disconnect();
+    FGExitModule();
+#endif
+}
+
+bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
+{
+#ifdef MT_HAVE_AVT
+    UINT32 err_code = FGInitModule(NULL);
+    if(err_code != FCE_NOERROR)
+    {
+        fprintf(stderr, "Could not open AVT Camera interface.  Error code: %ld\n", err_code);
+        return false;
+    }
+
+    FGNODEINFO node_info[3];
+    UINT32 node_count;
+
+    err_code = FGGetNodeList(node_info, 3, &node_count);
+    if(err_code != FCE_NOERROR)
+    {
+        fprintf(stderr, "Could not get AVT node list.  Error code: %ld\n", err_code);
+        return false;
+    }
+    if(!node_count)
+    {
+        fprintf(stderr, "Failed to find any AVT nodes.\n");
+        return false;
+    }
+
+    err_code = m_Camera.Connect(&node_info[0].Guid);
+    if(err_code != FCE_NOERROR)
+    {
+        fprintf(stderr, "Could not connect to camera.  Error code: %ld\n", err_code);
+        return false;
+    }
+
+    err_code = m_Camera.OpenCapture();
+    if(err_code != FCE_NOERROR)
+    {
+        fprintf(stderr, "Could not open capture DMA.  Error code: %ld\n", err_code);
+        return false;
+    }
+
+    err_code = m_Camera.StartDevice();
+    if(err_code != FCE_NOERROR)
+    {
+        fprintf(stderr, "Could not start camera device.  Error code: %ld\n", err_code);
+        return false;
+    }
+
+    UINT32 param_value;
+
+    m_Camera.GetParameter(FGP_XSIZE, &param_value);
+    m_iFrameWidth = param_value;
+    m_Camera.GetParameter(FGP_YSIZE, &param_value);
+    m_iFrameHeight = param_value;
+
+    m_Camera.GetParameter(FGP_IMAGEFORMAT, &param_value);
+
+    char name[256];
+    m_Camera.GetDeviceName(name, 256);
+    m_sTitle = std::string(name);
+
+    fprintf(stdout, "Found camera \"%s\" with frame size %dx%d\n", 
+            m_sTitle.c_str(), 
+            m_iFrameWidth, 
+            m_iFrameHeight);
+    fprintf(stdout, "   Image format has resolution number %d, color format %d, and rate number %d.\n", 
+            IMGRES(param_value), 
+            IMGCOL(param_value), 
+            IMGRATE(param_value));
+
+    m_Mode = MT_FC_MODE_CAM;
+
+    return true;
+#else
+    return false;
+#endif
+}
+
+IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
+{
+#ifdef MT_HAVE_AVT
+    FGFRAME fg_frame;
+    UINT32 err_code;
+
+    err_code = m_Camera.GetFrame(&fg_frame, 100);
+
+    if(err_code != FCE_NOERROR)
+    {
+        fprintf(stderr, "Could not get frame from AVT camera.  Error code: %ld\n", err_code);
+        return m_pCurrentFrame;
+    }
+
+    /* TODO this is very inflexible */
+    if(!m_pCurrentFrame)
+    {
+        m_pCurrentFrame = cvCreateImage(cvSize(m_iFrameWidth, m_iFrameHeight), IPL_DEPTH_8U, 1);
+		m_iNChannelsPerFrame = 1;
+        if(!m_pCurrentFrame)
+        {
+            fprintf(stderr, "Error creating capture frame.\n");
+            return NULL;
+        }
+    }
+
+	/* copies the raw image data into the frame 
+	 *   NOTE cvSetData (cvSetImageData) only assigns the pointer, it does not copy,
+	 *     so that's not the appropriate method here (we want to avoid collisions
+	 *     in the potentially volatile camera buffer) */
+    for(unsigned int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
+    {
+        ((uchar*)(m_pCurrentFrame->imageData))[i] = fg_frame.pData[i];
+    }
+
+	/* release the memory to the camera */
+    m_Camera.PutFrame(&fg_frame);
+
+    return m_pCurrentFrame;
+#else
+    return NULL;
+#endif
+}
+
