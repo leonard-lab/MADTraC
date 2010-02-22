@@ -19,3 +19,6 @@
  *
  */
 
+#ifdef _MSC_VER
+#pragma comment(lib, "MT_GUI.lib")
+#endif

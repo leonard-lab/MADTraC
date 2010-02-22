@@ -19,3 +19,7 @@
  *
  */
 
+
+#ifdef _MSC_VER
+#pragma comment(lib, "MT_Robot.lib")
+#endif

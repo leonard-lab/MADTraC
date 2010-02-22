@@ -19,3 +19,8 @@
  *
  */
 
+#ifdef _MSC_VER
+#pragma comment(lib, "FGCamera.lib")
+
+#pragma comment(lib, "MT_Tracking.lib")
+#endif
