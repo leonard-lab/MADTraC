@@ -213,7 +213,7 @@ void MT_getYYMMDDandHHMMSS(char* YYMMDD, char* HHMMSS)
 MT_FORMAT_STRING_TYPE MT_hasFormatString(const char* s, int* p_start, int* p_end)
 {
     /* look for a %, p1 will be a pointer to the first appearance */
-    char* p1 = strchr(s, '%');
+    const char* p1 = strchr(s, '%');
     int p = p1 - s; /* convert pointer to position */
     int l = strlen(s);
 
