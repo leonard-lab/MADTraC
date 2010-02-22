@@ -8,6 +8,8 @@
  *
  */
 
+#include "MT_Core.h"
+#include "MT_GUI.h"
 #include "MT_Tracking.h"
 
 class CameraUtilityFrame : public MT_TrackerFrameBase
