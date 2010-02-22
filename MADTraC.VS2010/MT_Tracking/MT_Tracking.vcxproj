@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{159C9924-39F4-441C-9BA7-C43CE4BACF3D}</ProjectGuid>
+    <RootNamespace>MT_Tracking</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(CV_INC);$(WX_INC);$(AVT_INC);$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)..\lib\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(CV_INC);$(WX_INC);$(AVT_INC);$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)..\lib\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;WINVER=0x0400;__WXMSW__;wxUSE_GUI=1;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>call $(ProjectDir)..\..\misc\build_scripts\MSVC_post_build.bat $(ProjectName)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;WINVER=0x0400;__WXMSW__;wxUSE_GUI=1;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(ProjectDir)..\..\misc\build_scripts\MSVC_post_build.bat</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\blob.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\BlobContour.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\BlobOperators.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\BlobResult.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\ComponentLabeling.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\3rdparty\libhungarian-0.3\hungarian.c" />
+    <ClCompile Include="..\..\MT\MT_Tracking\3rdparty\libhungarian-0.3\makeprob.c" />
+    <ClCompile Include="..\..\MT\MT_Tracking\base\MT_TrackerBase.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\base\MT_TrackerFrameBase.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\capture\MT_Capture.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\capture\MT_Capture_Interfaces.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\cv\MT_BlobExtras.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\cv\MT_HungarianMatcher.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\cv\MT_MakeBackgroundFrame.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\dialogs\MT_CreateBackgroundDialog.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\trackers\GY\GYBlobs.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\trackers\GY\GYSegmenter.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\trackers\GY\MixGaussians.cpp" />
+    <ClCompile Include="..\..\MT\MT_Tracking\trackers\YA\YABlobber.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\blob.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\BlobContour.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\BlobLibraryConfiguration.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\BlobOperators.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\BlobResult.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\BlobResult_t.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\3rdparty\cvBlobsLib\ComponentLabeling.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\3rdparty\libhungarian-0.3\hungarian.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\3rdparty\libhungarian-0.3\python\pyhungarian.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\base\MT_TrackerBase.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\base\MT_TrackerFrameBase.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\capture\MT_Capture.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\capture\MT_Capture_Interfaces.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\cv\MT_BlobExtras.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\cv\MT_HungarianMatcher.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\cv\MT_MakeBackgroundFrame.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\dialogs\MT_CreateBackgroundDialog.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\MT_Tracking.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\trackers\GY\GYBlobs.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\trackers\GY\GYSegmenter.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\trackers\GY\MixGaussians.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\trackers\YA\YABlobber.h" />
+    <ClInclude Include="..\..\MT\MT_Tracking\trackers\YA\YASegmenter.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
