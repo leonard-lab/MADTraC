@@ -12,7 +12,9 @@ cd ..\..
 
 echo Copying header files:
 echo %pname%.h >> temp_exc.txt
-xcopy MT\%1\*.h include\%1\ /S /I /C /Y /EXCLUDE:temp_exc.txt > temp.txt
+echo pyhungarian.h >> temp_exc.txt
+echo YASegmenter.h >> temp_exc.txt
+xcopy MT\%1\*.h include\MT\%1\ /S /I /C /Y /EXCLUDE:temp_exc.txt > temp.txt
 del temp_exc.txt
 
 call :toUpper PNAMEU
