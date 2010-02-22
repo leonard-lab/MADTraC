@@ -12,7 +12,7 @@
 //-----------------Headers------------------------------------
 
 // Communications class
-#include "ComIO.h"
+#include "MT/MT_Robot/io/ComIO.h"
 
 //-----------------Constants----------------------------------
 

@@ -20,7 +20,7 @@
 #define WINDOWS
 #include <tchar.h>
 #include <windows.h>
-#include "Win32Com/Serial.h"
+#include "MT/MT_Robot/3rdparty/Win32Com/Serial.h"
 #endif
 
 //-----------------Constants----------------------------------

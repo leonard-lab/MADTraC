@@ -18,7 +18,7 @@
  *
  */
 
-#include "mathsupport.h" // random number faculties
+#include "MT/MT_Core/support/mathsupport.h" // random number faculties
 
 /** @class MT_Color
  *

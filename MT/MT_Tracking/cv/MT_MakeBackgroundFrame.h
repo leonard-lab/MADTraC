@@ -34,7 +34,7 @@
 #include <ml.h>
 #endif
 
-#include "MT_Capture.h"
+#include "MT/MT_Tracking/capture/MT_Capture.h"
 
 const int MT_MAKEBG_FIRST_FRAME = 0;
 const int MT_MAKEBG_LAST_FRAME = -1;

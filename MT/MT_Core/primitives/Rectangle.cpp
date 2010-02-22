@@ -7,7 +7,7 @@
 
 #include "Rectangle.h"
 
-#include "mathsupport.h"
+#include "MT/MT_Core/support/mathsupport.h"
 
 MT_Rectangle::MT_Rectangle()
   : xmin(0), xmax(0), ymin(0), ymax(0)
