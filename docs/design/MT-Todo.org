@@ -1,0 +1,3 @@
+MT-Todo.org
+ This file is a plain-text outline of "Todo" items for MADTraC.  This file can be used with Emacs org-mode, but the plain-text nature means that it can be edited with any text editor (just try to follow the existing format).
+   - DTS 2/22/10
