@@ -32,4 +32,4 @@
 #define _CRT_NONSTDC_NO_DEPRECATE
 #endif
 
-#endif /* _MSC_VER
+#endif /* _MSC_VER */
