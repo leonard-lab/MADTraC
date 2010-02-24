@@ -12,10 +12,11 @@ WX_LIB = c:\src\wxWidgets-2.9.0\lib\vc_lib
 
 Steps taken to get the PlaySwarm VS2010 project set up.
 
+-1. Drag the src folder into the project.
 0. SELECT ALL CONFIGURATIONS!
 1. Switch character set to unicode.
 2. Set output directory to $(SolutionDir)..\..\..\bin
-3. Set VC++ include directories to $(WX_INC);$(CV_INC);$(AVT_INC)
+3. Set VC++ include directories to $(WX_INC);$(CV_INC);$(AVT_INC);$(IncludePath)
 4. Set linker directories to $(WX_LIB);$(CV_LIB);$(AVT_LIB);../../../../lib
 4. Set additional include directories to ../../../../include
 5. Set the warning level to W1
