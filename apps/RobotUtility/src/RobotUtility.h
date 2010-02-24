@@ -8,6 +8,9 @@
  *
  */
 
+#include "MT_Core.h"
+#include "MT_GUI.h"
+#include "MT_Tracking.h"
 #include "MT_Robot.h"
 
 class RobotUtilityApp : public MT_AppBase
