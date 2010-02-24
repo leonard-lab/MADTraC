@@ -18,7 +18,7 @@
 #include "MiaBotPro.h"
 
 // Default length of the buffers
-static const int MT_DEFAULT_TAIL_LENGTH = 500;
+static const int MT_DEFAULT_TAIL_LENGTH_ROBOT = 500; 
 // Header for the MT_R3 class
 #include "MT/MT_Core/primitives/R3.h"
 // Header for the MT_ringbuffer class

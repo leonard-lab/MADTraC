@@ -9,7 +9,7 @@ MT_SteeredRobot::MT_SteeredRobot()
 
     world_scale = 1.0;
     Autonomous = 0;
-    init_buffers(MT_DEFAULT_TAIL_LENGTH);
+    init_buffers(MT_DEFAULT_TAIL_LENGTH_ROBOT);
 
 }
 
@@ -20,7 +20,7 @@ MT_SteeredRobot::MT_SteeredRobot(const char* onComPort)
 
     world_scale = 1.0;
     Autonomous = 0;
-    init_buffers(MT_DEFAULT_TAIL_LENGTH);
+    init_buffers(MT_DEFAULT_TAIL_LENGTH_ROBOT);
 
 }
 
@@ -31,7 +31,7 @@ MT_SteeredRobot::MT_SteeredRobot(const char* onComPort, double inscale)
 
     world_scale = inscale;
     Autonomous = 0;
-    init_buffers(MT_DEFAULT_TAIL_LENGTH);
+    init_buffers(MT_DEFAULT_TAIL_LENGTH_ROBOT);
 
 }
 
