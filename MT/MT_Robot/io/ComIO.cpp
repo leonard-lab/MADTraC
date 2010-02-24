@@ -117,8 +117,22 @@ void MT_ComIO::ComInit()
         LONG lLastError = ERROR_SUCCESS;
         printf("Opening port %s\n", PortString);
 
-        // Attempt to open the port
+        /* Attempt to open the port  */
+		/* We need to handle the possibility that we're building in Unicode mode
+		 * here.  If we are, then the simplest thing to do is copy the string
+		 * char-for-char to a wide character array and pass that array to the
+		 * serial port class.  Otherwise there is a byte alignment problem and
+		 * the serial port won't connect. */
+#ifdef UNICODE
+		wchar_t t[512];
+		for(unsigned int i = 0; i < strlen(PortString) + 1; i++)
+		{
+			t[i] = PortString[i];
+		}
+		lLastError = serial.Open(t, 0, 0, false);
+#else
         lLastError = serial.Open((LPCTSTR)(PortString),0,0,false);
+#endif
         if (lLastError != ERROR_SUCCESS){
             printf("Unable to open COM-port\n");
             connected = 0;
