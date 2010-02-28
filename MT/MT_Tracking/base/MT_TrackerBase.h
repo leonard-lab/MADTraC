@@ -79,6 +79,14 @@ public:
     /** Returns the number of frames contained in the group. */
     unsigned int getNumFrames() const {return m_iNFrames;};
 
+    /** Add a frame to the group, at the end of the list. */
+    virtual void pushFrame(IplImage** frame, std::string name)
+    {
+        m_vFrames.push_back(frame);
+        m_vFrameNames.push_back(name);
+        m_iNFrames++;
+    }
+
 };
 
 class MT_TrackedObjectBase;
