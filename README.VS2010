@@ -21,3 +21,8 @@ Steps taken to get the PlaySwarm VS2010 project set up.
 4. Set additional include directories to ../../../../include
 5. Set the warning level to W1
 6. Set machine type to x64
+
+For external projects, I added
+MT_INC = c:\src\MADTraC\include
+MT_LIB = c:\src\MADTraC\lib
+which are added tot he additional include directories and linker directories, respectively.
