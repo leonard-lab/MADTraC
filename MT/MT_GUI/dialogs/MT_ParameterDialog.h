@@ -1,12 +1,14 @@
 #ifndef MT_PARAMETERDIALOG_H
 #define MT_PARAMETERDIALOG_H
-/*
+
+/** @addtogroup MT_GUI
+ * @{
+ */
+
+/** @file
  *  MT_ParameterDialog.h
  *
- *  A simple parameter display/editing dialog.  Supply the parameters
- *  as std::vector<double>& ParamVector and the names as  
- *  wxString[] ParamNames and the dialog shows this list with the values
- *  and gives the user a chance to edit them and click OK/Apply/Cancel.
+ *  @brief Dialog for editing values in an MT_DataGroup
  *
  *  Created by Daniel Swain on 8/3/09.
  *  Modified from Kalman dialog to be general by DTS on 8/12/09
@@ -35,6 +37,33 @@ using namespace std;
 const bool MT_DESTROY_GROUP_ON_CLOSE = true;
 const bool MT_NO_DESTROY_GROUP_ON_CLOSE = false;
 
+/** @class MT_DataGroupDialog
+ *
+ * @brief Dialog for editing values in an MT_DataGroup.
+ *
+ * Displays the values in an MT_DataGroup and allows for their
+ * editing unless they are read-only.  If an element has the
+ * GetDialogIgnore flag set true (this must be done by calling
+ * MT_DataGroup::SetDialogIgnore), it is omitted from the dialog.
+ *
+ * Currently all of the data types supported by MT_DataGroup are
+ * supported by the dialog.
+ * 
+ * Numeric and string types are displayed in a standard text editing
+ * control.  Numeric elements are automatically validated for numeric
+ * contents.  Upon clicking "Apply" the values are set in the data
+ * group and the resulting values are displayed - therefore the
+ * potentially clamped values will be displayed.
+ *
+ * MT_Choice elements are displayed as a combo box with the string
+ * values of the choices.
+ *
+ * MT_Color elements display a button that will show a system-native
+ * color selection dialog box when pressed.
+ *
+ * Boolean elements display a check box.
+ * 
+ */
 class MT_DataGroupDialog : public MT_DialogWithUpdate
 {
 protected:
@@ -50,6 +79,24 @@ protected:
     bool m_bDestroyGroupOnClose;
     
 public:
+    /** Ctor constructs the dialog but does not show it.
+     * @param datagroup The MT_DataGroup whos data should be
+     * displayed.
+     * @param parent The parent wxFrame.  Usually "this" in the
+     * calling code.
+     * @param DestroyGroupOnClose Pass MT_DESTROY_GROUP_ON_CLOSE to
+     * cause the group to be destroyed when the dialog closes.  This
+     * can allow a temporary group to be created and used in a dialog
+     * so that the group exists as long as the dialog is visible.  By
+     * default, the group is not destroyed when the dialog closes.
+     * @param pcallbackfunction Callback function to be called when
+     * the OK or Apply buttons are pressed.  Normally this is NULL.
+     * The callback function must be a statically linkable function.
+     * The argument to the function should be the parent object.
+     * @param pos Initial position of the window.  Not needed.
+     * @param size Initial size of the window.  Not needed.  The
+     * actual size will be set according to the number of elements in
+     * the MT_DataGroup. */
     MT_DataGroupDialog(MT_DataGroup* datagroup, 
                        wxFrame* parent, 
                        bool DestroyGroupOnClose = MT_NO_DESTROY_GROUP_ON_CLOSE,
@@ -57,16 +104,29 @@ public:
                        const wxPoint& pos = wxDefaultPosition, 
                        const wxSize& size = wxDefaultSize);
     ~MT_DataGroupDialog(){};
-    
+
+    /* TODO these should be private... */
     void OnApplyButtonClicked(wxCommandEvent& event);
     void OnOKButtonClicked(wxCommandEvent& event);
     void OnCancelButtonClicked(wxCommandEvent& event);
-    
     void OnTextCheck(wxCommandEvent& event);
     void OnColorButtonClicked(wxCommandEvent& event);
-    
+
+    /** Calls UpdateValues.  If the dialog is registered with an
+     * MT_DialogGroup, this will get called when the group is
+     * updated.  Otherwise you can call it manually.  Not necessary
+     * if the values aren't expected to change programmatically - so,
+     * for example, parameters shouldn't really need to be updated.
+     * @see UpdateValues */
     void Update(){UpdateValues();};
+    /** Updates the values in the controls based on the value
+     * returned by MT_DataGroup::GetStringValue
+     * @see Update */
     void UpdateValues();
+
+    /** Saves the values in the dialog to the data group.  Gets
+     * called when the user presses OK or Apply, but can be called
+     * manually by code as well. */
     void WriteValues();
     
 };
@@ -108,5 +168,7 @@ public:
     DECLARE_EVENT_TABLE()
     
         };
+
+/** @} */
     
 #endif // MT_PARAMETERDIALOG_H

@@ -35,7 +35,7 @@ MT_DataGroupDialog::MT_DataGroupDialog(MT_DataGroup* datagroup,
             m_iNParams++;
         }
     }
-    m_viIndexMap.resize(m_iNParams);
+    m_viIndexMap.resize(m_pDataGroup->GetGroupSize());
 
     /* Set up the GUI */
 //  MT_Panel* panel = new MT_Panel(this, -1);
@@ -46,7 +46,7 @@ MT_DataGroupDialog::MT_DataGroupDialog(MT_DataGroup* datagroup,
     unsigned int num_textboxes = 0;
     unsigned int num_choices = 0;
     unsigned int num_colors = 0;
-    for(unsigned int i = 0; i < m_iNParams; i++)
+    for(unsigned int i = 0; i < m_pDataGroup->GetGroupSize(); i++)
     {
 
         if(m_pDataGroup->GetDialogIgnore(i))
@@ -145,8 +145,13 @@ void MT_DataGroupDialog::UpdateValues()
         return;
     }
     
-    for(unsigned int i = 0; i < m_iNParams; i++)
+    for(unsigned int i = 0; i < m_pDataGroup->GetGroupSize(); i++)
     {
+        if(m_pDataGroup->GetDialogIgnore(i))
+        {
+            continue;
+        }
+
         switch(m_pDataGroup->GetDataType(i))
         {
         case MT_TYPE_BOOL:
@@ -198,7 +203,7 @@ void MT_DataGroupDialog::OnCancelButtonClicked(wxCommandEvent& event)
 void MT_DataGroupDialog::WriteValues()
 {
     string val;
-    for(unsigned int i = 0; i < m_iNParams; i++)
+    for(unsigned int i = 0; i < m_pDataGroup->GetGroupSize(); i++)
     {
         if(m_pDataGroup->GetDialogIgnore(i))
         {
