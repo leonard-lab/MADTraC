@@ -10,6 +10,8 @@
 #include <sys/stat.h>
 
 static const int MT_XDF_STREAM_INDEX_ERROR = -1;
+static const bool MT_XDF_READ_ONLY = true;
+static const bool MT_XDF_READ_WRITE = false;
 
 #ifndef _WIN32
   static std::string path_sep = "/";

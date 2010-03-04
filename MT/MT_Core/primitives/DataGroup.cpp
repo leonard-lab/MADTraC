@@ -368,7 +368,7 @@ double MT_DataElement::SetDoubleValue(double val)
 
 string MT_DataElement::SetStringValue(string sval)
 {
-    if(m_Type == MT_TYPE_CHOICE)  /* not implemented */
+    if(m_Type == MT_TYPE_CHOICE)  
     {
         if(!ReadOnly)
         {

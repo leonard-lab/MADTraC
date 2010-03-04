@@ -1,7 +1,7 @@
 #ifndef MT_AppBase_H
 #define MT_AppBase_H
 
-/** @addtogroup MT_Base 
+/** @addtogroup MT_GUI
  * @{ */
 
 /** @file

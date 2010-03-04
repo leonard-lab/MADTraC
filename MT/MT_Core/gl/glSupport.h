@@ -1,7 +1,7 @@
 #ifndef GLSUPPORT_H
 #define GLSUPPORT_H
 
-/** @addtogroup MT_Support
+/** @addtogroup MT_Core
  * @{ */
 
 /** @file glSupport.h @short Basic OpenGL support and utility functions.

@@ -1,7 +1,7 @@
 #ifndef BOUNDINGBOX_H
 #define BOUNDINGBOX_H
 
-/** @addtogroup MT_Support
+/** @addtogroup MT_Core
  * @{ */
 
 /** @file

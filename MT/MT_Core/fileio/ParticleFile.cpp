@@ -87,7 +87,7 @@ MT_ParticleFile::MT_ParticleFile(const char* inFileName, MT_ParticleFileTypes Ty
     }
 }
 
-/** Creates and assigns particles in the swarm. */
+/* Creates and assigns particles in the swarm. */
 void MT_ParticleFile::CreateParticles()
 {
  
@@ -101,7 +101,7 @@ void MT_ParticleFile::CreateParticles()
 }
 
 
-/** Determines which type of file.  Current logic is very simple:
+/* Determines which type of file.  Current logic is very simple:
     NCols > NRows => classic, otherwise we need at least 4 columns
     to have valid fish data (columns are id, time, x, y, then possibly
     other data.  Exactly 5 columns indicates 3d data.  */
@@ -125,7 +125,7 @@ MT_ParticleFileTypes MT_ParticleFile::DetermineFileType()
   
 }
 
-/** Return the next float in the file. */
+/* Return the next float in the file. */
 float MT_ParticleFile::getNextFloat()
 {
  
@@ -137,7 +137,7 @@ float MT_ParticleFile::getNextFloat()
   
 }
 
-/** Read at the specified row, column location. 
+/* Read at the specified row, column location. 
     row and col are indexed from zero. */
 float MT_ParticleFile::readRowCol( unsigned long row, unsigned long col )
 {
@@ -171,7 +171,7 @@ float MT_ParticleFile::readRowCol( unsigned long row, unsigned long col )
 }
 
 
-/** Counts the number of rows per column in file.  Rewinds
+/* Counts the number of rows per column in file.  Rewinds
     to the beginning of the file upon completion. */
 particle_counter MT_ParticleFile::CountNumberOfRows(FILE* file)
 {
@@ -195,7 +195,7 @@ particle_counter MT_ParticleFile::CountNumberOfRows(FILE* file)
 }
 
 
-/** Counts the number of columns per line in file.  Rewinds
+/* Counts the number of columns per line in file.  Rewinds
     to the beginning of the file upon completion. */
 particle_counter MT_ParticleFile::CountNumberOfCols(FILE* file)
 {
@@ -222,7 +222,7 @@ particle_counter MT_ParticleFile::CountNumberOfCols(FILE* file)
     return fieldcount;
 }
 
-/** Push a value on the a particle's x buffer. */
+/* Push a value on the a particle's x buffer. */
 void MT_ParticleFile::PushX( particle_counter particle, float value)
 {
     if(particle < m_vpAgents.size())
@@ -232,7 +232,7 @@ void MT_ParticleFile::PushX( particle_counter particle, float value)
     myBoundingBox.ShowX(value);
 }
 
-/** Push a value on the a particle's y buffer. */
+/* Push a value on the a particle's y buffer. */
 void MT_ParticleFile::PushY( particle_counter particle, float value)
 {
     if(particle < m_vpAgents.size())
@@ -242,7 +242,7 @@ void MT_ParticleFile::PushY( particle_counter particle, float value)
     myBoundingBox.ShowY(value);
 }
 
-/** Push a value on the a particle's z buffer. */
+/* Push a value on the a particle's z buffer. */
 void MT_ParticleFile::PushZ( particle_counter particle, float value)
 {
     if(particle < m_vpAgents.size())
@@ -253,10 +253,10 @@ void MT_ParticleFile::PushZ( particle_counter particle, float value)
 }
 
 
-/*****************************************************************/
+/****************************************************************/
 #pragma mark MT_FileReaderPrototype
 
-/** Prototype constructor for file reader.  */
+/* Prototype constructor for file reader.  */
 MT_FileReaderPrototype::MT_FileReaderPrototype( MT_ParticleFile* setFile )
 {
   
@@ -264,10 +264,10 @@ MT_FileReaderPrototype::MT_FileReaderPrototype( MT_ParticleFile* setFile )
   
 }
 
-/*****************************************************************/
+/****************************************************************/
 #pragma mark MT_FileReaderClassic
 
-/** Get the number of particles. */
+/* Get the number of particles. */
 particle_counter MT_FileReaderClassic::getNumParticles()
 {
  
@@ -275,7 +275,7 @@ particle_counter MT_FileReaderClassic::getNumParticles()
   
 }
 
-/** Read the data from the file.  Structure of the "classic" data
+/* Read the data from the file.  Structure of the "classic" data
     file is 
  
     N x1[1] x1[2] x1[3] ....
@@ -340,10 +340,10 @@ void MT_FileReaderClassic::ReadFile()
 }
 
 
-/*****************************************************************/
+/****************************************************************/
 #pragma mark MT_FileReaderFishData
 
-/** Get the number of particles. */
+/* Get the number of particles. */
 particle_counter MT_FileReaderFishData::getNumParticles()
 {
   
@@ -351,7 +351,7 @@ particle_counter MT_FileReaderFishData::getNumParticles()
   
 }
 
-/** Read the data from the file.  Structure of the "fishdata" data
+/* Read the data from the file.  Structure of the "fishdata" data
     file is 
  
     index1 t1[1] x1[1] y1[1] ... (other data) ...
@@ -414,10 +414,10 @@ void MT_FileReaderFishData::ReadFile()
 }
 
 
-/*****************************************************************/
+/****************************************************************/
 #pragma mark MT_FileReaderThreeDee
 
-/** Get the number of particles. */
+/* Get the number of particles. */
 particle_counter MT_FileReaderThreeDee::getNumParticles()
 {
   
@@ -425,7 +425,7 @@ particle_counter MT_FileReaderThreeDee::getNumParticles()
   
 }
 
-/** Read the data from the file.  Structure of the "threedee" data
+/* Read the data from the file.  Structure of the "threedee" data
     file is the same as fishdata, with the column after y being z. 
 */
 void MT_FileReaderThreeDee::ReadFile()
@@ -477,7 +477,7 @@ void MT_FileReaderThreeDee::ReadFile()
   
 }
 
-/*****************************************************************/
+/****************************************************************/
 #pragma mark Static Functions
 
 int isFloatDigit(char ch)

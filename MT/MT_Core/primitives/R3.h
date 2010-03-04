@@ -1,6 +1,6 @@
 #ifndef R3_H
 
-/** @addtogroup MT_Support
+/** @addtogroup MT_Core
  * @{ */
 
 /** @file  R3.h 

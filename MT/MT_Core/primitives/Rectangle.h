@@ -1,7 +1,7 @@
 #ifndef Viewport_H
 #define Viewport_H
 
-/** @addtogroup MT_Support
+/** @addtogroup MT_Core
  * @{ */
 
 /** @file  MT_Rectangle.h

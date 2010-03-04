@@ -1,7 +1,7 @@
 #ifndef CCOLOR_H
 #define CCOLOR_H
 
-/** @addtogroup MT_Support */
+/** @addtogroup MT_Core */
 /* @{ */
 
 /** @file

@@ -1,7 +1,7 @@
 #ifndef MT_FrameBase_H
 #define MT_FrameBase_H
 
-/** @addtogroup MT_Base 
+/** @addtogroup MT_GUI
  * @{ */
 
 /** @file

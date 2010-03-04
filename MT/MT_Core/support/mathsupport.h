@@ -1,6 +1,6 @@
 #ifndef MATHSUPPORT_H
 
-/** @addtogroup MT_Support
+/** @addtogroup MT_Core
  * @{ */
 
 /** @file  mathsupport.h - D.Swain 8/10/07
