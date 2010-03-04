@@ -41,7 +41,6 @@ using namespace std;
 //-----------------Code---------------------------------------
 
 // Default constructor sets up to spit out to stdout (or wherever printf points)
-/** Default constructor, use stderr */
 MT_ComIO::MT_ComIO()
 {
 
@@ -53,7 +52,7 @@ MT_ComIO::MT_ComIO()
 }
 
 // Constructor to initialize on a specific port
-/** Constructor to set up on a specific port by supplying
+/* Constructor to set up on a specific port by supplying
     a string descriptor of the resource. */
 MT_ComIO::MT_ComIO(const char* inComPortString)
 {
@@ -66,7 +65,7 @@ MT_ComIO::MT_ComIO(const char* inComPortString)
 }
 
 // Common initialization of the com port
-/** Function to initialize the communications port.  Called by
+/* Function to initialize the communications port.  Called by
     each of the constructors. */
 void MT_ComIO::ComInit()
 {
@@ -174,7 +173,7 @@ void MT_ComIO::ComInit()
 }
 
 
-/** Destructor - closes the port automatically when the
+/* Destructor - closes the port automatically when the
     instance is deleted (or the program closes). */
 // Destructor should close the port
 MT_ComIO::~MT_ComIO()
@@ -193,11 +192,28 @@ MT_ComIO::~MT_ComIO()
 }
 
 
-/** Function to write a string out on the port. */
+/* Function to write a string out on the port. */
 // Write a string out on the port
 int MT_ComIO::SendCommand(const char* cmd)
 {
+    unsigned char* data =
+        (unsigned char*) calloc(strlen(cmd), sizeof(unsigned char));
 
+    unsigned long n_bytes = strlen(cmd);
+    for(unsigned long i = 0; i < n_bytes; i++)
+    {
+        data[i] = cmd[i];
+    }
+
+    int r = SendData(data, n_bytes);
+
+    free(data);
+
+    return r;
+}
+    
+int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
+{
     // Inform the user what's going on.  Always do this if 
     //  COM_DEBUG is defined, otherwise only if the port
     //  is set up as stderr.
@@ -211,15 +227,15 @@ int MT_ComIO::SendCommand(const char* cmd)
     // Posix implementation using unistd.h et al
 
     // n is how many bites are successfully written
-    int n = write(fd, cmd, strlen(cmd));
+    int n = write(fd, data, n_bytes);
     if(!fd){ printf("\n"); }      // fd = 0 means stdout, print a newline
     // to avoid clutter
 
     // report an error if n < 0 or n does not match
     //   the number of bytes we expect
-    if(n < 0 || (unsigned int) n != strlen(cmd)){
+    if(n < 0 || (unsigned int) n != n_bytes){
         printf("Byte mismatch error writing command\n\t\"%s\" to %s\n",
-               cmd,PortString);
+               data,PortString);
         return 1;
     }
 
@@ -228,10 +244,10 @@ int MT_ComIO::SendCommand(const char* cmd)
     // Windows implementation using CSerial
 
     LONG lLastError = ERROR_SUCCESS;
-    lLastError = serial.Write(cmd);
+    lLastError = serial.Write(data, n_bytes);
     if(lLastError != ERROR_SUCCESS){
         printf("Serial error writing command\n\t\"%s\" to %s\n",
-               cmd,PortString);
+               data,PortString);
         return 1;
     }
 
@@ -243,7 +259,7 @@ int MT_ComIO::SendCommand(const char* cmd)
 }
 
 
-/** Function to allow us to query the port specifier */
+/* Function to allow us to query the port specifier */
 // Return the name of the port
 const char* MT_ComIO::getComPort() const
 {
@@ -251,14 +267,31 @@ const char* MT_ComIO::getComPort() const
 }
 
 
-/** Function to read back a string of known length.  Should be
+/* Function to read back a string of known length.  Should be
     supplied with a string of the same length as the one which we
     expect to get back. */
 // Read a string from the port
 int MT_ComIO::ReadString(char* result)
 {
+    unsigned long length = strlen(result);
+    unsigned char* data =
+        (unsigned char*) calloc(length, sizeof(unsigned char));
+    memset(data, 0, length);
 
-    unsigned int length = strlen(result);
+    int r = ReadData(data, length);
+
+    for(unsigned long i = 0; i < length; i++)
+    {
+        result[i] = data[i];
+    }
+
+    free(data);
+
+    return r;
+}
+
+int MT_ComIO::ReadData(unsigned char* result, unsigned long max_length)
+{
 
     // Inform the user what's going on.  Always do this if 
     //  COM_DEBUG is defined, otherwise only if the port
@@ -266,7 +299,7 @@ int MT_ComIO::ReadString(char* result)
 #ifdef COM_DEBUG
     if(strcmp(PortString,MT_STDERR) != 0)
         printf("Attempting to read %d bytes on port %s.\n",
-               length, PortString);
+               max_length, PortString);
 #endif
     if(strcmp(PortString,MT_STDERR) == 0)
         return 0;
@@ -282,7 +315,7 @@ int MT_ComIO::ReadString(char* result)
     // read characters one at a time until either 
     //  read says there are no more (n <= 0) or
     //  we have gotten all we asked for (N = length)
-    while(n > 0 && N < length){
+    while(n > 0 && N < max_length){
 
         // get a character into the buffer
         char buff[2];
@@ -295,7 +328,7 @@ int MT_ComIO::ReadString(char* result)
 
     // report an error if we didn't get the number of characters
     //  we expected
-    if(N < length){
+    if(N < max_length){
         printf("Problem reading from %s (error %d).\n",
                PortString, errno);
         return 1;
@@ -306,7 +339,7 @@ int MT_ComIO::ReadString(char* result)
     // Initialize to no error
     LONG lLastError = ERROR_SUCCESS;
     // read (length) bytes from the port
-    lLastError = serial.Read(result, length);
+    lLastError = serial.Read(result, max_length);
     // Let us know if there is an eror
     if(lLastError != ERROR_SUCCESS){
         printf("Serial error recieving %d bytes on %s (error %d)\n",
