@@ -18,7 +18,7 @@
 #  - copies the built library file to the lib directory
 
 # shell line to find all headers, but excluding the prototype e.g. MT_Core.h
-ALL_HEADERS='find ./MT/${PRODUCT_NAME} \( -name '*.h' -and -not -name ${PRODUCT_NAME}.h \) |  grep -v "pyhungarian.h" | grep -v "Win32Com" '
+ALL_HEADERS='find ./MT/${PRODUCT_NAME} \( -name '*.h' -and -not -name ${PRODUCT_NAME}.h \) |  grep -v "pyhungarian.h" | grep -v "Win32Com" | grep -v "YASegmenter.h" '
 
 # copy header files
 eval $ALL_HEADERS | cpio -pdvm ./include
