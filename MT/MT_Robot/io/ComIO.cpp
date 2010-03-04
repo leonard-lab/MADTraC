@@ -343,7 +343,7 @@ int MT_ComIO::ReadData(unsigned char* result, unsigned long max_length)
     // Let us know if there is an eror
     if(lLastError != ERROR_SUCCESS){
         printf("Serial error recieving %d bytes on %s (error %d)\n",
-               length,PortString,lLastError);
+               max_length,PortString,lLastError);
         return 1;
     }
 

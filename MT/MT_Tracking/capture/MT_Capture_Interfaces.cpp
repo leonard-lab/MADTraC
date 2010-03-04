@@ -478,7 +478,7 @@ IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
     FGFRAME fg_frame;
     UINT32 err_code;
 
-    err_code = m_Camera.GetFrame(&fg_frame, 100);
+    err_code = m_Camera.GetFrame(&fg_frame, 1000);
 
     if(err_code != FCE_NOERROR)
     {
