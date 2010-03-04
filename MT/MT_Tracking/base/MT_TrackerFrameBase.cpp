@@ -212,6 +212,10 @@ void MT_TrackerFrameBase::addDataGroupsToTrackerMenu(wxMenu* tracker_menu)
 {
     if(!m_pTracker)
     {
+        fprintf(stderr, "Warning: No tracker upon call to");
+        fprintf(stderr, " addDataGroupsToTrackerMenu in");
+        fprintf(stderr, " MT_TrackerFrameBase.cpp.  Will not");
+        fprintf(stderr, " be able to comply.\n");
         return;
     }
 
@@ -219,6 +223,8 @@ void MT_TrackerFrameBase::addDataGroupsToTrackerMenu(wxMenu* tracker_menu)
     MT_DataGroup* dg = NULL;
     if(NGroups > 0)
     {
+        tracker_menu->AppendSeparator();
+        
         unsigned int ngroups = MT_MIN(NGroups, MT_TFB_MAX_NUM_TRACKER_PARAM_GROUPS);
         for(unsigned int i = 0; i < ngroups; i++)
         {
@@ -240,8 +246,9 @@ void MT_TrackerFrameBase::addDataReportsToTrackerMenu(wxMenu* tracker_menu)
     MT_DataReport* dr = NULL;
     if(NReports)
     {
-        unsigned int nreports = MT_MIN(NReports, MT_MAX_NUM_TRACKER_REPORTS);
         tracker_menu->AppendSeparator();
+
+        unsigned int nreports = MT_MIN(NReports, MT_MAX_NUM_TRACKER_REPORTS);
         for(unsigned int i = 0; i < nreports; i++)
         {
             dr = m_pTracker->getDataReport(i);
