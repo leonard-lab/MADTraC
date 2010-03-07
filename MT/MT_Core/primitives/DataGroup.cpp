@@ -150,9 +150,9 @@ string MT_DataElement::GetStringValue() const
     case MT_TYPE_LONG:
         sprintf(cresult, "%ld", *(long *)pdata); break;
     case MT_TYPE_CHAR:
-        sprintf(cresult, "%c", *(char *)pdata); break;
+        sprintf(cresult, "%d", *(char *)pdata); break;
     case MT_TYPE_UCHAR:
-        sprintf(cresult, "%c", *(unsigned char *)pdata); break;
+        sprintf(cresult, "%d", *(unsigned char *)pdata); break;
     case MT_TYPE_STRING:
         return *(string *)pdata; break;
     case MT_TYPE_FLOAT:
@@ -515,7 +515,7 @@ string MT_VectorDataElement::GetStringValue(unsigned int i) const
         sprintf(cresult, "%.0f", v); break;
     case MT_TYPE_CHAR:
     case MT_TYPE_UCHAR:
-        sprintf(cresult, "%c", (char) v); break;
+        sprintf(cresult, "%d", (char) v); break;
     case MT_TYPE_FLOAT:
     case MT_TYPE_DOUBLE:
         sprintf(cresult, "%f", v); break;
