@@ -90,7 +90,7 @@ const char MT_STDERR[] = "stderr";
 class MT_ComIO {
 private:    
     // Member functions
-    void ComInit();
+    void ComInit(bool handshaking = true);
     
     // Variables
     // String descriptor of port device
@@ -117,7 +117,7 @@ public:
      * @endcode
      * @see IsConnected to test status.
      */
-    MT_ComIO(const char* inComPortString);
+    MT_ComIO(const char* inComPortString, bool handshaking = true);
 
     /** Destructor - closes the port. */
     virtual ~MT_ComIO();

@@ -54,20 +54,20 @@ MT_ComIO::MT_ComIO()
 // Constructor to initialize on a specific port
 /* Constructor to set up on a specific port by supplying
     a string descriptor of the resource. */
-MT_ComIO::MT_ComIO(const char* inComPortString)
+MT_ComIO::MT_ComIO(const char* inComPortString, bool handshaking)
 {
 
     // Set the port
     strcpy(PortString,inComPortString);
     // Common initializations of the port
-    ComInit();
+    ComInit(handshaking);
 
 }
 
 // Common initialization of the com port
 /* Function to initialize the communications port.  Called by
     each of the constructors. */
-void MT_ComIO::ComInit()
+void MT_ComIO::ComInit(bool handshaking)
 {
 
     // Assume that we are connected, set to zero if an error occurs
@@ -146,11 +146,14 @@ void MT_ComIO::ComInit()
         }
 
         // Setup handshaking
-        lLastError = serial.SetupHandshaking(CSerial::EHandshakeHardware);
-        if (lLastError != ERROR_SUCCESS){
-            printf("Unable to set COM-port handshaking\n");
-            connected = 0;
-        }
+		if(handshaking)
+		{
+			lLastError = serial.SetupHandshaking(CSerial::EHandshakeHardware);
+        	if (lLastError != ERROR_SUCCESS){
+            	printf("Unable to set COM-port handshaking\n");
+            	connected = 0;
+        	}
+		}
 
         // Setup the read method to nonblocking (prevents computer hangs)
         lLastError = serial.SetupReadTimeouts(CSerial::EReadTimeoutNonblocking);
