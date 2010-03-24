@@ -1,3 +1,34 @@
 MT-Todo.org
  This file is a plain-text outline of "Todo" items for MADTraC.  This file can be used with Emacs org-mode, but the plain-text nature means that it can be edited with any text editor (just try to follow the existing format).
    - DTS 2/22/10
+
+* Overall
+** Documentation!
+*** Doxygen
+    Each header file in the MT tree (except those in the 3rdparty
+    branches) should have Doxygen-style documentation of constants,
+    functions, classes, etc, that are intended for use by the user.
+    This typically means public members and methods of all classes,
+    though there are some methods and classes that are not necessary
+    at the user level.
+* PlaySwarm
+** Object Sizing
+   Object size is sometimes too small.  Additionally, the occlusion
+   calculations are carried out with the automatically generated
+   size.  I'm not sure if there's a better way to do this, though.
+* MT_Core
+
+** ParticleFile Plugins
+   It would be nice if there was a way to add particle file reader
+   plugins from user source code rather than modifying the MT source
+   code.  This wouldn't be *too* hard to do...
+** Other "support" files
+   There are various simple "support" style functions scattered around
+   the source tree that should be moved into MT/MT_Core/support/ in
+   appropriate modules, e.g. stringsupport,
+   filesystemsupport... Additionally there are functions in
+   mathsupport that should be moved.  This will require some
+   modifications to other source that includes mathsupport.h
+** XML Robustness
+   Errors when a key does not have a value (i.e. <key></key>).  Not
+   sure if this is my fault or tinyxml.  Needs looking into.
