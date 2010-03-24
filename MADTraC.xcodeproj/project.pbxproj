@@ -89,6 +89,7 @@
 		3797F5F9112F4623006F6055 /* SteeredRobot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3797F5F8112F4622006F6055 /* SteeredRobot.cpp */; };
 		3797F68A11305C61006F6055 /* MT_Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 3797F68911305C61006F6055 /* MT_Core.h */; };
 		3797F6AD113085AF006F6055 /* MT_Tracking.h in Headers */ = {isa = PBXBuildFile; fileRef = 3797F6AC113085AF006F6055 /* MT_Tracking.h */; };
+		37AD766D11370CAC001DF816 /* YABlobber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3797F2E9112DD8C0006F6055 /* YABlobber.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1023,6 +1024,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37AD766D11370CAC001DF816 /* YABlobber.cpp in Sources */,
 				3797F40B112E05C8006F6055 /* blob.cpp in Sources */,
 				3797F40D112E05C8006F6055 /* BlobContour.cpp in Sources */,
 				3797F410112E05C8006F6055 /* BlobOperators.cpp in Sources */,
