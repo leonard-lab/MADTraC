@@ -1,0 +1,79 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+MADTraC - Multi-Agent Dynamic Tracking and Control
+
+README File
+
+Dan Swain, dan.t.swain@gmail.com, 2/22/10
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Contents:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+"Quick" Start:
+
+Note: These instructions are for getting up and running quickly with
+the current snapshot of the code in the svn repository.  There are
+more details in the sections below.
+
+Dependencies (see below for details):  
+  Minimum:
+     * wxWidgets 2.8.10 or newer - http://wxwidgets.org/ -
+         You'll need to download and build wx from source.
+     * OpenCV - http://opencv.willowgarage.com/wiki/Welcome -
+         For OS X I highly recommend using the pre-built
+         OpenCV.Framework available from here:
+         http://www.ient.rwth-aachen.de/cms/software/opencv/
+  Camera Support on OS X: OpenCV or ARToolKit -
+     http://www.hitl.washington.edu/artoolkit/
+  Camera Support on Windows: OpenCV or FireGrab
+     (Proprietary AVT camera drivers)
+
+Note for OS X 10.5:  I highly recommend creating a ~/src directory and
+putting everything (MADTraC, wxWidgets, ARToolKit) there.  Download
+and build wxWidgets and ARToolKit from the supplied xcode projects,
+which usually goes relatively smoothly.
+
+Note for OS X 10.6:  You may have to do some fenangling to get things
+to build correctly.  Last I knew the OpenCV.Framework didn't work with
+Snow Leopard, but that was months ago.  Let me know if you have trouble
+and/or success.
+
+Anonymous Checkout: 
+svn checkout http://poincare.princeton.edu/repos/MADTraC/trunk MADTraC
+
+Secure Checkout: 
+svn checkout svn+ssh://username@poincare.princeton.edu/svn/repos/MADTraC/trunk MADTraC
+
+What you do next depends on your operating system / compiler.  These steps will build the MT libraries and populate the include directory.  You will then need to set up your application to link against these libraries and all of the proper dependencies.  You can reasonably use the projects in apps/ and samples/ as guides.
+
+Mac OS X / XCode:  
+  1. Add a copy of OpenCV.framework to the MADTraC directry
+  2. Open MADTraC.xcodeproj.
+  3. Project -> Edit Project Settings.
+  4. Under "User-Defined" set the following variables:
+      AR_INC -> <AR dir>/include
+      WX_INC -> <WX dir>/include <WX dir>/src/build/include
+  5. Select the "MT (All)" target and click "Build".
+
+Windows / Visual Studio 2010:
+  1. Set the following environment variables (Start -> Right click on My Computer and select properties):
+       CV_INC = <CV dir>\include\opencv
+       CV_LIB = <CV dir>\vs2010\lib\Release
+       AVT_INC = <FireGrab dir>\Lib
+       AVT_LIB = <FireGrab dir>\Lib
+       WX_INC = <WX dir>\include;<WX dir>\include\msvc
+       WX_LIB = <WX dir>\lib\vc_lib
+  2. Open MADTraC\MADTraC.VS2010\MADTraC.VS2010.sln
+  3. Select Build->Build All.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+There are two methods of checking out the code: anonymous and secure.
+If you just want to download the code and don't plan to commit any
+changes (or if you don't have an account on the server), use
+anonymous.  If you are a developer and want to help by committing
+changes to the server (Poincare), use the secure method (if you need
+an account, contact Dan).  Go to the parent directory where you want
+the project code to live (e.g. ~/src).  Assuming you have all the
+right tools (svn, ssh, etc... try TortoiseSVN on Windows).

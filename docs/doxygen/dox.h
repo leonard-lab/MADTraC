@@ -5,18 +5,44 @@
  *
  * @section Introduction
  *
+ * MADTraC contains:
+ *  - A GUI framework suitable for any time-driven application with an
+ * OpenGL visualization; for example simulation or data playback.
+ *  - A framework for video tracking applications, with support for
+ * visualization, AVI and camera input, standardized data output, etc.
+ *  - A set of routines for working with serial input/output for use
+ * with robots and servo controllers.
+ *  - A set of utility functions, constants, and classes.
+ *  - Camera and robot utility applications.
+ *  - The <a
+ * href="http://www.princeton.edu/~dswain/apps/">PlaySwarm</a> trajectory data visualization application.
+ * 
  * MADTraC is, in some sense, an evolution of 
  * <A href="http://glswarm.sourceforge.net">glSwarm</A>.
  *
  * @section quick_and_dirty Quick and Dirty
  *
- * The MT framework has four modules:
- *  - @ref MT_Core "MT Core"
- *  - @ref MT_GUI "MT GUI"
- *  - @ref MT_Tracking "MT Tracking"
- *  - @ref MT_Robot "MT Robot"
- *
- *
+ * Anonymous svn checkout can be done via
+ * \code
+ * svn checkout http://poincare.princeton.edu/repos/MADTraC/trunk MADTraC
+ * \endcode
+ * Secure checkout (with write privileges) can be done with a valid
+ * username and password from
+ * \code
+ * svn checkout svn+ssh://username@poincare.princeton.edu/svn/repos/MADTraC/trunk MADTraC
+ * \endcode
+ * 
+ * To get started, see the README file in the root MADTraC directory. 
+ * 
+ * Documentation of the code is here and is split among the four MT modules:
+ *  - @ref MT_Core "MT Core" - Non-GUI data structures and support modules.
+ *  - @ref MT_GUI "MT GUI" - Base classes for a simple time-based GUI
+ * application with an OpenGL visualization window, command line
+ * parsing, parameter persistence, screen still and video output.
+ *  - @ref MT_Tracking "MT Tracking" - Base classes for a generic
+ * video tracking application.
+ *  - @ref MT_Robot "MT Robot" - Base classes for a generic
+ * application involving video tracking and serial I/O.
  *
  */
 
