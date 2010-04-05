@@ -376,10 +376,10 @@ IplImage* MT_Cap_Iface_ARToolKit_Camera::getFrame(int frame_index) /* arg is ign
 #else  /* ifdef MT_FC_DEBAYER */
 
     cvSetImageData(m_pRawFrame, dataPtr, m_iFrameWidth);
-    //cvSubRS(m_pRawFrame, cvScalar(255), m_pRawFrame);
+    cvSubRS(m_pRawFrame, cvScalar(255), m_pRawFrame);
     cvCvtColor(m_pRawFrame, m_pCurrentFrame, CV_BayerBG2BGR);
 
-#endif /* ifndef MT_FC_DEBAYER
+#endif /* ifndef MT_FC_DEBAYER */
 
     return m_pCurrentFrame;
 
