@@ -1,7 +1,10 @@
 #ifndef MT_CAPTURE_H
 #define MT_CAPTURE_H
 
-/*
+/** @addtogroup MT_Tracking
+ * @{ */
+
+/** @file
  *  MT_Capture.h
  *
  *  Attempts to provide a class frontend for frame capture.  Uses 
@@ -294,5 +297,7 @@ public:
     bool getIsAtEnd(unsigned int iface = MT_CAP_FIRST) const;
   
 };
+
+/** @} */
 
 #endif  // MT_CAPTURE_H

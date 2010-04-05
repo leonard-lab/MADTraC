@@ -1,7 +1,10 @@
 #ifndef MT_CAPTURE_INTERFACES_H
 #define MT_CAPTURE_INTERFACES_H
 
-/*
+/** @addtogroup MT_Tracking
+ * @{ */
+
+/** @file
  *  MT_Capture_Intefaces.h
  * 
  *  Defines the capture interface classes used by MT_Capture
@@ -208,5 +211,6 @@ class MT_Cap_Iface_AVT_Camera : public MT_Cap_Iface_Base
         IplImage* getFrame(int frame_index = MT_FC_NEXT_FRAME);
 };
 
+/* @} */
 
 #endif /* MT_CAPTURE_INTERFACES_H */

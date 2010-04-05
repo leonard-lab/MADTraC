@@ -274,6 +274,11 @@ bool MT_Cap_Iface_ARToolKit_Camera::initCamera(int FW, int FH, bool ShowDialog, 
         strcat(vconf,cconf);
     }
 
+    #ifdef MT_FC_DEBAYER
+    sprintf(cconf, "-pixelformat=40");
+    strcat(vconf, cconf);
+    #endif
+
     /*--- Slightly modified from the ARToolkit examples ---*/
     /* open the video path */
     if( arVideoOpen( vconf ) < 0 )
@@ -302,7 +307,18 @@ bool MT_Cap_Iface_ARToolKit_Camera::initCamera(int FW, int FH, bool ShowDialog, 
     /* The camera grabs an alpha frame, but we only keep R, G, B */
     m_iNChannelsPerFrame = 3;
 
-    m_pRawFrame = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 4);
+    /* a normal color image has 4 channels in the raw frame for
+     * ARTK - R, G, B, A */
+    unsigned int raw_frame_channels = 4;
+
+    /* A Bayer camera only has one raw channel */
+#ifdef MT_FC_DEBAYER
+    raw_frame_channels = 1;
+#endif
+
+    m_pRawFrame = cvCreateImage(getFrameSize(),
+                                IPL_DEPTH_8U,
+                                raw_frame_channels);
     m_pCurrentFrame = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 3);
     m_pRframe = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 1);
     m_pGframe = cvCreateImage(getFrameSize(), IPL_DEPTH_8U, 1);
@@ -345,6 +361,7 @@ IplImage* MT_Cap_Iface_ARToolKit_Camera::getFrame(int frame_index) /* arg is ign
 
     /*--- End ARToolkit setup from examples -------------*/
 
+#ifndef MT_FC_DEBAYER
     cvSetImageData(m_pRawFrame, dataPtr, m_iFrameWidth*4);
 
 #ifdef __APPLE__
@@ -355,6 +372,14 @@ IplImage* MT_Cap_Iface_ARToolKit_Camera::getFrame(int frame_index) /* arg is ign
 #else
     /* TODO */
 #endif
+
+#else  /* ifdef MT_FC_DEBAYER */
+
+    cvSetImageData(m_pRawFrame, dataPtr, m_iFrameWidth);
+    //cvSubRS(m_pRawFrame, cvScalar(255), m_pRawFrame);
+    cvCvtColor(m_pRawFrame, m_pCurrentFrame, CV_BayerBG2BGR);
+
+#endif /* ifndef MT_FC_DEBAYER
 
     return m_pCurrentFrame;
 
