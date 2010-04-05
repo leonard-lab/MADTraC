@@ -15,6 +15,8 @@
 class CameraUtilityFrame : public MT_TrackerFrameBase
 {
     private:
+     int m_iOverrideFramePeriod_msec;
+     int m_iPrevFramePeriod_msec;
     protected:
         /* we'll automatically start the tracker base when
          * we set up a capture so that it will tell us the
@@ -38,6 +40,9 @@ class CameraUtilityFrame : public MT_TrackerFrameBase
 
         /* avoids creating tracker menu */
         virtual void createUserMenus(wxMenuBar* menubar){};
+    
+    virtual void initUserData();
+    virtual void doUserStep();
 
 };
 

@@ -57,3 +57,23 @@ void CameraUtilityFrame::makeFileMenu(wxMenu* file_menu)
     MT_FrameBase::makeFileMenu(file_menu);
 
 }
+
+void CameraUtilityFrame::initUserData()
+{
+    MT_TrackerFrameBase::initUserData();
+    
+    m_pPreferences->AddInt("Frame Period msec", &m_iOverrideFramePeriod_msec);
+    
+    setTimer(m_iOverrideFramePeriod_msec);
+}
+
+void CameraUtilityFrame::doUserStep()
+{
+    if(m_iOverrideFramePeriod_msec != m_iPrevFramePeriod_msec)
+    {
+        setTimer(m_iOverrideFramePeriod_msec);
+    }
+    m_iPrevFramePeriod_msec = m_iOverrideFramePeriod_msec;
+    
+    MT_TrackerFrameBase::doUserStep();
+}
