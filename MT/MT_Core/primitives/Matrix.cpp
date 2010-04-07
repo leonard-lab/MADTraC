@@ -8,25 +8,25 @@
 #include "Matrix.h"
 
 
-double Vector1ToDouble(Vector<1> v)
+double MT_Vector1ToDouble(MT_Vector<1> v)
 {
     return v.data[0];
 }
 
-double Matrix1ToDouble(Matrix<1,1> m)
+double MT_Matrix1ToDouble(MT_Matrix<1,1> m)
 {
     return m.data[0];
 }
 
-Matrix4x4 PosDefInverse(Matrix4x4& P)
+MT_Matrix4x4 PosDefInverse(MT_Matrix4x4& P)
 {
   
-    Matrix4x4 Pinv = IdentityMatrix<4>();
-    Matrix4x4 L, Linv;
+    MT_Matrix4x4 Pinv = IdentityMT_Matrix<4>();
+    MT_Matrix4x4 L, Linv;
   
     if(!P.isPositiveDefinite())
     {
-        printf("Matrix inverse of indefinite matrices is not yet implemented.  Returning identity.\n");
+        printf("MT_Matrix inverse of indefinite matrices is not yet implemented.  Returning identity.\n");
         return Pinv;
     }
   
@@ -42,12 +42,12 @@ Matrix4x4 PosDefInverse(Matrix4x4& P)
   
 }
 
-Matrix4x4 LowerTriangularInverse(Matrix4x4& L)
+MT_Matrix4x4 LowerTriangularInverse(MT_Matrix4x4& L)
 {
   
     unsigned int C = 4;
   
-    Matrix4x4 Linv = IdentityMatrix<4>();
+    MT_Matrix4x4 Linv = IdentityMT_Matrix<4>();
   
     if(!L.isLowerTriangular())
     {
@@ -87,16 +87,16 @@ Matrix4x4 LowerTriangularInverse(Matrix4x4& L)
 
  
 
-Matrix2x2 Inverse2x2(Matrix2x2& M)
+MT_Matrix2x2 Inverse2x2(MT_Matrix2x2& M)
 {
   
-    Matrix2x2 result = IdentityMatrix<2>();
+    MT_Matrix2x2 result = IdentityMT_Matrix<2>();
   
     double detM = M.data[0]*M.data[3] - M.data[1]*M.data[2];
   
     if(detM == 0)
     {
-        printf("2x2 Matrix was singular, returning identity.\n");
+        printf("2x2 MT_Matrix was singular, returning identity.\n");
         return result;
     }
   
@@ -111,14 +111,14 @@ Matrix2x2 Inverse2x2(Matrix2x2& M)
   
 }
 
-double LowerTriangularDet(const Matrix4x4& L)
+double LowerTriangularDet(const MT_Matrix4x4& L)
 {
   
     return L.data[0]*L.data[5]*L.data[10]*L.data[15];
 
 }
 
-double BivariateGaussianWithCov(const Vector2& x, const Vector2& mean, Matrix2x2& cov)
+double BivariateGaussianWithCov(const MT_Vector2& x, const MT_Vector2& mean, MT_Matrix2x2& cov)
 {
       
     double detcov = cov.data[0]*cov.data[3] - cov.data[1]*cov.data[2];
@@ -126,18 +126,18 @@ double BivariateGaussianWithCov(const Vector2& x, const Vector2& mean, Matrix2x2
   
     if(detcov <= 0)
     {
-        printf("Invalid 2x2 Covariance Matrix, Returning 1\n");
+        printf("Invalid 2x2 Covariance MT_Matrix, Returning 1\n");
         return 1.0;
     }
   
-    Matrix2x2 invCov = Inverse2x2(cov);
+    MT_Matrix2x2 invCov = Inverse2x2(cov);
     double exparg = -0.5*InnerProduct( (x - mean), invCov*(x - mean) );
   
     return normfac*exp(exparg)/sqrt(detcov);
   
 }
   
-double QuadvariateGaussianWithChol(const Vector4& x, const Vector4& mean, Matrix4x4& L)
+double QuadvariateGaussianWithChol(const MT_Vector4& x, const MT_Vector4& mean, MT_Matrix4x4& L)
 {
   
     double Ldet = LowerTriangularDet(L);
@@ -149,28 +149,28 @@ double QuadvariateGaussianWithChol(const Vector4& x, const Vector4& mean, Matrix
         return 1.0;
     }
   
-    Matrix4x4 Linv = LowerTriangularInverse(L);
+    MT_Matrix4x4 Linv = LowerTriangularInverse(L);
   
-    double exparg = -0.5*VectorNormSquared( Linv*(x - mean) );
+    double exparg = -0.5*MT_VectorNormSquared( Linv*(x - mean) );
   
     return normfac*exp(exparg)/Ldet;
   
 }
 
 #ifdef _USE_MATRIX6X6
-double LowerTriangularDet(const Matrix6x6& L)
+double LowerTriangularDet(const MT_Matrix6x6& L)
 {
   
     return L.data[0]*L.data[7]*L.data[14]*L.data[21]*L.data[28]*L.data[35];
   
 }
 
-Matrix6x6 LowerTriangularInverse(Matrix6x6& L)
+MT_Matrix6x6 LowerTriangularInverse(MT_Matrix6x6& L)
 {
   
     unsigned int C = 6;
   
-    Matrix6x6 Linv = IdentityMatrix<6>();
+    MT_Matrix6x6 Linv = IdentityMT_Matrix<6>();
   
     if(!L.isLowerTriangular())
     {
@@ -255,7 +255,7 @@ Matrix6x6 LowerTriangularInverse(Matrix6x6& L)
   
 }
 
-double MultivariateGaussianWithChol(const Vector6& x, const Vector6& mean, Matrix6x6& L)
+double MultivariateGaussianWithChol(const MT_Vector6& x, const MT_Vector6& mean, MT_Matrix6x6& L)
 {
   
     double Ldet = LowerTriangularDet(L);
@@ -267,9 +267,9 @@ double MultivariateGaussianWithChol(const Vector6& x, const Vector6& mean, Matri
         return 1.0;
     }
   
-    Matrix6x6 Linv = LowerTriangularInverse(L);
+    MT_Matrix6x6 Linv = LowerTriangularInverse(L);
   
-    double exparg = -0.5*VectorNormSquared( Linv*(x - mean) );
+    double exparg = -0.5*MT_VectorNormSquared( Linv*(x - mean) );
   
     return normfac*exp(exparg)/Ldet;
   

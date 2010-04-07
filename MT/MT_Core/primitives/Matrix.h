@@ -30,7 +30,7 @@
 // uncomment to use 6x6 matrices
 //#define _USE_MATRIX6X6
 
-template<int N>class Vector
+template<int N>class MT_Vector
 {
 protected:
   
@@ -38,7 +38,7 @@ public:
   
     double data[N];
   
-    Vector()
+    MT_Vector()
     {
     
         for(unsigned int i = 0; i < N; i++)
@@ -65,7 +65,7 @@ public:
     
     };
   
-    void display(const char* NameString = "Vector")
+    void display(const char* NameString = "MT_Vector")
     {
     
         printf("========%s (transpose)======\n",NameString);
@@ -85,10 +85,10 @@ public:
 };
 
 template<int N>
-Vector<N> operator+(const Vector<N>& lhs, const Vector<N>& rhs)
+MT_Vector<N> operator+(const MT_Vector<N>& lhs, const MT_Vector<N>& rhs)
 {
   
-    Vector<N> result;
+    MT_Vector<N> result;
   
     for(unsigned int i = 0; i < N; i++)
     {
@@ -100,10 +100,10 @@ Vector<N> operator+(const Vector<N>& lhs, const Vector<N>& rhs)
 }
 
 template<int N>
-Vector<N> operator-(const Vector<N>& lhs, const Vector<N>& rhs)
+MT_Vector<N> operator-(const MT_Vector<N>& lhs, const MT_Vector<N>& rhs)
 {
   
-    Vector<N> result;
+    MT_Vector<N> result;
   
     for(unsigned int i = 0; i < N; i++)
     {
@@ -115,10 +115,10 @@ Vector<N> operator-(const Vector<N>& lhs, const Vector<N>& rhs)
 }
 
 template<int N>
-Vector<N> operator*(const double lhs, const Vector<N>& rhs)
+MT_Vector<N> operator*(const double lhs, const MT_Vector<N>& rhs)
 {
   
-    Vector<N> result;
+    MT_Vector<N> result;
   
     for(unsigned int i = 0; i < N; i++)
     {
@@ -129,7 +129,7 @@ Vector<N> operator*(const double lhs, const Vector<N>& rhs)
 }
 
 template<int N>
-Vector<N> operator*(const Vector<N>& lhs, const double rhs)
+MT_Vector<N> operator*(const MT_Vector<N>& lhs, const double rhs)
 {
   
     return rhs*lhs;
@@ -137,7 +137,7 @@ Vector<N> operator*(const Vector<N>& lhs, const double rhs)
 }
 
 template<int N>
-double InnerProduct(const Vector<N>& lhs, const Vector<N>& rhs)
+double InnerProduct(const MT_Vector<N>& lhs, const MT_Vector<N>& rhs)
 {
   
     double p = 0;
@@ -152,7 +152,7 @@ double InnerProduct(const Vector<N>& lhs, const Vector<N>& rhs)
 }
 
 template<int N>
-double VectorNormSquared(const Vector<N>& v)
+double MT_VectorNormSquared(const MT_Vector<N>& v)
 {
   
     double p = 0;
@@ -170,7 +170,7 @@ double VectorNormSquared(const Vector<N>& v)
 #define MAT(a,b) a*C + b
 
 template<int R,int C>
-    class Matrix
+    class MT_Matrix
 {
 protected:
   
@@ -201,7 +201,7 @@ public:
         LowerTriangular = 1;
     };
 
-    Matrix()
+    MT_Matrix()
     {
     
         PositiveDefinite = 0;
@@ -215,7 +215,7 @@ public:
     
     };
   
-    void display(const char* NameString = "Matrix")
+    void display(const char* NameString = "MT_Matrix")
     {
     
         printf("==============%s===========\n",NameString);
@@ -262,7 +262,7 @@ public:
     
     };
   
-    Matrix<R,C>& operator=(const Matrix<R,C>& rhs)
+    MT_Matrix<R,C>& operator=(const MT_Matrix<R,C>& rhs)
         {
             if(&rhs == this)
             {
@@ -291,10 +291,10 @@ public:
 };
 
 template<int R, int C>
-    Matrix<R,C> operator+(const Matrix<R,C>& lhs, const Matrix<R,C>& rhs)
+    MT_Matrix<R,C> operator+(const MT_Matrix<R,C>& lhs, const MT_Matrix<R,C>& rhs)
 {
   
-    Matrix<R,C> result;
+    MT_Matrix<R,C> result;
   
     for(unsigned int i = 0; i < R; i++)
     {
@@ -309,10 +309,10 @@ template<int R, int C>
 };
 
 template<int R, int C>
-    Matrix<R,C> operator-(const Matrix<R,C>& lhs, const Matrix<R,C>& rhs)
+    MT_Matrix<R,C> operator-(const MT_Matrix<R,C>& lhs, const MT_Matrix<R,C>& rhs)
 {
   
-    Matrix<R,C> result;
+    MT_Matrix<R,C> result;
   
     for(unsigned int i = 0; i < R; i++)
     {
@@ -327,10 +327,10 @@ template<int R, int C>
 };
 
 template<int R1, int C1, int C2>
-    Matrix<R1,C2> operator*(const Matrix<R1,C1>& lhs, const Matrix<C1,C2>& rhs)
+    MT_Matrix<R1,C2> operator*(const MT_Matrix<R1,C1>& lhs, const MT_Matrix<C1,C2>& rhs)
 {
   
-    Matrix<R1,C2> result;
+    MT_Matrix<R1,C2> result;
   
     for(unsigned int i = 0; i < R1; i++)
     {
@@ -349,10 +349,10 @@ template<int R1, int C1, int C2>
 }
 
 template<int R, int C>
-    Matrix<R,C> operator*(Matrix<R,C>& lhs, const double rhs)
+    MT_Matrix<R,C> operator*(MT_Matrix<R,C>& lhs, const double rhs)
 {
   
-    Matrix<R,C> result;
+    MT_Matrix<R,C> result;
   
     for(unsigned int i = 0; i < R*C; i++)
     {
@@ -374,7 +374,7 @@ template<int R, int C>
 }
 
 template<int R, int C>
-    Matrix<R,C> operator*(const double lhs, Matrix<R,C>& rhs)
+    MT_Matrix<R,C> operator*(const double lhs, MT_Matrix<R,C>& rhs)
 {
   
     return rhs*lhs;
@@ -382,10 +382,10 @@ template<int R, int C>
 }
 
 template<int R>
-Matrix<R,R> IdentityMatrix()
+MT_Matrix<R,R> IdentityMT_Matrix()
 {
   
-    Matrix<R,R> I;
+    MT_Matrix<R,R> I;
   
     for(unsigned int i = 0; i < R; i++)
     {
@@ -399,10 +399,10 @@ Matrix<R,R> IdentityMatrix()
 }
 
 template<int R, int C>
-    Matrix<C,R> Transpose(Matrix<R,C>& M)
+    MT_Matrix<C,R> Transpose(MT_Matrix<R,C>& M)
 {
   
-    Matrix<C,R> MT;
+    MT_Matrix<C,R> MT;
   
     for(unsigned int i = 0; i < C; i++)
     {
@@ -422,15 +422,15 @@ template<int R, int C>
 }
 
 template<int R>
-Matrix<R,R> Cholesky(Matrix<R,R>& P)
+MT_Matrix<R,R> Cholesky(MT_Matrix<R,R>& P)
 {
   
-    Matrix<R,R> L;
+    MT_Matrix<R,R> L;
   
     if(!P.isPositiveDefinite())
     {
         printf("Cholesky argument is not positive definite.  Returning identity.\n");
-        L = IdentityMatrix<R>();
+        L = IdentityMT_Matrix<R>();
         return L;
     }
   
@@ -481,10 +481,10 @@ Matrix<R,R> Cholesky(Matrix<R,R>& P)
 
 
 template<int R, int C>
-    Vector<R> operator*(const Matrix<R,C>& lhs, const Vector<C>& rhs)
+    MT_Vector<R> operator*(const MT_Matrix<R,C>& lhs, const MT_Vector<C>& rhs)
 {
   
-    Vector<R> result;
+    MT_Vector<R> result;
   
     for(unsigned int i = 0; i < R; i++)
     {
@@ -503,7 +503,7 @@ template<int R, int C>
 }
 
 template<int R>
-double MatrixQuadratic(const Vector<R>& v, const Matrix<R,R> M)
+double MT_MatrixQuadratic(const MT_Vector<R>& v, const MT_Matrix<R,R> M)
 {
   
     return InnerProduct(v,M*v);
@@ -511,7 +511,7 @@ double MatrixQuadratic(const Vector<R>& v, const Matrix<R,R> M)
 }
 
 template<int R>
-double MatrixQuadratic(const Matrix<R,R> M, const Vector<R>& v)
+double MT_MatrixQuadratic(const MT_Matrix<R,R> M, const MT_Vector<R>& v)
 {
   
     return InnerProduct(v,M*v);
@@ -519,10 +519,10 @@ double MatrixQuadratic(const Matrix<R,R> M, const Vector<R>& v)
 }
 
 template<int R>
-Vector<R> RandNVector()
+MT_Vector<R> RandNMT_Vector()
 {
   
-    Vector<R> result;
+    MT_Vector<R> result;
   
     for(unsigned int i = 0; i < R; i++)
     {
@@ -535,10 +535,10 @@ Vector<R> RandNVector()
 
 
 template<int R>
-Vector<R> ToVector(const Matrix<R,1> M)
+MT_Vector<R> ToMT_Vector(const MT_Matrix<R,1> M)
 {
   
-    Vector<R> result;
+    MT_Vector<R> result;
   
     for(unsigned int i = 0; i < R; i++)
     {
@@ -549,49 +549,49 @@ Vector<R> ToVector(const Matrix<R,1> M)
   
 }
 
-typedef Matrix<4,4> Matrix4x4;
-typedef Matrix<4,2> Matrix4x2;
-typedef Matrix<2,4> Matrix2x4;
-typedef Matrix<2,2> Matrix2x2;
-typedef Matrix<1,2> Matrix1x2;
-typedef Matrix<2,1> Matrix2x1;
-typedef Vector<4> Vector4;
-typedef Vector<2> Vector2;
+typedef MT_Matrix<4,4> MT_Matrix4x4;
+typedef MT_Matrix<4,2> MT_Matrix4x2;
+typedef MT_Matrix<2,4> MT_Matrix2x4;
+typedef MT_Matrix<2,2> MT_Matrix2x2;
+typedef MT_Matrix<1,2> MT_Matrix1x2;
+typedef MT_Matrix<2,1> MT_Matrix2x1;
+typedef MT_Vector<4> MT_Vector4;
+typedef MT_Vector<2> MT_Vector2;
 
-double Vector1ToDouble(Vector<1> v);
-double Matrix1ToDouble(Matrix<1,1> m);
+double MT_Vector1ToDouble(MT_Vector<1> v);
+double MT_Matrix1ToDouble(MT_Matrix<1,1> m);
 
 /* Computes the inverse of a positive definite 4x4 matrix by first finding
    thet Cholesky decomposition L s.t. P = L*L', then inverting L and returning
    Pinv = (Linv)'*Linv */
-Matrix4x4 PosDefInverse(Matrix4x4& P);
+MT_Matrix4x4 PosDefInverse(MT_Matrix4x4& P);
 /* Directly computes the inverse of a 4x4 lower triangular matrix (assumed
    to be nonsingular). */
-Matrix4x4 LowerTriangularInverse(Matrix4x4& L);
+MT_Matrix4x4 LowerTriangularInverse(MT_Matrix4x4& L);
 /* Directly computes the inverse of a 2x2 matrix.  Prints a warning and 
    returns identity if matrix M is singular. */
-Matrix2x2 Inverse2x2(Matrix2x2& M);
+MT_Matrix2x2 Inverse2x2(MT_Matrix2x2& M);
 
 /* Computes the determinant of a lower triangular matrix - equal to the
    product of the diagonal elements. */
-double LowerTriangularDet(const Matrix4x4& L);
+double LowerTriangularDet(const MT_Matrix4x4& L);
 /* Computes the probability of vector x drawn from a bivariate normal distribution with given mean
    and covariance. */
-double BivariateGaussianWithCov(const Vector2& x, const Vector2& mean, Matrix2x2& cov);
+double BivariateGaussianWithCov(const MT_Vector2& x, const MT_Vector2& mean, MT_Matrix2x2& cov);
 /* Computes the probability of vector x drawn from a multiivariate normal distribution 
    over R^4 with given mean and covariance equal to L*L'. */
-double QuadvariateGaussianWithChol(const Vector4& x, const Vector4& mean, Matrix4x4& L);
+double QuadvariateGaussianWithChol(const MT_Vector4& x, const MT_Vector4& mean, MT_Matrix4x4& L);
 
 #ifdef _USE_MATRIX6X6
-typedef Vector<6> Vector6;
-typedef Matrix<6,6> Matrix6x6;
-double LowerTriangularDet(const Matrix6x6& L);
+typedef MT_Vector<6> MT_Vector6;
+typedef MT_Matrix<6,6> MT_Matrix6x6;
+double LowerTriangularDet(const MT_Matrix6x6& L);
 /* Directly computes the inverse of a 6x6 lower triangular matrix (assumed
    to be nonsingular). */
-Matrix6x6 LowerTriangularInverse(Matrix6x6& L);
+MT_Matrix6x6 LowerTriangularInverse(MT_Matrix6x6& L);
 /* Computes the probability of vector x drawn from a multiivariate normal distribution 
    over R^6 with given mean and covariance equal to L*L'. */
-double MultivariateGaussianWithChol(const Vector6& x, const Vector6& mean, Matrix6x6& L);
+double MultivariateGaussianWithChol(const MT_Vector6& x, const MT_Vector6& mean, MT_Matrix6x6& L);
 #endif
 
 #endif
