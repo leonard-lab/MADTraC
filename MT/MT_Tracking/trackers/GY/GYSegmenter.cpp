@@ -1105,8 +1105,8 @@ void GYSegmenter::doSegmentation()
                 double* distances;
                 distances = new double[m_iNobj];
                 int closestblob;
-                Vector2 GuessMean;
-                Matrix2x2 GuessCovariance;
+                MT_Vector2 GuessMean;
+                MT_Matrix2x2 GuessCovariance;
                 double sigma1, sigma2, phi, cp, sp;
 
                 // Calculate the distances of each blob to the centre of the bounding box

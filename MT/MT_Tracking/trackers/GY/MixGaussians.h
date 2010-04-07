@@ -34,23 +34,23 @@ class MixGaussians
 {
 protected:
     int m_iNumDists;
-    std::vector<Vector2> m_vMeans;
-    std::vector<Matrix2x2> m_vCovariances;
+    std::vector<MT_Vector2> m_vMeans;
+    std::vector<MT_Matrix2x2> m_vCovariances;
                 
 public:
     // Constructors
     MixGaussians();                                                                                                                     // Default constructor - initialises with no gaussians
     MixGaussians(int numdists, const CvRect& boundingbox);                                      // Constructor that evenly places distributions within a bounding box
                 
-    void AddDist(const Vector2& newmean, const Matrix2x2& newcovariance);       // Method to add a given distribution to a mixture model
+    void AddDist(const MT_Vector2& newmean, const MT_Matrix2x2& newcovariance);       // Method to add a given distribution to a mixture model
                 
     // Expectation maximisation algorithm to fit a mixture model to a given set of image data
     void EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int framenumber);
 
     // Methods to retrieve parameters
     int GetNumDists();
-    void GetMeans(std::vector<Vector2>& means);
-    void GetCovariances(std::vector<Matrix2x2>& covariances);
+    void GetMeans(std::vector<MT_Vector2>& means);
+    void GetCovariances(std::vector<MT_Matrix2x2>& covariances);
                 
 };
 #endif                  // MIXGAUSSIANS_H

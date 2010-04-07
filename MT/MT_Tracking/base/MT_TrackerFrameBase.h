@@ -223,6 +223,8 @@ protected:
     /* pointer to a base tracker class */
     MT_TrackerBase* m_pTracker;
 
+    bool getIsTracking() const {return m_bTracking;};
+    
     IplImage* m_pCurrentFrame;
 
     long m_lTrackerDrawingFlags;

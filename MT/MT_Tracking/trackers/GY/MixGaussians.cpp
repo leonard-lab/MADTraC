@@ -37,10 +37,10 @@ MixGaussians::MixGaussians(int numdists, const CvRect& boundingbox)
     double height = (double) boundingbox.height;
         
     int i;
-    Vector2 temp_vector;
+    MT_Vector2 temp_vector;
         
     /* Set the covariance matrices of each distribution to default values so they will approximately cover the bounding box*/
-    Matrix2x2 temp_matrix = IdentityMatrix<2>();
+    MT_Matrix2x2 temp_matrix = IdentityMT_Matrix<2>();
     temp_matrix.data[0] = pow(width/2.0, 2);
     temp_matrix.data[3] = pow(height/((double) numdists*2), 2);
         
@@ -56,14 +56,14 @@ MixGaussians::MixGaussians(int numdists, const CvRect& boundingbox)
     }
 }
 
-void MixGaussians::AddDist(const Vector2& newmean, const Matrix2x2& newcovariance)
+void MixGaussians::AddDist(const MT_Vector2& newmean, const MT_Matrix2x2& newcovariance)
 {
     m_iNumDists++;
 
-    Vector2 tempmean = newmean;
+    MT_Vector2 tempmean = newmean;
     m_vMeans.push_back(tempmean);
         
-    Matrix2x2 tempcov = newcovariance;
+    MT_Matrix2x2 tempcov = newcovariance;
     m_vCovariances.push_back(tempcov);
         
 }
@@ -73,7 +73,7 @@ int MixGaussians::GetNumDists()
     return m_iNumDists;
 }
 
-void MixGaussians::GetMeans(std::vector<Vector2>& means)
+void MixGaussians::GetMeans(std::vector<MT_Vector2>& means)
 {
     if (means.size() == (unsigned int) m_iNumDists)
     {
@@ -85,7 +85,7 @@ void MixGaussians::GetMeans(std::vector<Vector2>& means)
     }
 }
 
-void MixGaussians::GetCovariances(std::vector<Matrix2x2>& covariances)
+void MixGaussians::GetCovariances(std::vector<MT_Matrix2x2>& covariances)
 {
     if (covariances.size() == (unsigned int) m_iNumDists)
     {
@@ -143,8 +143,8 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int fr
     int i, j, k;
     double mu_x, mu_y, D;
         
-    Matrix2x2 V, T;
-    Matrix2x1 P;
+    MT_Matrix2x2 V, T;
+    MT_Matrix2x1 P;
         
     double xdiff, ydiff, anglediff, maxdiff;
     double maxchange = 10.0;
