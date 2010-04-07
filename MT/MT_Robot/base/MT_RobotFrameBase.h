@@ -49,11 +49,6 @@ private:
     /* correctly-cast pointer to control frame */
     MT_RobotControlFrameBase* m_pRobotControlFrame;
 
-    /* Robot variables */
-    /* robot container object */
-    MT_AllRobotContainer m_Robots;
-    /* Tracked Objects - we'll get these from the tracker */
-    MT_TrackedObjectsBase* m_pTrackedObjects;
     /* joystick control dialog */
     MT_JoyStickFrame* m_pJoyStickFrame;
 
@@ -64,6 +59,12 @@ private:
     bool m_bRobotsIdentified;
 
 protected:
+
+    /* Robot variables */
+    /* robot container object */
+    MT_AllRobotContainer m_Robots;
+    /* Tracked Objects - we'll get these from the tracker */
+    MT_TrackedObjectsBase* m_pTrackedObjects;
 
     void initRobotFrameData();
 
