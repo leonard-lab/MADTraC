@@ -694,6 +694,7 @@ MT_FrameBase::MT_FrameBase(wxFrame* parent,
     m_bQuitOnReset(false),
     m_bMakingMovie(false),
     m_iFramePeriod_msec(MT_DEFAULT_FRAME_PERIOD),
+    m_ClientSize(size),
     m_CmdLineParser(),
     m_XMLSettingsFile(MT_GetXMLPathForApp()),
     m_PathGroup("Directories"),
@@ -708,6 +709,11 @@ MT_FrameBase::MT_FrameBase(wxFrame* parent,
 
     wxSizeEvent dummy_event;
     onSize(dummy_event);
+
+    /* client size gets clobbered by the initial call to onSize,
+     * so reset it here -- the client size should get set
+     * appropriately during doMasterInitialization */
+    m_ClientSize = size;
 
 }
 
@@ -743,13 +749,13 @@ void MT_FrameBase::doMasterInitialization()
     m_pCanvas = new MT_GLCanvasBase(this, 
                                     MT_ID_CANVAS,
                                     wxDefaultPosition, 
-                                    wxSize(640,480));
+                                    m_ClientSize);
     m_pCanvas->Show();
     hbox->Add(m_pCanvas);
     SetSizerAndFit(hbox);
     m_pCanvas->setMTParent((MT_FrameBase *)this);
     /* make sure the frame size is updated */
-    setSizeByClient(640,480);
+    setSizeByClient(m_ClientSize.x, m_ClientSize.y);
 
     /* Extra Frame Creation */
     m_pControlFrame = createControlDialog();
@@ -972,6 +978,7 @@ void MT_FrameBase::onSize(wxSizeEvent& event)
     }
     m_pCurrentScreen = cvCreateImage(cvSize(GetClientSize().x, GetClientSize().y), IPL_DEPTH_8U, 3);
 #endif
+    m_ClientSize = GetClientSize();
 }
 
 /********************************************************************/

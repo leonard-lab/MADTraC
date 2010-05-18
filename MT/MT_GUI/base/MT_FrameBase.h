@@ -501,6 +501,8 @@ private:
     bool m_bMakingMovie;
     int m_iFramePeriod_msec;
 
+    wxSize m_ClientSize;
+
     void doMasterInitialization();
     void createMenus();
     void doTimedEvents();
