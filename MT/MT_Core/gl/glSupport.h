@@ -36,11 +36,18 @@ enum MT_GLYPH
     MT_ELLIPSE,
     MT_DISK,
     MT_CIRCLE,
+    MT_DISK_HIGH_RES,
     MT_ARROW_NECK,
     MT_ARROW_HEAD,
     MT_SPHERE
 };
 
+/*
+ * parameters passed to drawing functions to determine if the shape
+ * should be filled.
+ */
+const bool MT_FILL = true;
+const bool MT_NO_FILL = false;
 
 /* Function to initialize the OpenGL lists.  Need this if you want to draw
     any of the predefined shapes we define here.  Omitted from documentation
@@ -59,9 +66,9 @@ void MT_DrawArrow(float length, float fixed_width = -1.0);
 /** Function to draw arrow at given location with given orientation, length, color and (potentially) width.  If fixed_width < 0, a width is chosen automatically. */
 void MT_DrawArrow(const MT_R3& center, float length, float orientation, const MT_Color& color, float fixed_width = -1.0);
 /** Function to draw a circle with given center, color, and radius (MT_R3 version). */
-void MT_DrawCircle(const MT_R3& center, const MT_Color& color, double radius);
+void MT_DrawCircle(const MT_R3& center, const MT_Color& color, double radius, bool fill = MT_NO_FILL);
 /** Function to draw a circle with given center, color, and radius. */
-void MT_DrawCircle(float xcenter, float ycenter, const MT_Color& color, double radius);
+void MT_DrawCircle(float xcenter, float ycenter, const MT_Color& color, double radius, bool fill = MT_NO_FILL);
 /** Function to draw an ellipse with given center, axis lengths, orientation,
  * and color (MT_R3 version)*/
 void MT_DrawEllipse(const MT_R3& center, float majoraxislength, float minoraxislength, float orientation, const MT_Color& color);

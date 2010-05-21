@@ -27,6 +27,15 @@ void MT_InitGLLists()
             glVertex2f(cos(i*MT_PI/180.0),sin(i*MT_PI/180.0));
         glEnd();
         glEndList();
+
+        /* higher resolution version of the disk, used by
+           MT_DrawCircle when fill = true */
+        glNewList(MT_DISK_HIGH_RES, GL_COMPILE);
+        glBegin(GL_POLYGON);
+        for (i = 0;  i <= 360;  i += 5)
+            glVertex2f(cos(i*MT_PI/180.0),sin(i*MT_PI/180.0));
+        glEnd();
+        glEndList();
     
         glNewList(MT_ELLIPSE, GL_COMPILE);
         glBegin(GL_POLYGON);
@@ -149,7 +158,10 @@ void MT_DrawUnitArrow(float scale)
   
 }
 
-void MT_DrawCircle(const MT_R3& center, const MT_Color& color, double radius)
+void MT_DrawCircle(const MT_R3& center,
+                   const MT_Color& color,
+                   double radius,
+                   bool fill)
 {
   
     double radius_inv = 1.0/radius;
@@ -159,8 +171,15 @@ void MT_DrawCircle(const MT_R3& center, const MT_Color& color, double radius)
     MT_GLTranslatefv(center);
   
     glScalef(radius, radius, radius);
-  
-    glCallList(MT_CIRCLE);
+
+    if(fill == MT_NO_FILL)
+    {
+        glCallList(MT_CIRCLE);
+    }
+    else
+    {
+        glCallList(MT_DISK_HIGH_RES);
+    }
   
     glScalef(radius_inv, radius_inv, radius_inv);
   
@@ -168,11 +187,15 @@ void MT_DrawCircle(const MT_R3& center, const MT_Color& color, double radius)
   
 }
 
-void MT_DrawCircle(float xcenter, float ycenter, const MT_Color& color, double radius)
+void MT_DrawCircle(float xcenter,
+                   float ycenter,
+                   const MT_Color& color,
+                   double radius,
+                   bool fill)
 {
   
     MT_R3 center(xcenter,ycenter,0);
-    MT_DrawCircle(center, color, radius);
+    MT_DrawCircle(center, color, radius, fill);
   
 }
 
