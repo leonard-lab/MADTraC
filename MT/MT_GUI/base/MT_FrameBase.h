@@ -189,7 +189,7 @@ const wxString MT_FILTER_IMAGE_FILES = wxString("Image files (*.bmp; *.jpg; *.pn
 /* file type filters used in dialogs to determine which files can be selected.
    this list is probably not exhaustive, but contains most of the commonly
    used types. */
-const wxString MT_FILTER_MOVIE_FILES("Movie files (*.avi; *.mov)|*.avi;*.mov");
+const wxString MT_FILTER_MOVIE_FILES("Movie files (*.avi; *.mov; *.dv)|*.avi;*.mov;*.dv");
 
 const bool MT_SOFT_RESET = false;
 const bool MT_HARD_RESET = true;
