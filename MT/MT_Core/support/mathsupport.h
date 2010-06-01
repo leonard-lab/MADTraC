@@ -91,8 +91,14 @@ const double MT_EPSILON = 1E-5;
   #undef max
 #endif
 
+#ifndef isdigit
+#define isdigit MT_isdigit
+#endif
+
 #include <limits> 
 using namespace std;
+
+bool MT_isdigit(char c);
 
 /* maximum and minimum possible values of various numeric types */
 /** @var const int MT_min_int 

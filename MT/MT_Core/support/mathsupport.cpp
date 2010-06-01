@@ -24,6 +24,16 @@
 // Header for this module
 #include "mathsupport.h"
 
+bool MT_isdigit(char c) {
+    const char digits[] = "0123456789";
+    for (int i = 0; i < strlen(digits); i++) {
+        if (digits[i] == c) {
+            return true;
+        }
+    }
+    return false;
+}
+
 //------------------------------------------------------------
 //    Random Number Functions
 //------------------------------------------------------------
