@@ -112,9 +112,12 @@ public:
     MT_ComIO();  // default = stderr
     /** Ctor to connect to a specific COM port, e.g.
      * @code
-     * MT_ComIO("COM4");  // Windows, or
+     * MT_ComIO("COM4");  // Windows, hardware handshaking or
+     * MT_ComIO("COM4", true); // Windows, no handshaking or
      * MT_ComIO("/dev/tty.MiaBot4-BluetoothSerial-1"); // POSIX
      * @endcode
+     * @param inComPortString COM Port name, e.g. "COM4", etc.
+     * @param handshaking Pass false to disable handshaking
      * @see IsConnected to test status.
      */
     MT_ComIO(const char* inComPortString, bool handshaking = true);
