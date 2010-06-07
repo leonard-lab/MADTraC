@@ -14,7 +14,6 @@
  *    - Random number generation
  *    - Floating point arithmetic utility functions
  *    - Time functions
- *    - String analysis
  *  
  */
 
@@ -24,6 +23,7 @@
 #include <stdlib.h>  /* has gnu abs() */
 #include <stdio.h>   /* propagate printf, etc */
 #include <limits>
+#include <string>
 
 // --------- Numerical Constants -----------------------------
 
@@ -91,14 +91,8 @@ const double MT_EPSILON = 1E-5;
   #undef max
 #endif
 
-#ifndef isdigit
-#define isdigit MT_isdigit
-#endif
-
 #include <limits> 
 using namespace std;
-
-bool MT_isdigit(char c);
 
 /* maximum and minimum possible values of various numeric types */
 /** @var const int MT_min_int 
@@ -168,12 +162,12 @@ int MT_randint(int m);
 //  approximated by averaging 12 uniformly distributed
 //  random numbers.  I've tested this by generating
 //  large numbers of random numbers and comparing the
-//  resulting histograms to Matlab's MT_randn().  The results
+//  resulting histograms to Matlab's randn().  The results
 //  are indistinguishable.  Though one should NOTE that
 //  there is NO chance of getting a number greater than 6
 //  or less than -6 with this method.  In reality the
 //  probability of such is VERY small.  There are methods
-//  that doe not have this problem, but they are typically
+//  that do not have this problem, but they are typically
 //  computationally more expensive.
 
 /** Return an approximately normally (Gaussian) distributed random number 
@@ -219,37 +213,6 @@ int MT_getSecond(void);
  * unique filenames.  NOTE that the function does not allocate the
  * strings, it assumes you have already done that.  */
 void MT_getYYMMDDandHHMMSS(char* YYMMDD, char* HHMMSS);
-
-
-/* --------- String analysis functions --------------------- */
-
-/** Return values for MT_hasFormatString.
- * @see MT_hasFormatString
- */
-typedef enum
-{
-    MT_FORMAT_STRING_INVALID = 0, /**< No valid format string found.     */
-    MT_FORMAT_STRING_CHAR,        /**< Char (%c) format string found.    */
-    MT_FORMAT_STRING_STRING,      /**< String (%s) format string found.  */
-    MT_FORMAT_STRING_INT,         /**< Integer-type format string found. */
-    MT_FORMAT_STRING_FLOAT        /**< Float-type format string found.   */
-} MT_FORMAT_STRING_TYPE;
-
-/** Checks a string to determine if it contains a valid
- * printf-style format string (e.g. %5.4f, %d, etc).  I've done my
- * best to check against any valid formatter.  Returns an enum 
- * (MT_FORMAT_STRING_TYPE) indicating the <i>type</i> of formatter found,
- * or 0 (MT_FORMAT_STRING_INVALID) if no valid format string is found.
- *
- * @param string_to_check Null-terminated string to check for format.
- * @param p_startof Integer to get the index of the start of the format
- *      string.  Ignored if NULL (default) or no valid format string is found.
- * @param p_endof Integer to get the index of the end of the format
- *      string.  Ignored if NULL (default) or no valid format string is found.
- */
-MT_FORMAT_STRING_TYPE MT_hasFormatString(const char* string_to_check, 
-        int* p_startof = NULL, 
-        int* p_endof = NULL);
 
 /* @} */
 
