@@ -6,12 +6,29 @@
 	objectVersion = 42;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		375E4C8F1152D39100034875 /* Install */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 375E4C941152D3B500034875 /* Build configuration list for PBXAggregateTarget "Install" */;
+			buildPhases = (
+				375E4C8E1152D39100034875 /* CopyFiles */,
+			);
+			dependencies = (
+				375E4C931152D39700034875 /* PBXTargetDependency */,
+			);
+			name = Install;
+			productName = Install;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
+		375E4C861152D12F00034875 /* libwx_mac_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 375E4C851152D12F00034875 /* libwx_mac_static.a */; };
+		375E4C951152D3C200034875 /* PlaySwarm.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3797F70F11308E3A006F6055 /* PlaySwarm.app */; };
+		378F495011AD937E003BF4E8 /* libCLFpp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 378F494F11AD937E003BF4E8 /* libCLFpp.a */; };
 		3797F71611308E52006F6055 /* Occlusion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3797F70711308E2C006F6055 /* Occlusion.cpp */; };
 		3797F71711308E52006F6055 /* PlaySwarm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3797F70911308E2C006F6055 /* PlaySwarm.cpp */; };
 		3797F740113094ED006F6055 /* libMT_Core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797F73E113094ED006F6055 /* libMT_Core.a */; };
 		3797F741113094ED006F6055 /* libMT_GUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797F73F113094ED006F6055 /* libMT_GUI.a */; };
-		3797F74311309509006F6055 /* libwx_mac_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797F74211309509006F6055 /* libwx_mac_static.a */; };
 		3797F7471130954F006F6055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797F7461130954F006F6055 /* AGL.framework */; };
 		3797F7491130954F006F6055 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797F7481130954F006F6055 /* OpenGL.framework */; };
 		3797F74B1130954F006F6055 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797F74A1130954F006F6055 /* QuickTime.framework */; };
@@ -23,9 +40,30 @@
 		3797F78B113095EA006F6055 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797F78A113095EA006F6055 /* libz.dylib */; };
 		3797F7F11130973B006F6055 /* OpenCV.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3797F7521130955D006F6055 /* OpenCV.framework */; };
 		3797F7F6113097C9006F6055 /* PlaySwarm.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3797F70211308E2C006F6055 /* PlaySwarm.icns */; };
+		37BA70E911BD5F4000DF4F11 /* clf.icns in Resources */ = {isa = PBXBuildFile; fileRef = 37BA70E811BD5F4000DF4F11 /* clf.icns */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		375E4C921152D39700034875 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3797F6EA11308DDF006F6055 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3797F70E11308E3A006F6055;
+			remoteInfo = PlaySwarm;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
+		375E4C8E1152D39100034875 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /Applications/;
+			dstSubfolderSpec = 0;
+			files = (
+				375E4C951152D3C200034875 /* PlaySwarm.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3797F7F311309759006F6055 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -39,6 +77,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		375E4C851152D12F00034875 /* libwx_mac_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwx_mac_static.a; path = ../../../wxLib/lib/libwx_mac_static.a; sourceTree = SOURCE_ROOT; };
+		378F494F11AD937E003BF4E8 /* libCLFpp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCLFpp.a; path = ../../../CLF/CPP/lib/libCLFpp.a; sourceTree = SOURCE_ROOT; };
+		378F495111AD941F003BF4E8 /* libhdf5.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libhdf5.a; path = /opt/local/lib/libhdf5.a; sourceTree = "<absolute>"; };
 		3797F70211308E2C006F6055 /* PlaySwarm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PlaySwarm.icns; sourceTree = "<group>"; };
 		3797F70311308E2C006F6055 /* PlaySwarmCheatSheet.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PlaySwarmCheatSheet.txt; sourceTree = "<group>"; };
 		3797F70411308E2C006F6055 /* PlaySwarmUsage.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PlaySwarmUsage.txt; sourceTree = "<group>"; };
@@ -51,7 +92,6 @@
 		3797F71211308E3A006F6055 /* PlaySwarm-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PlaySwarm-Info.plist"; sourceTree = "<group>"; };
 		3797F73E113094ED006F6055 /* libMT_Core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_Core.a; path = ../../lib/libMT_Core.a; sourceTree = SOURCE_ROOT; };
 		3797F73F113094ED006F6055 /* libMT_GUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_GUI.a; path = ../../lib/libMT_GUI.a; sourceTree = SOURCE_ROOT; };
-		3797F74211309509006F6055 /* libwx_mac_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwx_mac_static.a; path = ../../../../wxLib/lib/libwx_mac_static.a; sourceTree = SOURCE_ROOT; };
 		3797F7461130954F006F6055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		3797F7481130954F006F6055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		3797F74A1130954F006F6055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
@@ -61,6 +101,8 @@
 		3797F786113095CC006F6055 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		3797F788113095EA006F6055 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /usr/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		3797F78A113095EA006F6055 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		37BA70AC11BD4E7E00DF4F11 /* libhdf5.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libhdf5.6.dylib; path = /opt/local/lib/libhdf5.6.dylib; sourceTree = "<absolute>"; };
+		37BA70E811BD5F4000DF4F11 /* clf.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = clf.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,7 +112,6 @@
 			files = (
 				3797F740113094ED006F6055 /* libMT_Core.a in Frameworks */,
 				3797F741113094ED006F6055 /* libMT_GUI.a in Frameworks */,
-				3797F74311309509006F6055 /* libwx_mac_static.a in Frameworks */,
 				3797F7471130954F006F6055 /* AGL.framework in Frameworks */,
 				3797F7491130954F006F6055 /* OpenGL.framework in Frameworks */,
 				3797F74B1130954F006F6055 /* QuickTime.framework in Frameworks */,
@@ -80,6 +121,8 @@
 				3797F787113095CC006F6055 /* IOKit.framework in Frameworks */,
 				3797F789113095EA006F6055 /* libiconv.dylib in Frameworks */,
 				3797F78B113095EA006F6055 /* libz.dylib in Frameworks */,
+				375E4C861152D12F00034875 /* libwx_mac_static.a in Frameworks */,
+				378F495011AD937E003BF4E8 /* libCLFpp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,8 +132,11 @@
 		3797F6E811308DDF006F6055 = {
 			isa = PBXGroup;
 			children = (
+				37BA70AC11BD4E7E00DF4F11 /* libhdf5.6.dylib */,
+				378F495111AD941F003BF4E8 /* libhdf5.a */,
+				378F494F11AD937E003BF4E8 /* libCLFpp.a */,
+				375E4C851152D12F00034875 /* libwx_mac_static.a */,
 				3797F7521130955D006F6055 /* OpenCV.framework */,
-				3797F74211309509006F6055 /* libwx_mac_static.a */,
 				3797F73E113094ED006F6055 /* libMT_Core.a */,
 				3797F73F113094ED006F6055 /* libMT_GUI.a */,
 				3797F70111308E2C006F6055 /* resources */,
@@ -111,6 +157,7 @@
 		3797F70111308E2C006F6055 /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				37BA70E811BD5F4000DF4F11 /* clf.icns */,
 				3797F70211308E2C006F6055 /* PlaySwarm.icns */,
 				3797F70311308E2C006F6055 /* PlaySwarmCheatSheet.txt */,
 				3797F70411308E2C006F6055 /* PlaySwarmUsage.txt */,
@@ -173,6 +220,7 @@
 			projectRoot = "";
 			targets = (
 				3797F70E11308E3A006F6055 /* PlaySwarm */,
+				375E4C8F1152D39100034875 /* Install */,
 			);
 		};
 /* End PBXProject section */
@@ -183,6 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3797F7F6113097C9006F6055 /* PlaySwarm.icns in Resources */,
+				37BA70E911BD5F4000DF4F11 /* clf.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,7 +249,36 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		375E4C931152D39700034875 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3797F70E11308E3A006F6055 /* PlaySwarm */;
+			targetProxy = 375E4C921152D39700034875 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		375E4C901152D39200034875 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = Install;
+			};
+			name = Debug;
+		};
+		375E4C911152D39200034875 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = Install;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		3797F6EB11308DDF006F6055 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -231,23 +309,33 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				HEADER_SEARCH_PATHS = "~/src/wxLib/include";
+				HEADER_SEARCH_PATHS = (
+					/opt/local/include,
+					"~/src/wxLib/include",
+				);
 				INFOPLIST_FILE = "PlaySwarm-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
+					/opt/local/lib,
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../../wxLib/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../wxLib/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../../CLF/CPP/lib\"";
 				OTHER_LDFLAGS = (
+					/opt/local/lib/libsz.a,
 					"-framework",
 					Carbon,
+					/opt/local/lib/libhdf5.a,
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = PlaySwarm;
-				USER_HEADER_SEARCH_PATHS = ../../include;
+				USER_HEADER_SEARCH_PATHS = "/Users/dan/src/CLF/C/include ../../include";
 			};
 			name = Debug;
 		};
@@ -264,25 +352,36 @@
 				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				HEADER_SEARCH_PATHS = "~/src/wxLib/include";
+				HEADER_SEARCH_PATHS = (
+					/opt/local/include,
+					"~/src/wxLib/include",
+				);
 				INFOPLIST_FILE = "PlaySwarm-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
+					/opt/local/lib,
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../../wxLib/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../wxLib/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../../CLF/CPP/lib\"";
 				OTHER_LDFLAGS = (
+					/opt/local/lib/libsz.a,
 					"-framework",
 					Carbon,
+					/opt/local/lib/libhdf5.a,
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = PlaySwarm;
-				USER_HEADER_SEARCH_PATHS = ../../include;
+				USER_HEADER_SEARCH_PATHS = "/Users/dan/src/CLF/CPP/include ../../include";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -290,6 +389,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		375E4C941152D3B500034875 /* Build configuration list for PBXAggregateTarget "Install" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				375E4C901152D39200034875 /* Debug */,
+				375E4C911152D39200034875 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3797F6ED11308DDF006F6055 /* Build configuration list for PBXProject "PlaySwarm" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
