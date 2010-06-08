@@ -10,6 +10,8 @@
 
 #include "MT_Core.h"
 
+void OCC_nextAOI();
+void OCC_nextVisualAngle();
 void CalculateAndDrawOcclusions(const std::vector<MT_BufferAgent*>& agents);
 
 #endif // Occlusion_H
