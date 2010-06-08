@@ -49,7 +49,7 @@ PlaySwarmFrame::PlaySwarmFrame(wxFrame* parent,
 PlaySwarmFrame::~PlaySwarmFrame()
 {
   
-/* safely free the agents */
+    /* safely free the agents */
     for(unsigned int i = 0; i < m_vpAgents.size(); i++)
     {
         if(m_vpAgents[i])
@@ -113,8 +113,10 @@ bool PlaySwarmFrame::grabAgent(double x, double y)
 bool PlaySwarmFrame::doMouseCallback(wxMouseEvent& event, double viewport_x, double viewport_y)
 {
     bool result = MT_DO_BASE_MOUSE;
-/* Check to see if this was a click and if it was "on" an agent (i.e. within m_dGrabRadius) */
-    if((event.LeftDown() || event.RightDown()) && grabAgent(viewport_x,viewport_y))
+    /* Check to see if this was a click and if it was "on"
+     * an agent (i.e. within m_dGrabRadius) */
+    if((event.LeftDown() || event.RightDown())
+       && grabAgent(viewport_x,viewport_y))
     {
         if(event.RightDown())
         {
@@ -123,34 +125,40 @@ bool PlaySwarmFrame::doMouseCallback(wxMouseEvent& event, double viewport_x, dou
             g_iMenuAgent = m_iGrabbedAgent;
             label.Printf("Parameters for Agent %d", m_iGrabbedAgent);
             pmenu.Append(ID_MENU_POP_AGENT_PARAMS,label);
-            Connect(ID_MENU_POP_AGENT_PARAMS, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(PlaySwarmFrame::onMenuAgentParams));
+            Connect(ID_MENU_POP_AGENT_PARAMS,
+                    wxEVT_COMMAND_MENU_SELECTED,
+                    wxCommandEventHandler(PlaySwarmFrame::
+                                          onMenuAgentParams));
             PopupMenu(&pmenu);
             result = MT_SKIP_BASE_MOUSE;
         }
     }
-/* If we've previously grabbed an agent, do whatever needs to be done */
+    /* If we've previously grabbed an agent, do
+     * whatever needs to be done */
     else if(m_iGrabbedAgent != NONE_GRABBED)
     {
-/* If we're releasing the mouse button, release the agent */
+    /* If we're releasing the mouse button, release the agent */
         if(event.LeftUp() || event.RightUp())
         {
             m_iGrabbedAgent = NONE_GRABBED;
         }
     }
-/* "Normal" - i.e. no agent is grabbed, behavior */
+    /* "Normal" - i.e. no agent is grabbed, behavior */
     else
     {
     
         if(event.RightDown())
         {
-/*      wxMenu pmenu;
-        pmenu.Append(wxID_ANY,"Normal popup.");
-        PopupMenu(&pmenu); */
+    /*      wxMenu pmenu;
+            pmenu.Append(wxID_ANY,"Normal popup.");
+            PopupMenu(&pmenu); */
             result = MT_SKIP_BASE_MOUSE; 
         }
     }
   
-    bool base_result = MT_FrameBase::doMouseCallback(event, viewport_x, viewport_y);
+    bool base_result = MT_FrameBase::doMouseCallback(event,
+                                                     viewport_x,
+                                                     viewport_y);
     return result && base_result;
   
 }
@@ -509,22 +517,6 @@ void PlaySwarmFrame::gotoFrame()
 
     MT_BoundingBox lims;
     int offset = frame_no - curr_pos;
-    if(offset > 0)
-    {
-        for(unsigned int i = 0; i < m_vpAgents.size(); i++)
-        {
-            m_vpAgents[i]->FFWD(offset);
-        }
-    }
-    else
-    {
-        for(unsigned int i = 0; i < m_vpAgents.size(); i++)
-        {
-            m_vpAgents[i]->RWND(-offset);
-        }
-    }
-
-
 
     for(unsigned int i = 0; i < m_vpAgents.size(); i++)
     {
