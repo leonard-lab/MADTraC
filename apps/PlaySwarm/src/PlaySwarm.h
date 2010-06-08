@@ -19,7 +19,10 @@ const double DEFAULT_OBJECT_ASPECT = 0.125;
 
 const int NONE_GRABBED = -1;
 
-const wxString FILTER_DATA_FILES("Trajectory data files (*.dat)|*.dat");
+const unsigned int DEFAULT_WINDOW_WIDTH = 1024;
+const unsigned int DEFAULT_WINDOW_HEIGHT = 768;
+
+const wxString FILTER_DATA_FILES("Trajectory data files (*.dat; *.clf)|*.dat;*.clf");
 
 enum
 {
@@ -65,7 +68,8 @@ public:
                    wxWindowID id = wxID_ANY,
                    const wxString& title = wxT("PlaySwarm"),
                    const wxPoint& pos = wxDefaultPosition,
-                   const wxSize& size = wxSize(640,480),
+                   const wxSize& size = wxSize(DEFAULT_WINDOW_WIDTH,
+                                               DEFAULT_WINDOW_HEIGHT),
                    long style = MT_FIXED_SIZE_FRAME);
     virtual ~PlaySwarmFrame();
     
@@ -96,6 +100,8 @@ public:
 
     virtual void writeUserXML();
     virtual void readUserXML();
+
+    virtual void gotoFrame();
 };
 
 class PlaySwarmApp : public MT_AppBase

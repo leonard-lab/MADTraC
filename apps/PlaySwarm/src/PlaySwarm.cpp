@@ -8,6 +8,8 @@
 #include "PlaySwarm.h"
 #include "Occlusion.h"
 
+#include <wx/filename.h>
+
 IMPLEMENT_APP(PlaySwarmApp)
 
 static bool g_bMouseDragging = false;
@@ -17,7 +19,7 @@ static int g_iMenuAgent = NONE_GRABBED;
 const char* glyph_names[] = {"Fish", "Arrow", "Ellipse"};
 
 AgentParameters::AgentParameters(double* length, double* aspect, MT_Color* color)
- :MT_DataGroup("Agent Parameters")
+    :MT_DataGroup("Agent Parameters")
 {
     MT_DataGroup::AddDouble("Length", length);
     MT_DataGroup::AddDouble("Aspect Ratio", aspect);
@@ -31,20 +33,23 @@ PlaySwarmFrame::PlaySwarmFrame(wxFrame* parent,
                                const wxPoint& pos,
                                const wxSize& size,
                                long style)
-  : MT_FrameBase(parent, id, title, pos, size, style), 
-    m_bAutoSizeObjects(true),
-    m_bTails(false),
-    m_bOcclusions(false),
-    m_GlyphChoice(glyph_names, 3, 1),
-    m_BoundingBox(-1,1,-1,1)
+    : MT_FrameBase(parent, id, title, pos, size, style), 
+      m_bAutoSizeObjects(true),
+      m_bTails(false),
+      m_bOcclusions(false),
+      m_GlyphChoice(glyph_names, 3, 1),
+      m_BoundingBox(-1,1,-1,1)
 {
+#ifdef MT_HAVE_CLF
+    CLFpp::DisableHDF5Warnings();
+#endif
     m_sDescriptionText = wxString("PlaySwarm - Playback trajectory data.\n");
 }
 
 PlaySwarmFrame::~PlaySwarmFrame()
 {
   
-    /* safely free the agents */
+/* safely free the agents */
     for(unsigned int i = 0; i < m_vpAgents.size(); i++)
     {
         if(m_vpAgents[i])
@@ -108,7 +113,7 @@ bool PlaySwarmFrame::grabAgent(double x, double y)
 bool PlaySwarmFrame::doMouseCallback(wxMouseEvent& event, double viewport_x, double viewport_y)
 {
     bool result = MT_DO_BASE_MOUSE;
-    /* Check to see if this was a click and if it was "on" an agent (i.e. within m_dGrabRadius) */
+/* Check to see if this was a click and if it was "on" an agent (i.e. within m_dGrabRadius) */
     if((event.LeftDown() || event.RightDown()) && grabAgent(viewport_x,viewport_y))
     {
         if(event.RightDown())
@@ -123,16 +128,16 @@ bool PlaySwarmFrame::doMouseCallback(wxMouseEvent& event, double viewport_x, dou
             result = MT_SKIP_BASE_MOUSE;
         }
     }
-    /* If we've previously grabbed an agent, do whatever needs to be done */
+/* If we've previously grabbed an agent, do whatever needs to be done */
     else if(m_iGrabbedAgent != NONE_GRABBED)
     {
-        /* If we're releasing the mouse button, release the agent */
+/* If we're releasing the mouse button, release the agent */
         if(event.LeftUp() || event.RightUp())
         {
             m_iGrabbedAgent = NONE_GRABBED;
         }
     }
-    /* "Normal" - i.e. no agent is grabbed, behavior */
+/* "Normal" - i.e. no agent is grabbed, behavior */
     else
     {
     
@@ -157,12 +162,18 @@ bool PlaySwarmFrame::doKeyboardCallback(wxKeyEvent& event)
     
     switch(key)
     {
+    case 'f':
+        gotoFrame();  break;
     case 't':
         m_bTails = !m_bTails; break;
     case 'o':
         m_bOcclusions = !m_bOcclusions; break;
     case 'r':
         doReset(MT_SOFT_RESET); break;
+    case 'n':
+        OCC_nextAOI(); break;
+    case 'v':
+        OCC_nextVisualAngle(); break;
     case WXK_DELETE:
     case WXK_BACK:
     case ':':  /* On a mac this is the right arrow too for some reason */
@@ -211,8 +222,8 @@ void PlaySwarmFrame::handleCommandLineArguments(int argc, char** argv)
         m_dObjectWidth = (double) temp;
     }
   
-    /* if a parameter ( = command line option not preceeded by "-" or "--" )
-       was given, it's the filename to load */
+    /* if a parameter ( = command line option not preceeded by "-"
+     * or "--" )  was given, it's the filename to load */
     if(m_CmdLineParser.GetParamCount())
     {
         wxString filename = m_CmdLineParser.GetParam(0);
@@ -278,11 +289,11 @@ void PlaySwarmFrame::onMenuFileOpen(wxCommandEvent& event)
 {
   
     int result = MT_OpenFileDialog(this, 
-                                m_sDataFileDirectory, 
-                                wxT("Select Data File"), 
-                                FILTER_DATA_FILES, 
-                                &m_sDataFilePath, 
-                                &m_sDataFileDirectory);
+                                   m_sDataFileDirectory, 
+                                   wxT("Select Data File"), 
+                                   FILTER_DATA_FILES, 
+                                   &m_sDataFilePath, 
+                                   &m_sDataFileDirectory);
   
     if(result == wxID_OK)
     {
@@ -315,44 +326,62 @@ void PlaySwarmFrame::onMenuAgentParams(wxCommandEvent& event)
 
 }
 
-void PlaySwarmFrame::openPositionFile(const char* filename, bool start_play)
+void PlaySwarmFrame::openPositionFile(const char* filename,
+                                      bool start_play)
 {
-    MT_ParticleFile file(filename);
-  
-    if(!file.IsValid())
+    if(CLFpp::IsCLF(filename))
     {
-        MT_ShowErrorDialog(this, wxT("Could not open file ") + wxString(filename) + wxT("."));
-        m_vpAgents.resize(0);
+        MT_CLFtoAgentReader reader(filename, "x", "y", "z");
+        m_vpAgents = reader.getAgents();
+        m_BoundingBox = reader.getBoundingBox();
     }
     else
     {
-    
-        m_BoundingBox = file.GetBoundingBox();
 
-        if(m_bAutoSizeObjects)
+        MT_ParticleFile file(filename);
+  
+        if(!file.IsValid())
         {
-            m_dObjectLength = DEFAULT_OBJECT_LENGTH_FRAC*fabs(m_BoundingBox.xmax - m_BoundingBox.xmin);
-            m_dObjectWidth = DEFAULT_OBJECT_ASPECT*m_dObjectLength;
+            MT_ShowErrorDialog(this,
+                               wxT("Could not open file ")
+                               + wxString(filename) + wxT("."));
+            m_vpAgents.resize(0);
         }
-    
-        m_vpAgents = file.GetAgents();
-        for(unsigned int i = 0; i < m_vpAgents.size(); i++)
+        else
         {
-            m_vpAgents[i]->PopulateSpeedThetaBuffers();
-            m_vpAgents[i]->size = (m_dObjectLength);
-            m_vpAgents[i]->aspect = m_dObjectWidth/m_dObjectLength;
-            m_vpAgents[i]->setBlindAngle(MT_DEG2RAD*20);
-            m_vpAgents[i]->Update();  /* sets state for drawing */
+            m_BoundingBox = file.GetBoundingBox();
+            m_vpAgents = file.GetAgents();
         }
-    
-        wxFrame::Refresh(true);
-
-        m_bFollow = false;
-        setViewport(MT_RectangleFromBoundingBox(m_BoundingBox));
-        lockCurrentViewportAsOriginal();
-    
-        setPause(!start_play);
     }
+
+    if(m_bAutoSizeObjects)
+    {
+        m_dObjectLength = DEFAULT_OBJECT_LENGTH_FRAC
+            *fabs(m_BoundingBox.xmax - m_BoundingBox.xmin);
+        m_dObjectWidth = DEFAULT_OBJECT_ASPECT*m_dObjectLength;
+
+        /* TEMPORARY */
+        //m_dObjectLength = 4.0;
+        //m_dObjectWidth = 0.8;
+    }
+    for(unsigned int i = 0; i < m_vpAgents.size(); i++)
+    {
+        m_vpAgents[i]->PopulateSpeedThetaBuffers();
+        m_vpAgents[i]->size = (m_dObjectLength);
+        m_vpAgents[i]->aspect = m_dObjectWidth/m_dObjectLength;
+        m_vpAgents[i]->setBlindAngle(MT_DEG2RAD*20);
+        m_vpAgents[i]->Update();  /* sets state for drawing */
+    }
+    
+    wxFrame::Refresh(true);
+
+    m_bFollow = false;
+    setViewport(MT_RectangleFromBoundingBox(m_BoundingBox));
+    lockCurrentViewportAsOriginal();
+    
+    setPause(!start_play);
+
+
 }
 
 
@@ -450,3 +479,71 @@ void PlaySwarmFrame::doBackup()
     }
 }
 
+void PlaySwarmFrame::gotoFrame()
+{
+
+    long max_frames = m_vpAgents[0]->GetBufferLength();
+    int curr_pos = m_vpAgents[0]->GetBufferPosition();
+    long frame_no = curr_pos;
+        
+    setPause(true);
+
+    MT_NumericInputDialog* dlg = new MT_NumericInputDialog(
+        this,             /* parent is this frame */
+        wxID_ANY,         /* ID is unimportant */
+        wxT("PlaySwarm"), /* Title for the dialog */
+        wxT("Go To Frame Number"), /* Prompt */
+        curr_pos, /* default number in the dlg */
+        0,                   /* minimum admissible input */
+        (double) max_frames,  /* maximum admissible input */
+        MT_INPUT_INTEGER);      /* input must be an integer */
+
+    int result = dlg->ShowModal();
+
+    if(result == wxID_OK)
+    {
+        frame_no = dlg->GetValue();
+    }
+
+    dlg->Destroy();
+
+    MT_BoundingBox lims;
+    int offset = frame_no - curr_pos;
+    if(offset > 0)
+    {
+        for(unsigned int i = 0; i < m_vpAgents.size(); i++)
+        {
+            m_vpAgents[i]->FFWD(offset);
+        }
+    }
+    else
+    {
+        for(unsigned int i = 0; i < m_vpAgents.size(); i++)
+        {
+            m_vpAgents[i]->RWND(-offset);
+        }
+    }
+
+
+
+    for(unsigned int i = 0; i < m_vpAgents.size(); i++)
+    {
+        if(offset > 0)
+        {
+            m_vpAgents[i]->FFWD(offset);
+        }
+        else
+        {
+            m_vpAgents[i]->RWND(offset);
+        }
+        lims.ShowX(m_vpAgents[i]->x() - m_vpAgents[i]->getSize());
+        lims.ShowX(m_vpAgents[i]->x() + m_vpAgents[i]->getSize());
+        lims.ShowY(m_vpAgents[i]->y() - m_vpAgents[i]->getSize());
+        lims.ShowY(m_vpAgents[i]->y() + m_vpAgents[i]->getSize());
+    }
+  
+    MT_Rectangle limsv = MT_RectangleFromBoundingBox(lims);
+    tellObjectLimits(limsv, 0.05);
+
+    zoomTo(limsv);
+}
