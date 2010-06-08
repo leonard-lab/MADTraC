@@ -521,11 +521,13 @@ void MT_GLCanvasBase::doGLDrawing()
     /* happens when we have just released the mouse */
     if(!m_bAutoZoom && m_bFlagMouseUp && m_bZooming)
     {
+        double rect_min = MT_MIN_ZOOM_RECT*
+            (m_CurrentViewport.ymax - m_CurrentViewport.ymin);
         /* want to make sure the specified rectangle is big enough,
          * avoids annoying spurious zooms when you accidentally click
          * the mouse for a very brief instant */
-        if( m_CurrentMouseRect.GetWidth() > MT_MIN_ZOOM_RECT 
-            && m_CurrentMouseRect.GetHeight() > MT_MIN_ZOOM_RECT)
+        if( m_CurrentMouseRect.GetWidth() > rect_min 
+            && m_CurrentMouseRect.GetHeight() > rect_min)
         {
             zoomTo(m_CurrentMouseRect);
         }

@@ -140,8 +140,9 @@ const bool MT_SKIP_BASE_MOUSE = false;
 
 /** @var const int MT_MIN_ZOOM_RECT
     Minimum width or height of a rectangle drawn by the user
-    before a zoom is considered to be requested. */
-const int MT_MIN_ZOOM_RECT = 10;
+    before a zoom is considered to be requested, as a fraction
+    of the current viewport's height. */
+const double MT_MIN_ZOOM_RECT = 0.02;
 
 /** @var const bool MT_DO_BASE_KEY
  * Pass this from the various keyboard functions if you want 
