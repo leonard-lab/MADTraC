@@ -14,13 +14,12 @@
  *  for the robots and gamepad controller.
  *
  */
+#include <vector>            // for std::vector
+#include <string>
+
 
 #include "MT/MT_Robot/robot/SteeredRobot.h"    // base robot class used
 #include "MT/MT_Core/primitives/Color.h"  // for robot colors
-
-#include <vector>            // for std::vector
-#include <string>
-//#include <wx/string.h>       // for wxString
 
 // safely define MT_USE_XML if you want to use XML (recommended)
 #ifndef MT_USE_XML
@@ -60,7 +59,7 @@ const MT_Color MT_RobotColors[] = {MT_Red,
                               MT_Purple, 
                               MT_White};
 
-#if defined(__APPLE__) || defined(__DARWIN__)
+#ifndef _WIN32
 // default robot resource port names
 //   - on OS X these tend to be e.g. /dev/tty.Miabot2-BluetoothSerial-1
 const std::string MT_DefaultPortName[] = {"/dev/tty.mid617-BluetoothSerial-1", 
@@ -70,7 +69,7 @@ const std::string MT_DefaultPortName[] = {"/dev/tty.mid617-BluetoothSerial-1",
                                        "/dev/tty.Miabot5-BluetoothSerial-1", 
                                        "/dev/tty.Miabot6-BluetoothSerial-1", 
                                        "/dev/tty.Miabot7-BluetoothSerial-1"};
-#elif defined(_WIN32)
+#else
 // default robot resource port names - on MSW these tend to be e.g. COM0
 const std::string MT_DefaultPortName[] = {"COM0", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6"};
 #endif

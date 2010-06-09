@@ -6,6 +6,7 @@
  *
  */
 
+#include <string.h>
 #include "stringsupport.h"
 
 bool MT_isdigit(char c)

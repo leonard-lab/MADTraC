@@ -100,7 +100,10 @@ const int MT_FC_NEXT_FRAME = -1;
 
 /* define MT_HAVE_ARTOOLKIT if ARToolKit is available
    for a camera interface */
+#ifndef MT_NO_ARTOOLKIT
 #define MT_HAVE_ARTOOLKIT
+#endif
+
 /* define MT_HAVE_AVT if the Allied Vision Tech (e.g. Guppy)
    drivers are available for a camera interface */
 #define MT_HAVE_AVT

@@ -24,8 +24,9 @@
 /* Depending on the compiler version, this header is in different places.*/
 #ifdef __GNUC__
 
-#define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNU_PATCHLEVEL__)
-#if GCC_VERSION < 40300 /* GCC < 4.3.0 */
+//#define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNU_PATCHLEVEL__)
+//#if GCC_VERSION < 40300 /* GCC < 4.3.0 */
+#ifndef _WIN32
 #include <tr1/memory>
 
 #else /* GCC >= 4.3.0 */

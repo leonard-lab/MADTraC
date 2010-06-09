@@ -5,6 +5,7 @@
  *
  */
 
+#include <stdlib.h>
 #include "MT_JoyStickFrame.h"
 
 #include "MT/MT_Core/fileio/XMLSupport.h"
