@@ -155,12 +155,12 @@ bool PlaySwarmFrame::doMouseCallback(wxMouseEvent& event, double viewport_x, dou
             result = MT_SKIP_BASE_MOUSE; 
         }
     }
-  
+
     bool base_result = MT_FrameBase::doMouseCallback(event,
                                                      viewport_x,
                                                      viewport_y);
     return result && base_result;
-  
+    
 }
 
 bool PlaySwarmFrame::doKeyboardCallback(wxKeyEvent& event)
@@ -337,6 +337,7 @@ void PlaySwarmFrame::onMenuAgentParams(wxCommandEvent& event)
 void PlaySwarmFrame::openPositionFile(const char* filename,
                                       bool start_play)
 {
+#ifdef MT_HAVE_CLF
     if(CLFpp::IsCLF(filename))
     {
         MT_CLFtoAgentReader reader(filename, "x", "y", "z");
@@ -345,6 +346,11 @@ void PlaySwarmFrame::openPositionFile(const char* filename,
     }
     else
     {
+#else
+    if(1)
+    {
+#endif        
+        
 
         MT_ParticleFile file(filename);
   
