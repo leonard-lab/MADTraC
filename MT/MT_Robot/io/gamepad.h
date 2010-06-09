@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 
+#define MT_GAMEPAD_USE_WX
+
+#ifndef MT_GAMEPAD_USE_WX
 #if defined(__APPLE__) || defined(MACOSX) || defined(__DARWIN__)
 
 #define MT_GAMEPAD_MAC
@@ -51,10 +54,15 @@ typedef struct cookie_struct
 
 #elif defined(_WIN32)
 
-#define MT_GAMEPAD_MSW
+#ifndef MT_GAMEPAD_USE_WX
+#define MT_GAMEPAD_USE_WX
+#endif
 
+#endif
+#endif
+
+#ifdef MT_GAMEPAD_USE_WX
 #include <wx/joystick.h>
-
 #endif
 
 // Macro to set a bit of B, masked by M, to the value v
@@ -100,7 +108,7 @@ protected:
     // Function to get a specific cookie value
     int getCookieValue(IOHIDElementCookie Cookie);  
   
-#elif defined MT_GAMEPAD_MSW
+#elif defined MT_GAMEPAD_USE_WX
     wxJoystick myJoystick;
 #endif
 

@@ -7,7 +7,7 @@
 static const unsigned int QUEUE_LENGTH = 25;
 
 MT_HIDGamePad::MT_HIDGamePad()
-#ifdef GAEMPAD_MSW
+#ifdef MT_GAMEPAD_USE_WX
   : myJoystick(wxJOYSTICK1)
 #endif
 {
@@ -21,7 +21,7 @@ MT_HIDGamePad::MT_HIDGamePad()
 #ifdef MT_GAMEPAD_MAC
     xcenter = ycenter = zcenter = wcenter = 0;
     xnorm = ynorm = znorm = wnorm = 1.0/128.0;
-#elif defined(MT_GAMEPAD_MSW)
+#elif defined(MT_GAMEPAD_USE_WX)
     float min = (float) myJoystick.GetXMin();
     float max = (float) myJoystick.GetXMax();
     xcenter = floor(0.5*(min + max));
@@ -76,7 +76,7 @@ bool MT_HIDGamePad::GetStatus()
 {
 #ifdef MT_GAMEPAD_MAC
     return StatusGood;
-#elif defined(MT_GAMEPAD_MSW)
+#elif defined(MT_GAMEPAD_USE_WX)
     return StatusGood && myJoystick.IsOk();
 #endif
 }
@@ -136,7 +136,7 @@ unsigned int MT_HIDGamePad::Init()
   
     (*ButtonQueue)->start(ButtonQueue);
   
-#elif defined MT_GAMEPAD_MSW
+#elif defined MT_GAMEPAD_USE_WX
     
     if(!myJoystick.IsOk())
     {
@@ -372,7 +372,7 @@ void MT_HIDGamePad::Poll()
     PollYAxis();
     PollZAxis();
     PollWAxis();
-#elif defined MT_GAMEPAD_MSW
+#elif defined MT_GAMEPAD_USE_WX
     ButtonStates = myJoystick.GetButtonState();
     wxPoint XYpt = myJoystick.GetPosition();
     X = XYpt.x;
@@ -392,7 +392,7 @@ void MT_HIDGamePad::Poll()
 
     //printf("%d, %d, %d, %d, %f, %f, %f, %f\n", X, Y, W, Z, Xf, Yf, Wf, Zf);
 
-#endif  // MT_GAMEPAD_MSW
+#endif  // MT_GAMEPAD_USE_WX
 
     PollHatState();
     PollU2State();
@@ -583,7 +583,7 @@ int MT_HIDGamePad::PollWAxis()
     return W; 
 }
 
-#elif defined(MT_GAMEPAD_MSW)
+#elif defined(MT_GAMEPAD_USE_WX)
 int MT_HIDGamePad::PollButton1State()
 {
     ButtonStates = myJoystick.GetButtonState();
