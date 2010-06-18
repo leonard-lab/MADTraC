@@ -17,6 +17,7 @@
  *  
  */
 
+#ifndef MT_NO_OPENCV
 #ifdef __APPLE__
   #include <OpenCV/OpenCV.h>
 #else
@@ -24,6 +25,7 @@
   #include <cvaux.h>
   #include <highgui.h>
   #include <ml.h>
+#endif
 #endif
 
 #include <string>
@@ -78,7 +80,11 @@ private:
     unsigned int m_iNumSinceLastFrame;
     std::string m_sFilename;
 
+#ifndef MT_NO_OPENCV    
     CvVideoWriter* m_pVideoWriter;
+#else
+    void* m_pVideoWriter;
+#endif    
 
     void releaseVideoWriter();
 
@@ -128,7 +134,11 @@ public:
      * only the (skip_frames+1)'th frame is written.  saveFrame should
      * be called regardless, as it increments the counter used for the
      * skip mechanism. */
+#ifndef MT_NO_OPENCV
     void saveFrame(const IplImage* frame);
+#else
+    void saveFrame(void* frame){};
+#endif
 
     /** Provides a check to make sure the exporter is properly
      * initialized. */

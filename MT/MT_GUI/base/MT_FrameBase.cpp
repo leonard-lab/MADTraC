@@ -1055,7 +1055,6 @@ void MT_FrameBase::setControlFrameStatusText(const wxString& text)
     }
 }
 
-#ifdef MT_USE_IMAGES
 void MT_FrameBase::saveScreen(char* filename)
 {
 
@@ -1077,8 +1076,6 @@ void MT_FrameBase::saveScreen(char* filename)
     }
 
 }
-
-#endif
 
 void MT_FrameBase::displayCheatSheet()
 {
@@ -1372,6 +1369,7 @@ MT_ControlFrameBase* MT_FrameBase::createControlDialog()
 void MT_FrameBase::makeFileMenu(wxMenu* file_menu)
 {
 
+#ifndef MT_NO_OPENCV    
     file_menu->Append(MT_ID_MENU_FILE_SAVESCREEN, wxT("Save Screen to Image File..."));
     wxFrame::Connect(MT_ID_MENU_FILE_SAVESCREEN,
                      wxEVT_COMMAND_MENU_SELECTED,
@@ -1381,6 +1379,7 @@ void MT_FrameBase::makeFileMenu(wxMenu* file_menu)
     wxFrame::Connect(MT_ID_MENU_FILE_CREATEMOVIE,
                      wxEVT_COMMAND_MENU_SELECTED,
                      wxCommandEventHandler(MT_FrameBase::onMenuFileCreateMovie));
+#endif    
 
     file_menu->Append(wxID_PREFERENCES, wxT("Preferences"));
     wxFrame::Connect(wxID_PREFERENCES, 

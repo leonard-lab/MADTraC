@@ -122,12 +122,12 @@ public:
     /** Updates the values in the controls based on the value
      * returned by MT_DataGroup::GetStringValue
      * @see Update */
-    void UpdateValues();
+    virtual void UpdateValues();
 
     /** Saves the values in the dialog to the data group.  Gets
      * called when the user presses OK or Apply, but can be called
      * manually by code as well. */
-    void WriteValues();
+    virtual void WriteValues();
     
 };
 

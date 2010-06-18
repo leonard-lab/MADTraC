@@ -9,10 +9,6 @@
  *
  */
 
-#ifndef MT_NO_CLF
-#define MT_HAVE_CLF
-#endif
-
 #ifdef MT_HAVE_CLF
 #include "CLFpp.h"
 #endif

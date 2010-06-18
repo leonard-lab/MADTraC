@@ -9,7 +9,10 @@
 
 #include <sys/stat.h>
 
+#ifndef MT_NO_OPENCV
 static int MT_FOURCC = CV_FOURCC('M','J','P','G');
+#endif
+
 static const int MAX_FILENAME_LENGTH = 512;
 
 #ifndef _WIN32
@@ -50,10 +53,12 @@ MT_MovieExporter::~MT_MovieExporter()
 
 void MT_MovieExporter::releaseVideoWriter()
 {
+#ifndef MT_NO_OPENCV    
     if(m_pVideoWriter)
     {
         cvReleaseVideoWriter(&m_pVideoWriter);
     }
+#endif
 }
 
 void MT_MovieExporter::initForCvVideoWriter(const char* filename,
@@ -63,10 +68,12 @@ void MT_MovieExporter::initForCvVideoWriter(const char* filename,
                                          unsigned int skip_frames)
 {
     releaseVideoWriter();
+#ifndef MT_NO_OPENCV    
     m_pVideoWriter = cvCreateVideoWriter(filename, 
                                          MT_FOURCC, 
                                          frames_per_second, 
                                          cvSize(frame_width, frame_height));
+#endif    
     m_iSkip = skip_frames;
     m_sFilename = filename;
     m_METype = MT_ME_CV_VIDEO_WRITER;
@@ -84,6 +91,7 @@ void MT_MovieExporter::initForImageSequence(const char* path,
     m_sFilename = std::string(path) + path_sep + std::string(filename_formatter);
 }
 
+#ifndef MT_NO_OPENCV
 void MT_MovieExporter::saveFrame(const IplImage* frame)
 {
     m_iNumSinceLastFrame++;
@@ -98,11 +106,15 @@ void MT_MovieExporter::saveFrame(const IplImage* frame)
     switch(m_METype)
     {
     case MT_ME_CV_VIDEO_WRITER:
+#ifndef MT_NO_OPENCV        
         cvWriteFrame(m_pVideoWriter, frame);
+#endif        
         break;
     case MT_ME_IMAGE_SEQUENCE:
         sprintf(_filename, m_sFilename.c_str(), m_iFrameNumber);
+#ifndef MT_NO_OPENCV        
         cvSaveImage(_filename, frame);
+#endif        
         break;
     case MT_ME_NONE:
     default:
@@ -111,4 +123,4 @@ void MT_MovieExporter::saveFrame(const IplImage* frame)
     m_iNumSinceLastFrame = 0;
     m_iFrameNumber++;
 }
-
+#endif /* !MT_NO_OPENCV */

@@ -36,7 +36,7 @@ typedef enum
 /** Path separator for this platform.  On Windows = '\', otherwise =
  * '/' */
 #ifdef _WIN32
-const char MT_PathSeparator = '\';
+const char MT_PathSeparator = '\\';
 #else
 const char MT_PathSeparator = '/';
 #endif

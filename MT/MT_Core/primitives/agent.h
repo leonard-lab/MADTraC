@@ -166,7 +166,12 @@ public:
     double getSize() const {return size;};
     void setAspect(double inA){aspect = inA;};
     double getAspect() const {return aspect;};
+    double getSensingRadius() const {return SensingRadius;};
     double getBlindAngle() const {return BlindAngle;};
+
+    std::vector<double> getXHistory(int length = -1);
+    std::vector<double> getYHistory(int length = -1);
+    std::vector<double> getZHistory(int length = -1);    
   
     // Color Functions
     /** Function to set the particle color. */

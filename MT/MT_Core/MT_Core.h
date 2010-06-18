@@ -20,19 +20,8 @@
  */
 
 #ifdef _MSC_VER
-#pragma comment(lib, "highgui200.lib")
-#pragma comment(lib, "cxcore200.lib")
-#pragma comment(lib, "cv200.lib")
-#pragma comment(lib, "wxmsw29ud_gl.lib")
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")
-#pragma comment(lib, "wxmsw29ud_core.lib")
-#pragma comment(lib, "wxbase29ud.lib")
-#pragma comment(lib, "wxtiffd.lib")
-#pragma comment(lib, "wxjpegd.lib")
-#pragma comment(lib, "wxpngd.lib")
-#pragma comment(lib, "wxzlibd.lib")
-#pragma comment(lib, "wxexpatd.lib")
 #pragma comment(lib, "kernel32.lib")
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "gdi32.lib")

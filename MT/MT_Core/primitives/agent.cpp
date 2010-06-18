@@ -103,7 +103,7 @@ void MT_agent::init_buffers(const int length)
 {
     xbuffer = new MT_ringbuffer<double>(length);
     ybuffer = new MT_ringbuffer<double>(length);
-    zbuffer = new MT_ringbuffer<double>(1);
+    zbuffer = new MT_ringbuffer<double>(length);
 }
 
 /** Function to set the dx, dy, and dz values. */
@@ -126,6 +126,7 @@ void MT_agent::integrate()
     dtheta = 0;
     xbuffer->push(x());
     ybuffer->push(y());
+    zbuffer->push(z());
     NNeighbors = 0;
 }
 
@@ -198,4 +199,52 @@ void MT_agent::Reset(double xmin, double xmax, double ymin, double ymax)
     xbuffer->reset();
     ybuffer->reset();
     zbuffer->reset();
+}
+
+std::vector<double> MT_agent::getXHistory(int length)
+{
+    if(length < 0 || length > (int) xbuffer->fullto)
+    {
+        length = xbuffer->fullto;
+    }
+
+    std::vector<double> r;
+    
+    for(int i = 0; i < length; i++)
+    {
+        r.push_back(xbuffer->atrel(i));
+    }
+    return r;
+}
+
+std::vector<double> MT_agent::getYHistory(int length)
+{
+    if(length < 0 || length > (int) ybuffer->fullto)
+    {
+        length = ybuffer->fullto;
+    }
+
+    std::vector<double> r;
+    
+    for(int i = 0; i < length; i++)
+    {
+        r.push_back(ybuffer->atrel(i));
+    }
+    return r;
+}
+
+std::vector<double> MT_agent::getZHistory(int length)
+{
+    if(length < 0 || length > (int) zbuffer->fullto)
+    {
+        length = zbuffer->fullto;
+    }
+
+    std::vector<double> r;
+    
+    for(int i = 0; i < length; i++)
+    {
+        r.push_back(zbuffer->atrel(i));
+    }
+    return r;
 }

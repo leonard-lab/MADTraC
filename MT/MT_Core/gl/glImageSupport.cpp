@@ -34,6 +34,9 @@ void MT_TextureInitForCV(GLuint* texID)
 
 void MT_DisplayCVImage(IplImage* image, float xmin, float xmax, float ymin, float ymax)
 {
+#ifdef MT_NO_OPENCV
+    return;
+#else    
 
     glBindTexture(GL_TEXTURE_2D, g_texID);
     glEnable(GL_TEXTURE_2D);
@@ -136,13 +139,18 @@ void MT_DisplayCVImage(IplImage* image, float xmin, float xmax, float ymin, floa
 #ifdef NEED_POWERS_OF_2
     cvReleaseImage(&image2);
 #endif
+
+#endif /* !MT_NO_OPENCV */    
   
 }
 
 
 int MT_SaveGLBuffer(int width, int height, const char* filename)
 {
-    
+
+#ifdef MT_NO_OPENCV
+    return MT_SAVER_ERROR;
+#else    
     // Save what is currently displayed into dump buffer
     IplImage *img=cvCreateImage(cvSize(width,height),IPL_DEPTH_8U, 3);
     IplImage *img1=cvCreateImage(cvSize(width,height),IPL_DEPTH_8U, 3);
@@ -158,12 +166,14 @@ int MT_SaveGLBuffer(int width, int height, const char* filename)
     cvReleaseImage(&img);
   
     return MT_SAVER_OK;
-  
+#endif /* !MT_NO_OPENCV */  
 }
 
 int MT_GLBufferToIplImage(int width, int height, IplImage* image)
 {
-  
+#ifdef MT_NO_OPENCV
+    return MT_SAVER_ERROR;
+#else  
     if(!image || image->width != width || image->height != height || image->nChannels != 3)
     {
         return MT_SAVER_ERROR;
@@ -177,5 +187,5 @@ int MT_GLBufferToIplImage(int width, int height, IplImage* image)
     cvReleaseImage(&temp_image);
   
     return MT_SAVER_OK;
-  
+#endif /* !MT_NO_OPENCV */  
 }

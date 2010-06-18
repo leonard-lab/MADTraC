@@ -1,4 +1,4 @@
-#ifdef __MSC_VER
+#ifdef _MSC_VER
 /* Manual set up of definitions for Visual Studio
    (unless you can figure out a way to export the
     preprocessor definitions to a post-build event
@@ -21,7 +21,7 @@
 #endif
 
 #ifndef wxUSE_GUI
-#define wxUSE_GUI
+#define wxUSE_GUI 1
 #endif
 
 #ifndef _CRT_SECURE_NO_DEPRECATE

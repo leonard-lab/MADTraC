@@ -60,26 +60,17 @@
 
 /* set up for OpenCV / IPLImage support */
 
-/** @def MT_HAVE_OPENCV
- * Define MT_HAVE_OPENCV if you plan to use OpenCV. 
- * This is a requirement for painting images and 
- * saving the current view to file. */
-#define MT_HAVE_OPENCV
-
 /** @def MT_USE_IMAGES
  * Define MT_USE_IMAGES if you plan to use IPLImages,
  * i.e. to paint a background image on the frame.  Or,
  * conversely, comment this out if you want to build
  * without OpenCV. */
-#ifdef MT_HAVE_OPENCV
+#ifndef MT_NO_OPENCV
 #define MT_USE_IMAGES
 #endif
 
-#ifdef MT_USE_IMAGES
 #include "MT/MT_Core/gl/glImageSupport.h"
 #include "MT/MT_Core/fileio/MovieExporter.h"
-#endif
-
 
 /* constants & definitions */
 
@@ -268,10 +259,10 @@ class MT_GLCanvasBase : public wxGLCanvas
     friend class MT_FrameBase;
 
 private:
-#ifdef MT_USE_IMAGES
+
     GLuint m_itexID;
     IplImage* m_pCurrentImage;
-#endif
+
     bool m_bZooming;
     bool m_bAutoZoom;
     bool m_bIsZoomed;
@@ -400,9 +391,9 @@ public:
                     const wxSize& size = wxDefaultSize);
 
     void doDraw(){m_bNeedDraw = true;};
-#ifdef MT_USE_IMAGES
+
     void setImage(IplImage* image){m_pCurrentImage = image; doDraw();};
-#endif
+
     void setViewport(const MT_Rectangle& requested = MT_BlankRectangle);
 
     virtual ~MT_GLCanvasBase();
@@ -489,11 +480,10 @@ private:
 
     MT_DialogGroup m_DialogGroup;
 
-#ifdef MT_USE_IMAGES
     IplImage* m_pCurrentFrame;
     IplImage* m_pCurrentScreen;
+    
     MT_MovieExporter m_MovieExporter;
-#endif
 
     bool m_bDoTimedEvents;
     bool m_bPaused;
@@ -771,7 +761,6 @@ protected:
      * @see MT_ControlFrameBase */
     void setControlFrameStatusText(const wxString& text);
 
-#ifdef MT_USE_IMAGES
     /** Function to set the image displayed on the canvas. */
     void setImage(IplImage* image){m_pCanvas->setImage(image);};
 
@@ -779,7 +768,6 @@ protected:
      * is NULL then a dialog is displayed asking for the user to
      * specify a file. */
     void saveScreen(char* filename = NULL);
-#endif
 
     /** Create the timer that drives the frame's events.  This method is
      * provided as virtual in case you want to derive your own timer from
