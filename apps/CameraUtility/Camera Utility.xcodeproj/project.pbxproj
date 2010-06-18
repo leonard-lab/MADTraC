@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		378F47EF11A2246A003BF4E8 /* libwx_mac_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 378F47EE11A2246A003BF4E8 /* libwx_mac_static.a */; };
+		378F47F211A2247A003BF4E8 /* libAR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 378F47F011A2247A003BF4E8 /* libAR.a */; };
+		378F47F311A2247A003BF4E8 /* libARvideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 378F47F111A2247A003BF4E8 /* libARvideo.a */; };
 		3797F8261130A3BC006F6055 /* CameraUtility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3797F8181130A219006F6055 /* CameraUtility.cpp */; };
 		3797FAA01130A5F3006F6055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FA9F1130A5F3006F6055 /* AGL.framework */; };
 		3797FAA21130A5F3006F6055 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAA11130A5F3006F6055 /* AppKit.framework */; };
@@ -20,12 +23,12 @@
 		3797FAB31130A61B006F6055 /* libMT_GUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAB01130A61B006F6055 /* libMT_GUI.a */; };
 		3797FAB41130A61B006F6055 /* libMT_Tracking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAB11130A61B006F6055 /* libMT_Tracking.a */; };
 		3797FAB61130A629006F6055 /* OpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3797FAB51130A629006F6055 /* OpenCV.framework */; };
-		83BB65D5116A2AD40078373A /* libARvideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83BB65D3116A2AD40078373A /* libARvideo.a */; };
-		83BB65D6116A2AD40078373A /* libAR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83BB65D4116A2AD40078373A /* libAR.a */; };
-		83BB65E9116A2B230078373A /* libwx_mac_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83BB65E8116A2B230078373A /* libwx_mac_static.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		378F47EE11A2246A003BF4E8 /* libwx_mac_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwx_mac_static.a; path = ../../../wxLib/lib/libwx_mac_static.a; sourceTree = SOURCE_ROOT; };
+		378F47F011A2247A003BF4E8 /* libAR.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAR.a; path = ../../../ARlib/lib/libAR.a; sourceTree = SOURCE_ROOT; };
+		378F47F111A2247A003BF4E8 /* libARvideo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libARvideo.a; path = ../../../ARlib/lib/libARvideo.a; sourceTree = SOURCE_ROOT; };
 		3797F8181130A219006F6055 /* CameraUtility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CameraUtility.cpp; sourceTree = "<group>"; };
 		3797F8191130A219006F6055 /* CameraUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraUtility.h; sourceTree = "<group>"; };
 		3797F81F1130A3AA006F6055 /* Camera Utility.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Camera Utility.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,9 +45,6 @@
 		3797FAB01130A61B006F6055 /* libMT_GUI.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_GUI.a; path = ../../lib/libMT_GUI.a; sourceTree = SOURCE_ROOT; };
 		3797FAB11130A61B006F6055 /* libMT_Tracking.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMT_Tracking.a; path = ../../lib/libMT_Tracking.a; sourceTree = SOURCE_ROOT; };
 		3797FAB51130A629006F6055 /* OpenCV.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenCV.framework; path = ../../OpenCV.framework; sourceTree = SOURCE_ROOT; };
-		83BB65D3116A2AD40078373A /* libARvideo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libARvideo.a; path = ../../../../../Shared/src/ARToolKit/lib/libARvideo.a; sourceTree = SOURCE_ROOT; };
-		83BB65D4116A2AD40078373A /* libAR.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAR.a; path = ../../../../../Shared/src/ARToolKit/lib/libAR.a; sourceTree = SOURCE_ROOT; };
-		83BB65E8116A2B230078373A /* libwx_mac_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwx_mac_static.a; path = "../../../../../Shared/src/wxMac-2.8.10/src/build/Development/libwx_mac_static.a"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,9 +64,9 @@
 				3797FAB31130A61B006F6055 /* libMT_GUI.a in Frameworks */,
 				3797FAB41130A61B006F6055 /* libMT_Tracking.a in Frameworks */,
 				3797FAB61130A629006F6055 /* OpenCV.framework in Frameworks */,
-				83BB65D5116A2AD40078373A /* libARvideo.a in Frameworks */,
-				83BB65D6116A2AD40078373A /* libAR.a in Frameworks */,
-				83BB65E9116A2B230078373A /* libwx_mac_static.a in Frameworks */,
+				378F47EF11A2246A003BF4E8 /* libwx_mac_static.a in Frameworks */,
+				378F47F211A2247A003BF4E8 /* libAR.a in Frameworks */,
+				378F47F311A2247A003BF4E8 /* libARvideo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,9 +76,9 @@
 		3797F7FE1130A1DF006F6055 = {
 			isa = PBXGroup;
 			children = (
-				83BB65E8116A2B230078373A /* libwx_mac_static.a */,
-				83BB65D3116A2AD40078373A /* libARvideo.a */,
-				83BB65D4116A2AD40078373A /* libAR.a */,
+				378F47F011A2247A003BF4E8 /* libAR.a */,
+				378F47F111A2247A003BF4E8 /* libARvideo.a */,
+				378F47EE11A2246A003BF4E8 /* libwx_mac_static.a */,
 				3797FAB51130A629006F6055 /* OpenCV.framework */,
 				3797FAAF1130A61B006F6055 /* libMT_Core.a */,
 				3797FAB01130A61B006F6055 /* libMT_GUI.a */,
@@ -218,12 +218,16 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../../ARlib/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../../wxLib/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../../../../Shared/src/ARToolKit/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../../../../Shared/src/wxMac-2.8.10/src/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../../wxLib/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../../ARlib/lib\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Carbon,
@@ -262,12 +266,16 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../../../ARlib/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../../../wxLib/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../../../../Shared/src/ARToolKit/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../../../../Shared/src/wxMac-2.8.10/src/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../../wxLib/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../../ARlib/lib\"";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Carbon,

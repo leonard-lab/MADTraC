@@ -90,6 +90,9 @@
 		3797F68A11305C61006F6055 /* MT_Core.h in Headers */ = {isa = PBXBuildFile; fileRef = 3797F68911305C61006F6055 /* MT_Core.h */; };
 		3797F6AD113085AF006F6055 /* MT_Tracking.h in Headers */ = {isa = PBXBuildFile; fileRef = 3797F6AC113085AF006F6055 /* MT_Tracking.h */; };
 		37AD766D11370CAC001DF816 /* YABlobber.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3797F2E9112DD8C0006F6055 /* YABlobber.cpp */; };
+		37BA6FC211B85DF200DF4F11 /* CLFSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37BA6FC011B85DF200DF4F11 /* CLFSupport.cpp */; };
+		37BA705D11BD4AA200DF4F11 /* stringsupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 37BA705B11BD4AA200DF4F11 /* stringsupport.h */; };
+		37BA705E11BD4AA200DF4F11 /* stringsupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37BA705C11BD4AA200DF4F11 /* stringsupport.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -313,6 +316,10 @@
 		3797F6AB1130859C006F6055 /* MT_Robot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MT_Robot.h; sourceTree = "<group>"; };
 		3797F6AC113085AF006F6055 /* MT_Tracking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MT_Tracking.h; sourceTree = "<group>"; };
 		3797F6BE1130889F006F6055 /* MT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MT.h; sourceTree = "<group>"; };
+		37BA6FBF11B85DF200DF4F11 /* CLFSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CLFSupport.h; sourceTree = "<group>"; };
+		37BA6FC011B85DF200DF4F11 /* CLFSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CLFSupport.cpp; sourceTree = "<group>"; };
+		37BA705B11BD4AA200DF4F11 /* stringsupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringsupport.h; sourceTree = "<group>"; };
+		37BA705C11BD4AA200DF4F11 /* stringsupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stringsupport.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -417,6 +424,8 @@
 				3797F255112DD8C0006F6055 /* ParticleFile.h */,
 				3797F256112DD8C0006F6055 /* XMLSupport.cpp */,
 				3797F257112DD8C0006F6055 /* XMLSupport.h */,
+				37BA6FBF11B85DF200DF4F11 /* CLFSupport.h */,
+				37BA6FC011B85DF200DF4F11 /* CLFSupport.cpp */,
 			);
 			path = fileio;
 			sourceTree = "<group>";
@@ -462,6 +471,8 @@
 			children = (
 				3797F271112DD8C0006F6055 /* mathsupport.cpp */,
 				3797F272112DD8C0006F6055 /* mathsupport.h */,
+				37BA705B11BD4AA200DF4F11 /* stringsupport.h */,
+				37BA705C11BD4AA200DF4F11 /* stringsupport.cpp */,
 			);
 			path = support;
 			sourceTree = "<group>";
@@ -774,6 +785,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37BA705D11BD4AA200DF4F11 /* stringsupport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -999,6 +1011,8 @@
 				3797F38E112DDAFD006F6055 /* tinyxmlerror.cpp in Sources */,
 				3797F38F112DDAFD006F6055 /* tinyxmlparser.cpp in Sources */,
 				3797F390112DDAFD006F6055 /* XMLSupport.cpp in Sources */,
+				37BA6FC211B85DF200DF4F11 /* CLFSupport.cpp in Sources */,
+				37BA705E11BD4AA200DF4F11 /* stringsupport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1123,9 +1137,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				AR_INC = "~/src/ARlib/include";
+				CLF_INC = "~/src/CLF/CPP/include";
 				COPY_PHASE_STRIP = NO;
-				HEADER_SEARCH_PATHS = $WX_INC;
-				USER_HEADER_SEARCH_PATHS = .;
+				HDF5_INC = /opt/local/include;
+				HDF5_LIB = /opt/local/lib;
+				HEADER_SEARCH_PATHS = (
+					$HDF5_INC,
+					$WX_INC,
+				);
+				LIBRARY_SEARCH_PATHS = $HDF5_LIB;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				USER_HEADER_SEARCH_PATHS = "$CLF_INC .";
 				WX_CXX_FLAGS = "-D__WX__ -DNO_GCC_PRAGMA -D__WXMAC__ -DwxUSE_BASE=1 -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -D__WXMAC_XCODE__=1 -D__WXDEBUG__=1";
 				WX_INC = "~/src/wxLib/include";
 			};
@@ -1135,9 +1157,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				AR_INC = "~/src/ARlib/include";
+				CLF_INC = "~/src/CLF/CPP/include";
 				COPY_PHASE_STRIP = YES;
-				HEADER_SEARCH_PATHS = $WX_INC;
-				USER_HEADER_SEARCH_PATHS = .;
+				HDF5_INC = /opt/local/include;
+				HDF5_LIB = /opt/local/lib;
+				HEADER_SEARCH_PATHS = (
+					$HDF5_INC,
+					$WX_INC,
+				);
+				LIBRARY_SEARCH_PATHS = $HDF5_LIB;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				USER_HEADER_SEARCH_PATHS = "$CLF_INC .";
 				WX_CXX_FLAGS = "-D__WX__ -DNO_GCC_PRAGMA -D__WXMAC__ -DwxUSE_BASE=1 -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES -D__WXMAC_XCODE__=1 -D__WXDEBUG__=1";
 				WX_INC = "~/src/wxLib/include";
 			};
@@ -1183,6 +1213,7 @@
 				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				GCC_PREPROCESSOR_DEFINITIONS = MY_TEST;
