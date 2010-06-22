@@ -36,3 +36,7 @@ if(MT_HAVE_OPENCV AND NOT MT_OPENCV_FRAMEWORK)
   link_directories(${MT_OPENCV_LIB_DIR})  
 endif()
 
+if(MT_HAVE_ARTK)
+  include_directories(${MT_ARTK_INCLUDE})
+  add_definitions(-DMT_HAVE_ARTK)
+endif()  
