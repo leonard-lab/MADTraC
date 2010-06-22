@@ -247,7 +247,8 @@ void PlaySwarmFrame::handleOpenWithFile(const wxString& filename)
 
 void PlaySwarmFrame::initUserData()
 {
-    m_Server.doInit();
+    /* The server should be disabled until it's working. */
+    /* m_Server.doInit(); */
   
     m_pPreferences->AddBool("Show Tails", &m_bTails);
     m_pPreferences->AddBool("Show Occlusions", &m_bOcclusions);
