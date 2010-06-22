@@ -28,9 +28,11 @@
    parameter settings but increases the executable size. */
  
 #if defined(__APPLE__) || defined(MACOSX)
-//#define CAMERA_CAPTURE_NONE
+#ifdef MT_HAVE_ARTK
 #define MT_CAMERA_CAPTURE_ARTOOLKIT
-//#define CAMERA_CAPTURE_OPENCV
+#else
+#define CAMERA_CAPTURE_OPENCV
+#endif
 
 // KUT EDIT: With Windows, OpenCV is used by default.
 #else
@@ -99,24 +101,21 @@ const int MT_FC_NEXT_FRAME = -1;
 /** work-in-progress below *********************************/
 
 /* define MT_HAVE_ARTOOLKIT if ARToolKit is available
-   for a camera interface */
-#ifndef MT_NO_ARTOOLKIT
+   for a camera interface
+   MT_HAVE_ARTK should be specified at build time by the compiler if
+   ARTK is available on this system. */
+#ifdef MT_HAVE_ARTK
 #define MT_HAVE_ARTOOLKIT
 #endif
 
 /* define MT_HAVE_AVT if the Allied Vision Tech (e.g. Guppy)
-   drivers are available for a camera interface */
-#define MT_HAVE_AVT
+   drivers are available for a camera interface
+   This should be specified at build-time, e.g. by CMake */
 
 /* MT_HAVE_AVT should be automatically disabled if this isn't a
  * windows machine.  */
 #ifndef WIN32
 #undef MT_HAVE_AVT
-#endif
-
-/* for now we're not using ARTK on windows */
-#ifdef WIN32
-#undef MT_HAVE_ARTOOLKIT
 #endif
 
 typedef enum
