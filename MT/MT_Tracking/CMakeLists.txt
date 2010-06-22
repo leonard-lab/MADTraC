@@ -42,7 +42,7 @@ set(capture_srcs
 set(cv_srcs
   ./cv/MT_BlobExtras.cpp             ./cv/MT_BlobExtras.h
   ./cv/MT_HungarianMatcher.cpp       ./cv/MT_HungarianMatcher.h
-  ./cv/MT_MakeBackgroundFrame.h      ./cv/MT_MakeBackgroundFrame.h) 
+  ./cv/MT_MakeBackgroundFrame.cpp      ./cv/MT_MakeBackgroundFrame.h) 
 set(dialogs_srcs
   ./dialogs/MT_CreateBackgroundDialog.cpp
   ./dialogs/MT_CreateBackgroundDialog.h)
