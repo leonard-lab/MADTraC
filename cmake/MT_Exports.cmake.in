@@ -60,4 +60,10 @@ else(MT_HAVE_ARTK)
   unset(MT_ARTK_LIB CACHE)
 endif(MT_HAVE_ARTK)
 
+set(MT_HAVE_AVT ${WITH_AVT})
+if(MT_HAVE_AVT)
+  set(MT_AVT_INC "${AVT_INC}" CACHE PATH "AVT Include Path")
+  set(MT_AVT_LIB "${AVT_LIB}" CACHE STRING "AVT Library")
+endif(MT_HAVE_AVT)  
+
 set(MT_USE_WX_JOYSTICK ${MT_USE_WX_JOYSTICK})

@@ -43,7 +43,7 @@ endif(OPENGL_FOUND)
 
 ##################################################
 #  HDF5 Support
-option(WITH_CLF "Build with Couzin Lab File support" ON)
+option(WITH_CLF "Build with Couzin Lab File support" OFF)
 
 # Initial guesses on where CLF might be
 if(MSVC)    # - windows
@@ -172,29 +172,55 @@ if(WITH_OPENCV)
     endif(NOT HAVE_OPENCV_FRAMEWORK)
 
   else(NOT MSVC)
-    set(OPENCV_ROOT "C:/Program\ Files/OpenCV/" CACHE PATH "OpenCV Root Directory")
-    if(NOT IS_DIRECTORY ${OPENCV_ROOT})
-      message(SEND_ERROR "Set OPENCV_ROOT to the OpenCV root directory")
-    endif()
-    set(OPENCV_INC ${OPENCV_ROOT}/cv/include)
-    set(OPENCV_LIBS_DIR ${OPENCV_ROOT}/lib)
-    if(EXISTS ${OPENCV_LIBS_DIR}/cxcore.lib)
-      set(OPENCV_LIBS
+    set(CV_NOT_FOUND ON)
+    
+    find_package(OpenCV REQUIRED)
+    if(OpenCV_FOUND)
+      set(CV_NOT_FOUND OFF)
+      set(OPENCV_INC ${OpenCV_INCLUDE_DIRS})
+      set(OPENCV_LIBS_DIR ${OpenCV_LIB_DIR})
+      set(OPENCV_LIBS_TMP ${OpenCV_LIBS})
+      # filter out extra information in the list, matches on e.g. cv210.lib,
+      #   cv200.lib, cv.lib, but not cv210d.lib and not release, debug, etc.
+      foreach(l IN LISTS OPENCV_LIBS_TMP)
+        if(("${l}" MATCHES "^cv*") OR
+            ("${l}" MATCHES "^cvaux*") OR
+            ("${1}" MATCHES "^cxcore*") OR
+            ("${l}" MATCHES "^highgui*") OR
+            ("${l}" MATCHES "^ml*") OR
+            ("${l}" MATCHES "^opencv_ffmpeg*") )
+          if(NOT "${l}" MATCHES "d$")
+            list(APPEND OPENCV_LIBS ${OPENCV_LIBS_DIR}/Release/${l}.lib)
+          endif()
+        endif()
+      endforeach()
+    endif(OpenCV_FOUND)
+
+    if(CV_NOT_FOUND)
+      set(OPENCV_ROOT "C:/src/OpenCV/" CACHE PATH "OpenCV Root Directory")
+      if(NOT IS_DIRECTORY ${OPENCV_ROOT})
+        message(SEND_ERROR "Set OPENCV_ROOT to the OpenCV root directory")
+      endif()
+      set(OPENCV_INC ${OPENCV_ROOT}/cv/include)
+      set(OPENCV_LIBS_DIR ${OPENCV_ROOT}/lib)
+      if(EXISTS ${OPENCV_LIBS_DIR}/cxcore.lib)
+        set(OPENCV_LIBS
         ${OPENCV_LIBS_DIR}/cxcore.lib
         ${OPENCV_LIBS_DIR}/highgui.lib
         ${OPENCV_LIBS_DIR}/cv.lib
         ${OPENCV_LIBS_DIR}/cvaux.lib)        
-    else()
-      if(EXISTS ${OPENCV_LIB_DIR}/cxcore200.lib)
-        set(OPENCV_LIBS
-          ${OPENCV_LIBS_DIR}/cxcore200.lib
-          ${OPENCV_LIBS_DIR}/highgui200.lib
-          ${OPENCV_LIBS_DIR}/cv200.lib
-          ${OPENCV_LIBS_DIR}/cvaux200.lib)        
       else()
-        message("You will need to manually set up OpenCV link directories in your project.")
+        if(EXISTS ${OPENCV_LIB_DIR}/cxcore200.lib)
+          set(OPENCV_LIBS
+            ${OPENCV_LIBS_DIR}/cxcore200.lib
+            ${OPENCV_LIBS_DIR}/highgui200.lib
+            ${OPENCV_LIBS_DIR}/cv200.lib
+            ${OPENCV_LIBS_DIR}/cvaux200.lib)        
+        else()
+          message("You will need to manually set up OpenCV link directories in your project.")
+        endif()
       endif()
-    endif()
+    endif(CV_NOT_FOUND)
   endif(NOT MSVC)  
 
   set(OPENCV_INC ${OPENCV_INC} CACHE PATH "OpenCV include directory")
@@ -244,8 +270,31 @@ else(NOT AUTO_FIND_WX)
     set(wxWidgets_USE_STATIC ON)
     set(wxWidgets_USE_DEBUG OFF)
     set(wxWidgets_USE_UNICODE OFF)
-  endif(NOT MSVC)  
-  find_package(wxWidgets COMPONENTS core base gl net REQUIRED)
+  endif(NOT MSVC)
+
+  if(MSVC)
+    find_path(WX_ROOT
+      NAMES include/wx/wx.h
+      PATHS
+        $ENV{wxWidgets_ROOT_DIR}
+        $ENV{WXWIN}
+        c:/
+        d:/
+        c:/src
+        d:/src
+        $ENV{ProgramFiles}
+      PATH_SUFFIXES
+        wxWidgets-2.8.10
+        wxWidgets-2.8.11
+        wxWidgets-2.9.0
+        wxWidgets
+    )
+    set(WX_ROOT "${WX_ROOT}" CACHE PATH "wxWidgets root path")
+    set(ENV{WXWIN} "${WX_ROOT}")
+  endif(MSVC)
+  
+  find_package(wxWidgets COMPONENTS core base gl net)  
+
   if(wxWidgets_FOUND)
     set(WX_INCLUDE ${wxWidgets_INCLUDE_DIRS})
     set(WX_LIB ${wxWidgets_LIBRARIES})
@@ -293,7 +342,37 @@ if(WITH_ARTK)
       message(WARNING "You need to specify ARTK_LIB and ARTK_INCLUDE manually.")
     endif()
   endif(OS_X)
-endif(WITH_ARTK)  
+endif(WITH_ARTK)
+
+##################################################
+# AVT Support
+if(MSVC)
+  option(WITH_AVT "Build with Allied Vision Tech camera support (needs AVTFirePackage)" OFF)
+
+  if(WITH_AVT)
+    find_path(AVT_ROOT
+      NAMES FireGrab/Lib/FGCamera.h
+      PATHS
+        "c:/Program Files/"
+        "c:/Program Files (x86)/"
+      PATH_SUFFIXES
+        "Allied Vision Technologies/FirePackage64"
+        "Allied Vision Technologies/FirePackage"        
+    )
+    set(AVT_ROOT "${AVT_ROOT}" CACHE PATH "AVT API Root")
+    if(IS_DIRECTORY "${AVT_ROOT}/FireGrab/Lib32")
+      set(AVT_LIB "${AVT_ROOT}/FireGrab/Lib32/FGCamera.lib")
+    else()
+      set(AVT_LIB "${AVT_ROOT}/FireGrab/Lib/FGCamera.lib")
+    endif()
+    set(AVT_LIB "${AVT_LIB}" CACHE STRING "AVT Library")
+    set(AVT_INC "${AVT_ROOT}/FireGrab/Lib/" CACHE PATH "AVT Include Directory")
+    add_definitions(-DMT_HAVE_AVT)
+    include_directories("${AVT_INC}")
+      
+  endif(WITH_AVT)
+  
+endif(MSVC)
 
 if(OS_X)
   option(MT_USE_WX_JOYSTICK "Use WX Joystick API" OFF)

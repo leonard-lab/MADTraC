@@ -32,7 +32,10 @@ if(MT_HAVE_ARTK)
 endif(MT_HAVE_ARTK)
 if(MT_HAVE_OPENCV)
   include_directories(${MT_OPENCV_INC})
-endif(MT_HAVE_OPENCV)  
+endif(MT_HAVE_OPENCV)
+if(MT_HAVE_AVT)
+  include_directories(${MT_AVT_INC})
+endif(MT_HAVE_AVT)  
 
 ######################################################################
 # Preprocessor definitions
@@ -49,10 +52,13 @@ if(MT_HAVE_OPENCV_FRAMEWORK)
 endif(MT_HAVE_OPENCV_FRAMEWORK)
 if(MT_HAVE_OPENCV)
   add_definitions(-DMT_HAVE_OPENCV)
-endif(MT_HAVE_OPENCV)  
+endif(MT_HAVE_OPENCV)
+if(MT_HAVE_AVT)
+  add_definitions(-DMT_HAVE_AVT)
+endif(MT_HAVE_AVT)  
 if(MT_USE_WX_JOYSTICK)
   add_definitions(-DMT_GAMEPAD_USE_WX)
-endif(MT_USE_WX_JOYSTICK)  
+endif(MT_USE_WX_JOYSTICK)
 
 ######################################################################
 # Library setup
@@ -64,10 +70,10 @@ if(NOT MSVC)
   set(MT_TRACKING_LIBS ${MT_GUI_LIBS} ${MT_LIBS_DIR}/libMT_Tracking.a)
   set(MT_ROBOT_LIBS ${MT_TRACKING_LIBS} ${MT_LIBS_DIR}/libMT_Robot.a)
 else(NOT MSVC)
-  set(MT_CORE_LIBS ${MT_LIBS_DIR}/MT_Core.lib)
-  set(MT_GUI_LIBS ${MT_CORE_LIBS} ${MT_LIBS_DIR}/MT_GUI.lib)
-  set(MT_TRACKING_LIBS ${MT_GUI_LIBS} ${MT_LIBS_DIR}/MT_Tracking.lib)
-  set(MT_ROBOT_LIBS ${MT_TRACKING_LIBS} ${MT_LIBS_DIR}/MT_Robot.lib)
+  set(MT_CORE_LIBS ${MT_LIBS_DIR}/Release/MT_Core.lib)
+  set(MT_GUI_LIBS ${MT_CORE_LIBS} ${MT_LIBS_DIR}/Release/MT_GUI.lib)
+  set(MT_TRACKING_LIBS ${MT_GUI_LIBS} ${MT_LIBS_DIR}/Release/MT_Tracking.lib)
+  set(MT_ROBOT_LIBS ${MT_TRACKING_LIBS} ${MT_LIBS_DIR}/Release/MT_Robot.lib)
 endif(NOT MSVC)  
 
 ##### MT_Core extra libraries
@@ -93,7 +99,11 @@ set(MT_TRACKING_EXTRA_LIBS "${MT_GUI_EXTRA_LIBS}")
 
 if(MT_HAVE_ARTK)
   set(MT_TRACKING_EXTRA_LIBS "${MT_TRACKING_EXTRA_LIBS};${MT_ARTK_LIB}")
-endif(MT_HAVE_ARTK)  
+endif(MT_HAVE_ARTK)
 
-#### MT_Tracking extra libraries
+if(MT_HAVE_AVT)
+  set(MT_TRACKING_EXTRA_LIBS "${MT_TRACKING_EXTRA_LIBS};${MT_AVT_LIB}")
+endif(MT_HAVE_AVT)  
+
+#### MT_Robot extra libraries
 set(MT_ROBOT_EXTRA_LIBS "${MT_TRACKING_EXTRA_LIBS}")
