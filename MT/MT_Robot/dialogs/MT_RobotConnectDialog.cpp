@@ -6,6 +6,7 @@
  */
 
 #include "MT_RobotConnectDialog.h"
+#include "MT/MT_GUI/support/wxSupport.h"
 
 /* sizes vary a little depending upon implementation:
  *  STATUS_WIDTH = width of the space to the left of the Connect / OK buttons,
@@ -58,7 +59,7 @@ MT_RobotConnectDialog::MT_RobotConnectDialog(MT_AllRobotContainer* inRobots,
     {
         
         // leave lots of space for a long port name
-        RobotPortCtrl[i] = new wxTextCtrl(this, -1, TheRobots->PortName[i], wxDefaultPosition, wxSize(300,20));
+        RobotPortCtrl[i] = new wxTextCtrl(this, -1, MT_StringToWxString(TheRobots->PortName[i]), wxDefaultPosition, wxSize(300,20));
         // each individual check box does not get a label
         RobotConnectChk[i] = new wxCheckBox(this, -1, wxT(""));
     
@@ -82,7 +83,7 @@ MT_RobotConnectDialog::MT_RobotConnectDialog(MT_AllRobotContainer* inRobots,
         }
     
         // the robot names are static, no need to refer to it elsewhere
-        Grid->Add(new wxStaticText(this, -1, TheRobots->RobotName[i]));
+        Grid->Add(new wxStaticText(this, -1, MT_StringToWxString(TheRobots->RobotName[i])));
         Grid->Add(RobotPortCtrl[i]);
         Grid->Add(RobotConnectChk[i],0,wxALIGN_CENTER);   // we want these to be centered
         Grid->Add(RobotStatus[i],0,wxALIGN_CENTER);       // these too
@@ -131,7 +132,7 @@ void MT_RobotConnectDialog::OnOKButtonClicked(wxCommandEvent& WXUNUSED(event))
     // Store the port names
     for(unsigned int i = 0; i < MT_MAX_NROBOTS; i++)
     {
-        TheRobots->PortName[i] = RobotPortCtrl[i]->GetValue();
+        TheRobots->PortName[i] = RobotPortCtrl[i]->GetValue().mb_str();
     }
   
     /* handle destruction properly */
@@ -158,13 +159,13 @@ void MT_RobotConnectDialog::OnConnectButtonClicked(wxCommandEvent& WXUNUSED(even
             if(!(TheRobots->IsPhysical(i) && TheRobots->IsConnected(i)))
             {
                 // Let the user know what's going on
-                ConnectStatus->SetLabel(wxT("Attempting to connect to ") + TheRobots->RobotName[i]);
+                ConnectStatus->SetLabel(wxT("Attempting to connect to ") + MT_StringToWxString(TheRobots->RobotName[i]));
                 // Calling Update() makes sure the message shows up
                 Update();
         
                 // Try to connect
                 wxString Port = RobotPortCtrl[i]->GetValue();
-                MT_SteeredRobot* newBot = new MT_SteeredRobot(Port.c_str());
+                MT_SteeredRobot* newBot = new MT_SteeredRobot(Port.mb_str());
         
                 // clear the status area
                 ConnectStatus->SetLabel(wxT(""));

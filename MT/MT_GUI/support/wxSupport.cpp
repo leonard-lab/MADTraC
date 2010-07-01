@@ -68,11 +68,11 @@ wxString MT_UIntToBitString(unsigned int bits, unsigned int Nbits)
     {
         if(bits & (1 << i))
         {
-            OutText = "1" + OutText;
+            OutText = wxT("1") + OutText;
         }
         else
         {
-            OutText = "0" + OutText;
+            OutText = wxT("0") + OutText;
         }
     }
   
@@ -127,14 +127,14 @@ double MT_ClampTextCtrlFloat(wxTextCtrl* TextBox, double min_val, double max_val
   
     if(value > max_val)
     {
-        ctrlstring.Printf(format,max_val);
+        ctrlstring.Printf((wxChar *)format,max_val);
         TextBox->SetValue(ctrlstring);
         return max_val;
     }
   
     if(value < min_val)
     {
-        ctrlstring.Printf(format,min_val);
+        ctrlstring.Printf((wxChar *)format,min_val);
         TextBox->SetValue(ctrlstring);
         return min_val;
     }
@@ -160,20 +160,20 @@ int MT_ClampTextCtrlInt(wxTextCtrl* TextBox, int min_val, int max_val, const cha
   
     if(value > max_val)
     {
-        ctrlstring.Printf(format,max_val);
+        ctrlstring.Printf((wxChar *)format,max_val);
         TextBox->SetValue(ctrlstring);
         return max_val;
     }
   
     if(value < min_val)
     {
-        ctrlstring.Printf(format,min_val);
+        ctrlstring.Printf((wxChar *)format,min_val);
         TextBox->SetValue(ctrlstring);
         return min_val;
     }
   
     // if not clamped, make sure we get an int
-    ctrlstring.Printf(format, value_int);
+    ctrlstring.Printf((wxChar *)format, value_int);
     TextBox->SetValue(ctrlstring);  
     return (float) value;
 }
@@ -286,7 +286,7 @@ wxArrayString MT_StringVectorToWxArrayString(std::vector<string> strings)
   
     for(unsigned int i = 0; i < strings.size(); i++)
     {
-        result.Add(strings[i]);
+        result.Add(MT_StringToWxString(strings[i]));
     }
   
     return result;
@@ -294,17 +294,17 @@ wxArrayString MT_StringVectorToWxArrayString(std::vector<string> strings)
 
 wxString MT_ReplaceSpaces(wxString string_to_fix, const char* replace_char)
 {
-    char* space_char = " ";
+    wxChar* space_char = wxT(" ");
     wxString return_val = string_to_fix;
-    return_val.Replace(space_char, replace_char);
+    return_val.Replace(space_char, (wxChar *)replace_char);
     return return_val;
 }
 
 wxString MT_CharToSpace(wxString string_to_fix, const char* replace_char)
 {
-    char* space_char = " ";
+    wxChar* space_char = wxT(" ");
     wxString return_val = string_to_fix;
-    return_val.Replace(replace_char, space_char);
+    return_val.Replace((wxChar *)replace_char, space_char);
     return return_val;
 }
 
@@ -319,9 +319,9 @@ wxString MT_GetApplicationResourcePath(wxString filename, wxString subdir)
     ui_path[0] = '\0';
   
     CFURLRef ref = CFBundleCopyResourceURL(CFBundleGetMainBundle(),
-                                           CFStringCreateWithCString(NULL, root.c_str(), kCFStringEncodingMacRoman),
-                                           CFStringCreateWithCString(NULL, extension.c_str(), kCFStringEncodingMacRoman),
-                                           CFStringCreateWithCString(NULL, subdir.c_str(), kCFStringEncodingMacRoman) );
+                                           CFStringCreateWithCString(NULL, root.mb_str(), kCFStringEncodingMacRoman),
+                                           CFStringCreateWithCString(NULL, extension.mb_str(), kCFStringEncodingMacRoman),
+                                           CFStringCreateWithCString(NULL, subdir.mb_str(), kCFStringEncodingMacRoman) );
     if(CFURLGetFileSystemRepresentation (ref,
                                          true,
                                          ui_path,
@@ -331,7 +331,7 @@ wxString MT_GetApplicationResourcePath(wxString filename, wxString subdir)
         unsigned int i = 0;
         while((i < MAX_PATH_LENGTH) && (ui_path[i] != '\0'))
         {
-            result = result + (char) ui_path[i++];
+            result = result + (wxChar) ui_path[i++];
         }    
         return result;
     }
@@ -350,7 +350,7 @@ wxString MT_GetApplicationResourcePath(wxString filename, wxString subdir)
 
 wxString MT_wxStringFromTextFile(wxString filename)
 {
-    FILE* fp = fopen(filename.c_str(),"r");
+    FILE* fp = fopen(filename.mb_str(),"r");
     if(!fp)
     {
         return wxT("Error opening or reading from ") + filename + wxT("\n");
@@ -362,7 +362,7 @@ wxString MT_wxStringFromTextFile(wxString filename)
     while(!feof(fp))
     {
         fscanf(fp, "%c", &t);
-        result = result + t;
+        result = result + (wxChar) t;
     }
   
     return result;
@@ -412,4 +412,14 @@ bool MT_isValidFilePath(const wxString& path, const wxArrayString& acceptable_fo
     }
 
     return true;
+}
+
+wxString MT_StringToWxString(const std::string& instring)
+{
+#ifdef wxUSE_UNICODE
+    wxString result(instring.c_str(), wxConvUTF8);
+    return result;
+#else
+    return instring.c_str();
+#endif    
 }

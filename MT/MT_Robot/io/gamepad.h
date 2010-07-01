@@ -3,8 +3,6 @@
 
 #include <stdio.h>
 
-#define MT_GAMEPAD_USE_WX
-
 #ifndef MT_GAMEPAD_USE_WX
 #if defined(__APPLE__) || defined(MACOSX) || defined(__DARWIN__)
 

@@ -20,7 +20,12 @@ MT_DataGroupDialog::MT_DataGroupDialog(MT_DataGroup* datagroup,
                                        void (*pcallbackfunction)(void *ParentObject), 
                                        const wxPoint& pos, 
                                        const wxSize& size)
-  : MT_DialogWithUpdate(parent, wxID_ANY, datagroup->GetGroupName(), pos, size, wxDEFAULT_DIALOG_STYLE)
+  : MT_DialogWithUpdate(parent,
+                        wxID_ANY,
+                        MT_StringToWxString(datagroup->GetGroupName()),
+                        pos,
+                        size,
+                        wxDEFAULT_DIALOG_STYLE)
 {
     m_pCallBackFunction = pcallbackfunction;
     m_pDataGroup = datagroup;
@@ -55,7 +60,9 @@ MT_DataGroupDialog::MT_DataGroupDialog(MT_DataGroup* datagroup,
             continue;
         }
 
-        grid0->Add(new wxStaticText(this, -1, m_pDataGroup->GetNameString(i)));
+        grid0->Add(new wxStaticText(this,
+                                    -1,
+                                    MT_StringToWxString(m_pDataGroup->GetNameString(i))));
         switch(m_pDataGroup->GetDataType(i))
         {
             /* for bools, make a check box */
@@ -77,7 +84,7 @@ MT_DataGroupDialog::MT_DataGroupDialog(MT_DataGroup* datagroup,
             MT_Choice* c = (MT_Choice *)(m_pDataGroup->GetPointer(i));
             for(unsigned int j = 0; j < c->GetMaxValue()+1; j++)
             {
-                choices.Add(c->GetName(j));
+                choices.Add(MT_StringToWxString(c->GetName(j)));
             }
             wxChoice* ch = new wxChoice(this, wxID_HIGHEST+i, wxDefaultPosition, wxDefaultSize, choices);
             m_pChoiceCtrls.push_back(ch);
@@ -166,7 +173,7 @@ void MT_DataGroupDialog::UpdateValues()
         case MT_TYPE_COLOR:
             break;
         default:
-            m_pParamTextCtrls[m_viIndexMap[i]]->SetValue(m_pDataGroup->GetStringValue(i));
+            m_pParamTextCtrls[m_viIndexMap[i]]->SetValue(MT_StringToWxString(m_pDataGroup->GetStringValue(i)));
             break;
         }
     }
@@ -239,7 +246,7 @@ void MT_DataGroupDialog::WriteValues()
         }
         default:
         {
-            val = (string) (m_pParamTextCtrls[m_viIndexMap[i]]->GetValue());
+            val = (string) (m_pParamTextCtrls[m_viIndexMap[i]]->GetValue()).mb_str();
             m_pDataGroup->SetStringValue(i, val);
             break;
         }
@@ -279,7 +286,7 @@ void MT_DataGroupDialog::OnColorButtonClicked(wxCommandEvent& event)
   
     wxColourData data;
     wxColour current;
-    wxString ch = wxT("#") + wxString(c->GetHexString());
+    wxString ch = wxT("#") + wxString((wxChar *)(c->GetHexString()));
     current.Set(ch);
     data.SetColour(current);
     wxColourDialog dlg(this, &data);
@@ -292,7 +299,7 @@ void MT_DataGroupDialog::OnColorButtonClicked(wxCommandEvent& event)
     ch = current.GetAsString(wxC2S_HTML_SYNTAX);
     ch = ch.AfterFirst('#');
     
-    c->SetHexValue(ch.c_str());
+    c->SetHexValue(ch.mb_str());
   
 }
 
@@ -336,8 +343,8 @@ MT_ParameterDialog::MT_ParameterDialog(std::vector<double>&  ParamVector,
     for(int i = 0; i < nparams; i++)
     {
     
-        ParamString.Printf("%5.3f", ParamVector[i]);
-        m_pParamNamesText[i] = new wxStaticText(panel, -1, ParamNames[i]);
+        ParamString.Printf(wxT("%5.3f"), ParamVector[i]);
+        m_pParamNamesText[i] = new wxStaticText(panel, -1, MT_StringToWxString(ParamNames[i]));
         m_pParamTextCtrl[i] = new wxTextCtrl(panel, -1, ParamString, wxDefaultPosition, wxSize(100,20));
         grid0->Add(m_pParamNamesText[i]);
         grid0->Add(m_pParamTextCtrl[i]);
@@ -389,7 +396,7 @@ MT_ParameterDialog::MT_ParameterDialog(std::vector<double>&  ParamVector,
     for(int i = 0; i < nparams; i++)
     {
     
-        ParamString.Printf("%5.3f", ParamVector[i]);
+        ParamString.Printf(wxT("%5.3f"), ParamVector[i]);
         m_pParamNamesText[i] = new wxStaticText(panel, -1, ParamNames[i]);
         m_pParamTextCtrl[i] = new wxTextCtrl(panel, -1, ParamString, wxDefaultPosition, wxSize(100,20));
         grid0->Add(m_pParamNamesText[i]);

@@ -176,12 +176,12 @@ const double MT_Z_EXTENTS = 0.1;
  * File dialog filter used when opening or saving image files. 
  * Be sure not to modify this to include any formats that OpenCV
  * is not comfortable with. */
-const wxString MT_FILTER_IMAGE_FILES = wxString("Image files (*.bmp; *.jpg; *.png)|*.bmp;*.jpg;*.png");
+const wxString MT_FILTER_IMAGE_FILES(_T("Image files (*.bmp; *.jpg; *.png)|*.bmp;*.jpg;*.png"));
 
 /* file type filters used in dialogs to determine which files can be selected.
    this list is probably not exhaustive, but contains most of the commonly
    used types. */
-const wxString MT_FILTER_MOVIE_FILES("Movie files (*.avi; *.mov; *.dv)|*.avi;*.mov;*.dv");
+const wxString MT_FILTER_MOVIE_FILES(_T("Movie files (*.avi; *.mov; *.dv)|*.avi;*.mov;*.dv"));
 
 const bool MT_SOFT_RESET = false;
 const bool MT_HARD_RESET = true;
@@ -851,7 +851,7 @@ public:
      * m_CmdLineParser has been used properly.
      *
      * @see m_CmdLineParser */
-    virtual void handleCommandLineArguments(int argc, char** argv){};
+    virtual void handleCommandLineArguments(int argc, wxChar** argv){};
     /** Function to handle when the application is started by dragging
      * a file onto its icon, by double clicking a file associated with
      * the application, or by choosing "Open With".  I think this is

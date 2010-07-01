@@ -73,7 +73,7 @@ MT_MovieExporterDialog::MT_MovieExporterDialog(const wxString& directory,
     case MT_ME_CV_VIDEO_WRITER:
         m_pRadioBox->SetSelection(0);
         m_pPathCtrl->SetValue(directory + 
-                              wxFileName::GetPathSeparator() + "movie.avi");
+                              wxFileName::GetPathSeparator() + wxT("movie.avi"));
         break;
     case MT_ME_IMAGE_SEQUENCE:
         m_pRadioBox->SetSelection(1);
@@ -83,7 +83,7 @@ MT_MovieExporterDialog::MT_MovieExporterDialog(const wxString& directory,
         break;
     }
 
-    tmp.Printf("%d", num_to_skip);
+    tmp.Printf(wxT("%d"), num_to_skip);
     vbox->Add(new wxStaticText(this, wxID_ANY, wxT("Number of Frames to Skip")), 0, wxLEFT | wxTOP | wxRIGHT | wxALIGN_LEFT, 10);
     m_pNumToSkipCtrl = new wxTextCtrl(this, ID_NUMTOSKIP, tmp, wxDefaultPosition, BOX_SIZE);
     vbox->Add(m_pNumToSkipCtrl, 0, wxALL, 10);
@@ -91,7 +91,7 @@ MT_MovieExporterDialog::MT_MovieExporterDialog(const wxString& directory,
             wxEVT_COMMAND_TEXT_UPDATED,
             wxCommandEventHandler(MT_MovieExporterDialog::onNumToSkipChange));
 
-    tmp.Printf("%f", FPS);
+    tmp.Printf(wxT("%f"), FPS);
     vbox->Add(new wxStaticText(this, wxID_ANY, wxT("Frames Per Second")), 0, wxLEFT | wxTOP | wxRIGHT | wxALIGN_LEFT, 10);
     m_pFPSCtrl = new wxTextCtrl(this, ID_FPS, tmp, wxDefaultPosition, BOX_SIZE);
     vbox->Add(m_pFPSCtrl, 0, wxALL, 10);
@@ -168,12 +168,12 @@ void MT_MovieExporterDialog::onRadioBoxClicked(wxCommandEvent& event)
     if(sel == 0)
     {
         m_METype = MT_ME_CV_VIDEO_WRITER;
-        m_pPathDescriptor->SetLabel("Movie filename (avi or mov):");
+        m_pPathDescriptor->SetLabel(wxT("Movie filename (avi or mov):"));
     }
     else if(sel == 1)
     {
         m_METype = MT_ME_IMAGE_SEQUENCE;
-        m_pPathDescriptor->SetLabel("Directory and name format for frames (jpg, png, or bmp):");
+        m_pPathDescriptor->SetLabel(wxT("Directory and name format for frames (jpg, png, or bmp):"));
     }
     else
     {
@@ -206,11 +206,17 @@ void MT_MovieExporterDialog::getInfo(MT_MovieExporter* exporter, wxString* direc
     switch(method)
     {
     case MT_ME_CV_VIDEO_WRITER:
-        exporter->initForCvVideoWriter(filename, fps, m_iFrameWidth, m_iFrameHeight, num_to_skip);
+        exporter->initForCvVideoWriter(filename.mb_str(),
+                                       fps,
+                                       m_iFrameWidth,
+                                       m_iFrameHeight,
+                                       num_to_skip);
         break;
     case MT_ME_IMAGE_SEQUENCE:
         filename = name + wxT(".") + ext;
-        exporter->initForImageSequence(dir, filename, num_to_skip);
+        exporter->initForImageSequence(dir.mb_str(),
+                                       filename.mb_str(),
+                                       num_to_skip);
         break;
     default:
         break;

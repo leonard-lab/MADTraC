@@ -88,7 +88,7 @@ public:
 
     virtual void doUserQuit();
 
-    virtual void handleCommandLineArguments(int argc, char** argv);
+    virtual void handleCommandLineArguments(int argc, wxChar** argv);
     virtual void handleOpenWithFile(const wxString& filename);
 
     virtual bool doKeyboardCallback(wxKeyEvent& event);

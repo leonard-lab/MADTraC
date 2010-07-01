@@ -199,7 +199,7 @@ void MT_TrackerFrameBase::addTrackerToViewMenu(wxMenu* view_menu)
         unsigned int n_views = MT_MIN(FrameNames.size(), MT_TFB_MAX_NUM_VIEWS);
         for(unsigned int i = 0; i < n_views; i++)
         {
-            view_menu->AppendRadioItem(MT_TFB_ID_MENU_VIEW_FRAME01+i, FrameNames[i]);
+            view_menu->AppendRadioItem(MT_TFB_ID_MENU_VIEW_FRAME01+i, MT_StringToWxString(FrameNames[i]));
             Connect(MT_TFB_ID_MENU_VIEW_FRAME01+i, 
                     wxEVT_COMMAND_MENU_SELECTED, 
                     wxCommandEventHandler(MT_TrackerFrameBase::onMenuViewSelect));
@@ -231,7 +231,7 @@ void MT_TrackerFrameBase::addDataGroupsToTrackerMenu(wxMenu* tracker_menu)
             dg = m_pTracker->getDataGroup(i);
             if(dg)
             {
-                tracker_menu->Append(MT_TFB_ID_MENU_TRACKER_PARAMS00+i, dg->GetGroupName());
+                tracker_menu->Append(MT_TFB_ID_MENU_TRACKER_PARAMS00+i, MT_StringToWxString(dg->GetGroupName()));
                 wxFrame::Connect(MT_TFB_ID_MENU_TRACKER_PARAMS00+i, 
                                  wxEVT_COMMAND_MENU_SELECTED, 
                                  wxCommandEventHandler(MT_TrackerFrameBase::onMenuTrackerParams));
@@ -255,7 +255,7 @@ void MT_TrackerFrameBase::addDataReportsToTrackerMenu(wxMenu* tracker_menu)
             if(dr)
             {
                 tracker_menu->Append(MT_TFB_ID_MENU_TRACKER_REPORTS00+i, 
-                                     dr->GetGroupName());
+                                     MT_StringToWxString(dr->GetGroupName()));
                 wxFrame::Connect(MT_TFB_ID_MENU_TRACKER_REPORTS00+i,
                                  wxEVT_COMMAND_MENU_SELECTED,
                                  wxCommandEventHandler(MT_TrackerFrameBase::onMenuTrackerReports));
@@ -297,7 +297,7 @@ bool MT_TrackerFrameBase::selectAVIFile()
 
     if(result == wxID_OK)
     {
-        if(!setupAVICapture(path.c_str()))
+        if(!setupAVICapture(path.mb_str()))
         {
             MT_ShowErrorDialog(this, wxT("Unable to open ") + path);
             return false;
@@ -330,7 +330,7 @@ void MT_TrackerFrameBase::selectROI()
         if(m_pTracker)
         {
             // tell the tracker to set this as the ROI image
-            m_pTracker->setROIImage(m_sROIPath.c_str());
+            m_pTracker->setROIImage(m_sROIPath.mb_str());
             // otherwise just hold on to the path and set it when the tracker starts
         }  
     }
@@ -440,12 +440,12 @@ void MT_TrackerFrameBase::createBackground()
     else
     {
         // yes -> save the background frame
-        cvSaveImage(m_sBackgroundPath, BGFrame);
+        cvSaveImage(m_sBackgroundPath.mb_str(), BGFrame);
 
         // if tracking, set this as the bg frame
         if(m_pTracker)
         {
-            m_pTracker->setBackgroundImage(m_sBackgroundPath.c_str());
+            m_pTracker->setBackgroundImage(m_sBackgroundPath.mb_str());
         }
     }
 
@@ -474,7 +474,7 @@ void MT_TrackerFrameBase::selectBackground()
         if(m_pTracker)
         {
             // tell the tracker to set this as the ROI image
-            m_pTracker->setBackgroundImage(m_sBackgroundPath.c_str());
+            m_pTracker->setBackgroundImage(m_sBackgroundPath.mb_str());
             // otherwise just hold on to the path and set it when the tracker starts
         }  
     }  
@@ -489,7 +489,7 @@ void MT_TrackerFrameBase::selectDataFile()
     int result = MT_SaveFileDialog(this,
                                 m_sDataFileDirectory,
                                 wxT("Select Data File"),
-                                "",
+                                wxT(""),
                                 &m_sDataFilePath,
                                 &m_sDataFileDirectory,
                                 MT_CONFIRM_OVERWRITE);
@@ -499,7 +499,7 @@ void MT_TrackerFrameBase::selectDataFile()
         if(m_pTracker)
         {
             // tell the tracker to set this as the ROI image
-            m_pTracker->setDataFile(m_sDataFilePath.c_str());
+            m_pTracker->setDataFile(m_sDataFilePath.mb_str());
             // otherwise just hold on to the path and set it when the tracker starts
         }  
     }   
@@ -591,7 +591,7 @@ bool MT_TrackerFrameBase::setupAVICapture(const char* filename)
     // Tell the CoreControlFrame to do whatever it needs to do when loading an avi
     m_pTrackerControlFrame->enableButtons();
 
-    m_sAVIPath = wxString(filename);
+    m_sAVIPath = wxString((wxChar *) filename);
     m_sAVIDirectory = wxPathOnly(m_sAVIPath);
 
     onNewCapture();
@@ -614,35 +614,35 @@ void MT_TrackerFrameBase::doTrackerGLDrawing()
 void MT_TrackerFrameBase::initTrackerFrameData()
 {
     /* NOTE: XML doesn't like spaces in tag names */
-    m_PathGroup.AddPath("Movie_Directory", &m_sAVIDirectory);
-    m_PathGroup.AddPath("ROI_Directory", &m_sROIDirectory);
-    m_PathGroup.AddPath("Background_Directory", &m_sBackgroundDirectory);
-    m_PathGroup.AddPath("Data_Directory", &m_sDataFileDirectory);
+    m_PathGroup.AddPath(wxT("Movie_Directory"), &m_sAVIDirectory);
+    m_PathGroup.AddPath(wxT("ROI_Directory"), &m_sROIDirectory);
+    m_PathGroup.AddPath(wxT("Background_Directory"), &m_sBackgroundDirectory);
+    m_PathGroup.AddPath(wxT("Data_Directory"), &m_sDataFileDirectory);
 
     /* initialize the frame capture */
     m_pCapture = new MT_Capture(MT_FC_NO_INIT);
 
     m_pPreferences->SetDialogIgnore(m_pPreferences->GetIndexByName("Background Color"));
 
-    m_CmdLineParser.AddParam("Movie File.",
+    m_CmdLineParser.AddParam(wxT("Movie File."),
                              wxCMD_LINE_VAL_STRING,
                              wxCMD_LINE_PARAM_OPTIONAL);
-    m_CmdLineParser.AddOption("o", 
-                              "output-datafile",
-                              "Output data file (xdf format).",
+    m_CmdLineParser.AddOption(wxT("o"), 
+                              wxT("output-datafile"),
+                              wxT("Output data file (xdf format)."),
                               wxCMD_LINE_VAL_STRING,
                               wxCMD_LINE_PARAM_OPTIONAL);
-    m_CmdLineParser.AddOption("b",
-                              "background",
-                              "Background image.",
+    m_CmdLineParser.AddOption(wxT("b"),
+                              wxT("background"),
+                              wxT("Background image."),
                               wxCMD_LINE_VAL_STRING,
                               wxCMD_LINE_PARAM_OPTIONAL);
-    m_CmdLineParser.AddOption("r",
-                              "roi",
-                              "ROI mask image.",
+    m_CmdLineParser.AddOption(wxT("r"),
+                              wxT("roi"),
+                              wxT("ROI mask image."),
                               wxCMD_LINE_VAL_STRING,
                               wxCMD_LINE_PARAM_OPTIONAL);
-    m_CmdLineParser.AddSwitch("T", "Track-now", "Start tracking right away.");
+    m_CmdLineParser.AddSwitch(wxT("T"), wxT("Track-now"), wxT("Start tracking right away."));
 
 }
 
@@ -674,7 +674,7 @@ void MT_TrackerFrameBase::doTrackerStep()
     {
         wxString statustext;
 
-        statustext.Printf("%d blobs, %3.1f FPS", m_pTracker->getNFound(), m_pTracker->getFrameRate());
+        statustext.Printf(wxT("%d blobs, %3.1f FPS"), m_pTracker->getNFound(), m_pTracker->getFrameRate());
 
         setControlFrameStatusText(statustext);
     }
@@ -708,24 +708,24 @@ bool MT_TrackerFrameBase::startTracking()
 
         initTracker();
 
-        m_pTracker->setSourceName(m_sAVIPath.c_str());
+        m_pTracker->setSourceName(m_sAVIPath.mb_str());
 
         updateMenusOnStartTracker();
 
         // set the ROI if it's been loaded
         if(m_sROIPath != wxT(""))
         {
-            m_pTracker->setROIImage(m_sROIPath.c_str());
+            m_pTracker->setROIImage(m_sROIPath.mb_str());
         }
         // set the BG if it's been loaded
         if(m_sBackgroundPath != wxT(""))
         {
-            m_pTracker->setBackgroundImage(m_sBackgroundPath.c_str());
+            m_pTracker->setBackgroundImage(m_sBackgroundPath.mb_str());
         }
         // set the DataFile if it's been selected
         if(m_sDataFilePath != wxT(""))
         {
-            m_pTracker->setDataFile(m_sDataFilePath.c_str());
+            m_pTracker->setDataFile(m_sDataFilePath.mb_str());
         }
 
         for(unsigned int i = 0; i < m_pTracker->getNumDataGroups(); i++)
@@ -752,22 +752,22 @@ bool MT_TrackerFrameBase::startTracking()
 /*     MT_TrackerFrameBase public member functions                  */
 /********************************************************************/
 
-void MT_TrackerFrameBase::handleCommandLineArguments(int argc, char** argv)
+void MT_TrackerFrameBase::handleCommandLineArguments(int argc, wxChar** argv)
 {
     wxString v;
     wxString cwd = wxGetCwd();
 
-    if(m_CmdLineParser.Found("o", &v))
+    if(m_CmdLineParser.Found(wxT("o"), &v))
     {
         MT_GetAbsolutePath(v, &m_sDataFilePath, &m_sDataFileDirectory);
     }
 
-    if(m_CmdLineParser.Found("b", &v))
+    if(m_CmdLineParser.Found(wxT("b"), &v))
     {
         MT_GetAbsolutePath(v, &m_sBackgroundPath, &m_sBackgroundDirectory);
     }
 
-    if(m_CmdLineParser.Found("r", &v))
+    if(m_CmdLineParser.Found(wxT("r"), &v))
     {
         MT_GetAbsolutePath(v, &m_sROIPath, &m_sROIDirectory);
     }
@@ -776,9 +776,9 @@ void MT_TrackerFrameBase::handleCommandLineArguments(int argc, char** argv)
     {
         v = m_CmdLineParser.GetParam(0);
         MT_GetAbsolutePath(v, &m_sAVIPath, &m_sAVIDirectory);
-        setupAVICapture(m_sAVIPath.c_str());
+        setupAVICapture(m_sAVIPath.mb_str());
 
-        if(m_CmdLineParser.Found("T"))
+        if(m_CmdLineParser.Found(wxT("T")))
         {
             startTracking();
             setPause(false);
@@ -790,7 +790,7 @@ void MT_TrackerFrameBase::handleCommandLineArguments(int argc, char** argv)
 
 void MT_TrackerFrameBase::handleOpenWithFile(const wxString& filename)
 {
-    if(setupAVICapture(filename.c_str()))
+    if(setupAVICapture(filename.mb_str()))
     {
     }
     MT_FrameBase::handleOpenWithFile(filename);
@@ -922,13 +922,13 @@ void MT_TrackerFrameBase::onMenuTrackerNote(wxCommandEvent& event)
     {
         std::string exist_note = "";
         m_pTracker->getNote(&exist_note);
-        wxString note = exist_note;
+        wxString note = MT_StringToWxString(exist_note);
 
         MT_XDFNoteDialog* dlg = new MT_XDFNoteDialog(this, &note);
         int result = dlg->ShowModal();
         if(result == wxID_OK)
         {
-            m_pTracker->setNote(note.c_str());
+            m_pTracker->setNote(note.mb_str());
         }
         dlg->Destroy();
     }
@@ -1010,7 +1010,7 @@ void MT_TrackerFrameBase::makeTrackerMenu(wxMenu* tracker_menu)
 void MT_TrackerFrameBase::createUserMenus(wxMenuBar* menubar)
 {
     wxMenu* tracker_menu = new wxMenu;
-    menubar->Append(tracker_menu, "Tracker");
+    menubar->Append(tracker_menu, wxT("Tracker"));
 }
 
 void MT_TrackerFrameBase::doUserGLDrawing()

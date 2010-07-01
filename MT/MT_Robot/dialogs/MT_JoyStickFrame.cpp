@@ -93,7 +93,7 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
     {
         float maxspeed = MT_DEFAULT_MAX_SPEED;
         float maxturningrate = MT_DEFAULT_MAX_TURNING_RATE;
-        m_RobotConfigXML.SetFilename(MT_GetXMLPath("robotconfig.xml"));
+        m_RobotConfigXML.SetFilename(MT_GetXMLPath(wxT("robotconfig.xml")).mb_str());
         MT_ReadRobotXML(TheRobots, &maxspeed, &maxturningrate, &m_RobotConfigXML);
         TheRobots->MaxGamePadSpeed = maxspeed;
         TheRobots->MaxGamePadTurningRate = maxturningrate;
@@ -162,12 +162,12 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
     wxBoxSizer* vbox1 = new wxBoxSizer(wxVERTICAL);
 
     wxString MaxString;
-    MaxString.Printf("%3.2f", myGamePadController.GetMaxSpeedMPS());
+    MaxString.Printf(wxT("%3.2f"), myGamePadController.GetMaxSpeedMPS());
     vbox1->Add(new wxStaticText(this, -1, wxT("Max Speed")));
     MaxSpeedCtrl = new wxTextCtrl(this, ID_MAXSPEED, MaxString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     vbox1->Add(MaxSpeedCtrl);
 
-    MaxString.Printf("%4.2f", myGamePadController.GetMaxTurningRateRADPS());
+    MaxString.Printf(wxT("%4.2f"), myGamePadController.GetMaxTurningRateRADPS());
     vbox1->Add(new wxStaticText(this, -1, wxT("Max Turning Rate")), 0, wxTOP, 10);
     MaxTurningRateCtrl = new wxTextCtrl(this, ID_MAXTURNINGRATE, MaxString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     vbox1->Add(MaxTurningRateCtrl);
@@ -321,12 +321,12 @@ void MT_JoyStickFrame::UpdateRobotChoices(bool FlaggedChanges)
         {
             // Add to the available lists
             FlaggedChanges |=    // flag a change only if we added a robot to both lists
-                (MT_UniqueAddString(&XYChoices, TheRobots->RobotName[i]) & 
-                 MT_UniqueAddString(&WZChoices, TheRobots->RobotName[i]));
+                (MT_UniqueAddString(&XYChoices, MT_StringToWxString(TheRobots->RobotName[i])) & 
+                 MT_UniqueAddString(&WZChoices, MT_StringToWxString(TheRobots->RobotName[i])));
             if(TheRobots->GetRobot(i) == myGamePadController.getXYRobot())
             {
                 // if this is the XY robot, remove it from the WZ list
-                MT_SafeRemoveString(&WZChoices, TheRobots->RobotName[i]);
+                MT_SafeRemoveString(&WZChoices, MT_StringToWxString(TheRobots->RobotName[i]));
                 // also make sure it is "selected" in the XY list
                 if(xychoiceindex != i)
                 {
@@ -337,7 +337,7 @@ void MT_JoyStickFrame::UpdateRobotChoices(bool FlaggedChanges)
             if(TheRobots->GetRobot(i) == myGamePadController.getWZRobot())
             {
                 // if this is the WZ robot, remove it from the XY list
-                MT_SafeRemoveString(&XYChoices, TheRobots->RobotName[i]);
+                MT_SafeRemoveString(&XYChoices, MT_StringToWxString(TheRobots->RobotName[i]));
                 // also make sure it is "selected" in the WZ list
                 if(wzchoiceindex != i)
                 {
@@ -368,9 +368,9 @@ void MT_JoyStickFrame::UpdateRobotChoices(bool FlaggedChanges)
 
     // update the choices:
     // re-index to the available list
-    wxString botname = TheRobots->RobotName[xychoiceindex];
+    wxString botname = MT_StringToWxString(TheRobots->RobotName[xychoiceindex]);
     unsigned int xychoiceindex_inlist = XYChoices.Index(botname);
-    botname = TheRobots->RobotName[wzchoiceindex];
+    botname = MT_StringToWxString(TheRobots->RobotName[wzchoiceindex]);
     unsigned int wzchoiceindex_inlist = WZChoices.Index(botname);
     // set the selection in the control
     XYRobotChoice->SetSelection(xychoiceindex_inlist);
@@ -516,7 +516,7 @@ void MT_JoyStickFrame::OnXYChoice(wxCommandEvent& WXUNUSED(event))
         int rchoice = -1;
         for(unsigned int i = 0; i < MT_MAX_NROBOTS; i++)
         {
-            if(TheRobots->RobotName[i] == choice)
+            if(MT_StringToWxString(TheRobots->RobotName[i]) == choice)
             {
                 rchoice = i;
             }
@@ -544,7 +544,7 @@ void MT_JoyStickFrame::OnWZChoice(wxCommandEvent& WXUNUSED(event))
         int rchoice = -1;
         for(unsigned int i = 0; i < MT_MAX_NROBOTS; i++)
         {
-            if(TheRobots->RobotName[i] == choice)
+            if(MT_StringToWxString(TheRobots->RobotName[i]) == choice)
             {
                 rchoice = i;
             }
@@ -613,7 +613,7 @@ void MT_JoyStickFrame::DoTimedEvents()
 
     if((bprev < 0) || (x != xprev) || (y != yprev))
     {
-        ValString.Printf("%+3.2f, %+3.2f",x,y);
+        ValString.Printf(wxT("%+3.2f, %+3.2f"),x,y);
         XYPosText->SetLabel(ValString);
         xprev = x;
         yprev = y;
@@ -621,7 +621,7 @@ void MT_JoyStickFrame::DoTimedEvents()
 
     if((bprev < 0) || (w != wprev) || (z != zprev))
     {
-        ValString.Printf("%+3.2f, %+3.2f",w,z);
+        ValString.Printf(wxT("%+3.2f, %+3.2f"),w,z);
         WZPosText->SetLabel(ValString);
         wprev = w;
         zprev = z;
@@ -629,7 +629,7 @@ void MT_JoyStickFrame::DoTimedEvents()
 
     if(bprev < 0 || b != bprev)
     {
-        ButtonText->SetLabel("Buttons: " + MT_UIntToBitString(b,12));
+        ButtonText->SetLabel(wxT("Buttons: ") + MT_UIntToBitString(b,12));
         bprev = b;
     }
 

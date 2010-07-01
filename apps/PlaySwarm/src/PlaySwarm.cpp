@@ -43,7 +43,7 @@ PlaySwarmFrame::PlaySwarmFrame(wxFrame* parent,
 #ifdef MT_HAVE_CLF
     CLFpp::DisableHDF5Warnings();
 #endif
-    m_sDescriptionText = wxString("PlaySwarm - Playback trajectory data.\n");
+    m_sDescriptionText = wxString(wxT("PlaySwarm - Playback trajectory data.\n"));
 }
 
 PlaySwarmFrame::~PlaySwarmFrame()
@@ -123,7 +123,7 @@ bool PlaySwarmFrame::doMouseCallback(wxMouseEvent& event, double viewport_x, dou
             wxMenu pmenu;
             wxString label;
             g_iMenuAgent = m_iGrabbedAgent;
-            label.Printf("Parameters for Agent %d", m_iGrabbedAgent);
+            label.Printf(wxT("Parameters for Agent %d"), m_iGrabbedAgent);
             pmenu.Append(ID_MENU_POP_AGENT_PARAMS,label);
             Connect(ID_MENU_POP_AGENT_PARAMS,
                     wxEVT_COMMAND_MENU_SELECTED,
@@ -198,18 +198,18 @@ void PlaySwarmFrame::handleCommandLineArguments(int argc, char** argv)
  
     /* Note doing this rather than m_bTails = parser.Found("t") allows
      * the value from the XML file to be accepted. */
-    if(m_CmdLineParser.Found("t"))
+    if(m_CmdLineParser.Found(wxT("t")))
     {
         m_bTails = true;
     }
 
-    if(m_CmdLineParser.Found("o"))
+    if(m_CmdLineParser.Found(wxT("o")))
     {
         m_bOcclusions = true;
     }
   
     long temp;
-    if(!m_CmdLineParser.Found("l", &temp))
+    if(!m_CmdLineParser.Found(wxT("l"), &temp))
     {
         /* automatically size the object */
         m_bAutoSizeObjects = true;
@@ -220,7 +220,7 @@ void PlaySwarmFrame::handleCommandLineArguments(int argc, char** argv)
         m_dObjectLength = (double) temp;
     }
   
-    if(!m_CmdLineParser.Found("w", &temp))
+    if(!m_CmdLineParser.Found(wxT("w"), &temp))
     {
         m_bAutoSizeObjects = true;
     }
@@ -235,14 +235,14 @@ void PlaySwarmFrame::handleCommandLineArguments(int argc, char** argv)
     if(m_CmdLineParser.GetParamCount())
     {
         wxString filename = m_CmdLineParser.GetParam(0);
-        openPositionFile(filename.c_str(), AUTO_PLAY);
+        openPositionFile(filename.mb_str(), AUTO_PLAY);
     }
   
 }
 
 void PlaySwarmFrame::handleOpenWithFile(const wxString& filename)
 {
-    openPositionFile(filename.c_str(), AUTO_PLAY);
+    openPositionFile(filename.mb_str(), AUTO_PLAY);
 }
 
 void PlaySwarmFrame::initUserData()
@@ -262,21 +262,21 @@ void PlaySwarmFrame::initUserData()
     m_sDataFilePath = wxT("");
     m_sDataFileDirectory = wxT("");
   
-    m_PathGroup.AddPath("Data_Directory", &m_sDataFileDirectory);
+    m_PathGroup.AddPath(wxT("Data_Directory"), &m_sDataFileDirectory);
 
-    m_CmdLineParser.AddSwitch("t", "tails", "Draw trajectory tails.");
-    m_CmdLineParser.AddSwitch("o", "occlusions", "Calculate and draw occlusions.");
-    m_CmdLineParser.AddOption("l", 
-                              "object-length", 
-                              "Standard object length (drawing units).", 
+    m_CmdLineParser.AddSwitch(wxT("t"), wxT("tails"), wxT("Draw trajectory tails."));
+    m_CmdLineParser.AddSwitch(wxT("o"), wxT("occlusions"), wxT("Calculate and draw occlusions."));
+    m_CmdLineParser.AddOption(wxT("l"), 
+                              wxT("object-length"), 
+                              wxT("Standard object length (drawing units)."), 
                               wxCMD_LINE_VAL_NUMBER, 
                               wxCMD_LINE_PARAM_OPTIONAL);
-    m_CmdLineParser.AddOption("w",
-                              "object-width",
-                              "Standard object width (drawing units).",
+    m_CmdLineParser.AddOption(wxT("w"),
+                              wxT("object-width"),
+                              wxT("Standard object width (drawing units)."),
                               wxCMD_LINE_VAL_NUMBER,
                               wxCMD_LINE_PARAM_OPTIONAL);
-    m_CmdLineParser.AddParam("Position data file.",
+    m_CmdLineParser.AddParam(wxT("Position data file."),
                              wxCMD_LINE_VAL_STRING,
                              wxCMD_LINE_PARAM_OPTIONAL);
   
@@ -306,7 +306,7 @@ void PlaySwarmFrame::onMenuFileOpen(wxCommandEvent& event)
   
     if(result == wxID_OK)
     {
-        openPositionFile(m_sDataFilePath.c_str(), NO_AUTO_PLAY);
+        openPositionFile(m_sDataFilePath.mb_str(), NO_AUTO_PLAY);
     }
   
 }
@@ -359,7 +359,7 @@ void PlaySwarmFrame::openPositionFile(const char* filename,
         {
             MT_ShowErrorDialog(this,
                                wxT("Could not open file ")
-                               + wxString(filename) + wxT("."));
+                               + wxString((wxChar *)filename) + wxT("."));
             m_vpAgents.resize(0);
         }
         else

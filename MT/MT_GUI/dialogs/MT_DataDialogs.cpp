@@ -69,7 +69,7 @@ void MT_DataDialog::Update(const wxArrayString& Values)
         nrows = 1;
         for(unsigned int i = 0; i < ncols; i++)
         {
-            values.Add("N/A");
+            values.Add(wxT("N/A"));
         }
     }
     nrows = (long) floor((float) values.GetCount()/m_asHeadings.GetCount());
@@ -112,7 +112,7 @@ MT_VectorDataGroupDialog::MT_VectorDataGroupDialog(MT_VectorDataGroup* group,
                                                    const wxPoint& pos)
   : MT_DataDialog(MT_StringVectorToWxArrayString(group->GetNameStringArray()), 
                   MT_StringVectorToWxArrayString(group->GetStringValueArray()), 
-                  group->GetGroupName(), 
+                  MT_StringToWxString(group->GetGroupName()), 
                   parent, 
                   pos)
 {

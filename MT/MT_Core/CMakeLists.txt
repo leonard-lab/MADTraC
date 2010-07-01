@@ -47,7 +47,16 @@ set(support_srcs
 
 # tell cmake this is a static library built from the
 #   given sources
-add_library(MT_Core STATIC ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
+if(BUILD_SHARED)
+  add_library(MT_Core SHARED ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
+else(BUILD_SHARED)
+  add_library(MT_Core STATIC ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
+endif(BUILD_SHARED)
+
+target_link_libraries(MT_Core ${OPENGL_LIBRARIES})
+if(WITH_CLF)
+  target_link_libraries(MT_Core ${CLF_LIB} ${HDF5_LIBRARIES})
+endif(WITH_CLF)  
 
 # copies the header files to the "include" directory
 if(OS_X)

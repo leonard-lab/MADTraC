@@ -698,12 +698,12 @@ MT_FrameBase::MT_FrameBase(wxFrame* parent,
     m_iFramePeriod_msec(MT_DEFAULT_FRAME_PERIOD),
     m_ClientSize(size),
     m_CmdLineParser(),
-    m_XMLSettingsFile(MT_GetXMLPathForApp()),
-    m_PathGroup("Directories"),
+    m_XMLSettingsFile(MT_GetXMLPathForApp().mb_str()),
+    m_PathGroup(wxT("Directories")),
     m_Server(MT_SERVER_NO_INIT)  /* wait to init server manually */
 {
-    m_sDescriptionText = wxString("Application description needs to be set") +
-        wxString(" in implementation.  Set m_sDescriptionText.\n");
+    m_sDescriptionText = wxString(wxT("Application description needs to be set")) +
+        wxString(wxT(" in implementation.  Set m_sDescriptionText.\n"));
 
     wxFrame::Connect(wxEVT_SIZE,
                      wxID_ANY,
@@ -769,8 +769,8 @@ void MT_FrameBase::doMasterInitialization()
 
     createUserDialogs();
 
-    m_PathGroup.AddPath("Screen_Save_Directory", &m_sScreenSaveDirectory);
-    m_PathGroup.AddPath("Movie_Export_Directory", &m_sMovieExportDirectory);
+    m_PathGroup.AddPath(wxT("Screen_Save_Directory"), &m_sScreenSaveDirectory);
+    m_PathGroup.AddPath(wxT("Movie_Export_Directory"), &m_sMovieExportDirectory);
 
     m_pPreferences = new MT_DataGroup("General Preferences");
     m_pPreferences->AddColor("Background Color", &(m_pCanvas->m_BackgroundColor));
@@ -781,20 +781,20 @@ void MT_FrameBase::doMasterInitialization()
      * needs to happen before initUserData so that there is a chance
      * to override switches */
     /* refuse / as a switch, so we can use them for paths */
-    m_CmdLineParser.SetSwitchChars("-"); 
+    m_CmdLineParser.SetSwitchChars(wxT("-")); 
 
     /* requests for help are handled automatically by setting
      * the wxCMD_LINE_OPTION_HELP flag here */
-    m_CmdLineParser.AddSwitch("h", 
-                              "help",
-                              "Display this help message.",
+    m_CmdLineParser.AddSwitch(wxT("h"), 
+                              wxT("help"),
+                              wxT("Display this help message."),
                               wxCMD_LINE_OPTION_HELP);
-    m_CmdLineParser.AddSwitch("1",
-                              "quit-on-reset",
-                              "Quit on reset.");
-    m_CmdLineParser.AddOption("m",
-                              "make-movie",
-                              "Record uncompressed AVI.",
+    m_CmdLineParser.AddSwitch(wxT("1"),
+                              wxT("quit-on-reset"),
+                              wxT("Quit on reset."));
+    m_CmdLineParser.AddOption(wxT("m"),
+                              wxT("make-movie"),
+                              wxT("Record uncompressed AVI."),
                               wxCMD_LINE_VAL_STRING,
                               wxCMD_LINE_PARAM_OPTIONAL);
 
@@ -814,13 +814,13 @@ void MT_FrameBase::doMasterInitialization()
 
     /* not m_bQuitOnReset = m_CmdLineParser.Found("1") so it does not
      * clobber the preference */
-    if(m_CmdLineParser.Found("1"))
+    if(m_CmdLineParser.Found(wxT("1")))
     {
         m_bQuitOnReset = true;
     }
 
     wxString v;
-    if(m_CmdLineParser.Found("m", &v))
+    if(m_CmdLineParser.Found(wxT("m"), &v))
     {
         setupMovie(v);
     }
@@ -908,7 +908,7 @@ void MT_FrameBase::writeXML()
     if(m_XMLSettingsFile.HasRoot())
     {
         // if it does, make sure this is the right kind of file
-        if(!m_XMLSettingsFile.HasRootname(MT_GetXMLRootName()))
+        if(!m_XMLSettingsFile.HasRootname(MT_GetXMLRootName().mb_str()))
         {
             return;
         }
@@ -916,7 +916,7 @@ void MT_FrameBase::writeXML()
     else
     {
         /* file doesn't have a root - it's probably a new xml file, so initialize it */
-        m_XMLSettingsFile.InitNew(MT_GetXMLRootName());
+        m_XMLSettingsFile.InitNew(MT_GetXMLRootName().mb_str());
     }
 
     m_PathGroup.WriteToXML(&m_XMLSettingsFile);
@@ -941,7 +941,7 @@ void MT_FrameBase::readXML()
         fprintf(stderr, "Could not read XML file %s\n", m_XMLSettingsFile.GetFilename());
 
         /* try creating a new file */
-        if(!m_XMLSettingsFile.InitNew((MT_GetXMLRootName()).c_str()))
+        if(!m_XMLSettingsFile.InitNew((MT_GetXMLRootName()).mb_str()))
         {
             fprintf(stderr, "Can't even create a new XML file.  There may be problems.\n");
             return;
@@ -951,7 +951,7 @@ void MT_FrameBase::readXML()
     }
 
     /* make sure this is the right kind of file */
-    if(!m_XMLSettingsFile.HasRootname(MT_GetXMLRootName()))
+    if(!m_XMLSettingsFile.HasRootname(MT_GetXMLRootName().mb_str()))
     {
         return;
     }
@@ -1063,12 +1063,17 @@ void MT_FrameBase::saveScreen(char* filename)
     int h = cs.y;
     if(!filename)
     {
-        int result = MT_SaveFileDialog(this, m_sScreenSaveDirectory, "Select file name for screen save.", MT_FILTER_IMAGE_FILES, &m_sScreenSavePath, &m_sScreenSaveDirectory);
+        int result = MT_SaveFileDialog(this,
+                                       m_sScreenSaveDirectory,
+                                       wxT("Select file name for screen save."),
+                                       MT_FILTER_IMAGE_FILES,
+                                       &m_sScreenSavePath,
+                                       &m_sScreenSaveDirectory);
         if(result != wxID_OK)
         {
             return;
         }
-        MT_SaveGLBuffer(w, h, m_sScreenSavePath.c_str());
+        MT_SaveGLBuffer(w, h, m_sScreenSavePath.mb_str());
     }
     else
     {
@@ -1093,13 +1098,13 @@ wxString MT_FrameBase::getCheatSheetTextFromFile()
 {
     wxString cheatsheettextfile = MT_GetApplicationResourcePath(
         wxTheApp->GetAppName() + wxT("CheatSheet.txt"), 
-        "");  
+        wxT(""));  
     wxString result = MT_wxStringFromTextFile(cheatsheettextfile);
-    if(result.StartsWith("Error"))
+    if(result.StartsWith(wxT("Error")))
     {
-        result = wxString("Could not find cheat sheet text file.  ") + 
-            wxString("Should be called ") + wxTheApp->GetAppName() + 
-            wxString("CheatSheet.txt");
+        result = wxString(wxT("Could not find cheat sheet text file.  ")) + 
+            wxString(wxT("Should be called ")) + wxTheApp->GetAppName() + 
+            wxString(wxT("CheatSheet.txt"));
     }
     return result;
 }
@@ -1108,13 +1113,13 @@ wxString MT_FrameBase::getUsageTextFromFile()
 {
     wxString usagetextfile = MT_GetApplicationResourcePath(
         wxTheApp->GetAppName() + wxT("Usage.txt"),
-        "");  
+        wxT(""));  
     wxString result = MT_wxStringFromTextFile(usagetextfile);
-    if(result.StartsWith("Error"))
+    if(result.StartsWith(wxT("Error")))
     {
-        result = wxString("Could not find usage text file.  ") +
-            wxString("Should be called ") + wxTheApp->GetAppName() + 
-            wxString("Usage.txt");
+        result = wxString(wxT("Could not find usage text file.  ")) +
+            wxString(wxT("Should be called ")) + wxTheApp->GetAppName() + 
+            wxString(wxT("Usage.txt"));
     }
     return result;
 }
@@ -1242,7 +1247,8 @@ void MT_FrameBase::setupMovie(const wxString& filename)
             {
                 dlg->getInfo(&m_MovieExporter, &m_sMovieExportDirectory);
                 dlg->Destroy();
-                MT_ShowMessageDialog(this, "Press 'm' to start recording");
+                MT_ShowMessageDialog(this,
+                                     wxT("Press 'm' to start recording"));
             }
             else
             {
@@ -1251,7 +1257,7 @@ void MT_FrameBase::setupMovie(const wxString& filename)
         }
         else
         {
-            m_MovieExporter.initForCvVideoWriter(filename, 
+            m_MovieExporter.initForCvVideoWriter(filename.mb_str(), 
                                                  25, 
                                                  GetClientSize().x,
                                                  GetClientSize().y,

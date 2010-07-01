@@ -30,11 +30,11 @@ MT_NumericInputDialog::MT_NumericInputDialog(wxFrame* parent,
     wxString value_string;
     if(isinteger)
     {
-        value_string.Printf("%d", (int) m_dValue);
+        value_string.Printf(wxT("%d"), (int) m_dValue);
     }
     else
     {
-        value_string.Printf("%lf", m_dValue);
+        value_string.Printf(wxT("%lf"), m_dValue);
     }
   
     wxBoxSizer* vbox0 = new wxBoxSizer(wxVERTICAL);

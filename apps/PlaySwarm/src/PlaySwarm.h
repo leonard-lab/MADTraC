@@ -23,9 +23,9 @@ const unsigned int DEFAULT_WINDOW_WIDTH = 1024;
 const unsigned int DEFAULT_WINDOW_HEIGHT = 768;
 
 #ifdef MT_HAVE_CLF
-const wxString FILTER_DATA_FILES("Trajectory data files (*.dat; *.clf)|*.dat;*.clf");
+const wxString FILTER_DATA_FILES(wxT("Trajectory data files (*.dat; *.clf)|*.dat;*.clf"));
 #else
-const wxString FILTER_DATA_FILES("Trajectory data files (*.dat)|*.dat");
+const wxString FILTER_DATA_FILES(wxT("Trajectory data files (*.dat)|*.dat"));
 #endif
 
 enum

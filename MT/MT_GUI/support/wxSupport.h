@@ -144,4 +144,6 @@ void MT_GetAbsolutePath(const wxString& input, wxString* abs_path, wxString* abs
 
 bool MT_isValidFilePath(const wxString& path, const wxArrayString& acceptable_formats = wxArrayString());
 
+wxString MT_StringToWxString(const std::string& instring);
+
 #endif // WXSUPPORT_H

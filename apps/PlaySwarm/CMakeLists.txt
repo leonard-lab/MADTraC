@@ -32,7 +32,6 @@ set(PLAYSWARM_SRC src/PlaySwarm.cpp src/PlaySwarm.h src/Occlusion.cpp src/Occlus
 
 if(OS_X)
   set(PLAYSWARM_EXTRA_FILES
-    PlaySwarm-Info.plist
     resources/PlaySwarm.icns
     resources/clf.icns
     ~/src/MADTraC/OpenCV.framework)
@@ -43,10 +42,10 @@ include_directories(src)
 set(MT_ROOT "" CACHE PATH "MADTraC root directory")
 include(${MT_ROOT}/cmake/MT_Config.cmake)
 
-if(NOT MSVC)
-  set(CMAKE_EXE_LINKER_FLAGS
-  "${CMAKE_EXE_LINKER_FLAGS} ${MT_LIBS_DIR}/libMT_Core.a ${MT_LIBS_DIR}/libMT_GUI.a")
-endif(NOT MSVC)
+#if(NOT MSVC)
+#  set(CMAKE_EXE_LINKER_FLAGS
+#  "${CMAKE_EXE_LINKER_FLAGS} ${MT_LIBS_DIR}/libMT_Core.a ${MT_LIBS_DIR}/libMT_GUI.a")
+#endif(NOT MSVC)
 
 add_executable(PlaySwarm WIN32 MACOSX_BUNDLE
   ${PLAYSWARM_SRC}
@@ -54,25 +53,27 @@ add_executable(PlaySwarm WIN32 MACOSX_BUNDLE
 
 if(MT_HAVE_CLF)
   add_definitions(-D_HDF5USEDLL_)
-  target_link_libraries(PlaySwarm ${MT_HDF5_LIB} ${MT_HDF5_LIB} ${MT_CLF_LIB})
-  if(MSVC)
-    target_link_libraries(PlaySwarm ${MT_HDF5_EXTRA_LIBS})
-  endif(MSVC)
+#  target_link_libraries(PlaySwarm ${MT_HDF5_LIB} ${MT_HDF5_LIB} ${MT_CLF_LIB})
+#  if(MSVC)
+#    target_link_libraries(PlaySwarm ${MT_HDF5_EXTRA_LIBS})
+#  endif(MSVC)
 endif()
 
-if(MT_HAVE_OPENCV)
-  if(MT_OPENCV_FRAMEWORK)
-    target_link_libraries(PlaySwarm ${MT_OPENCV_FRAMEWORK})
-  else()
-    target_link_libraries(PlaySwarm ${MT_OPENCV_LIBS})
-  endif()
-endif(MT_HAVE_OPENCV)  
+#if(MT_HAVE_OPENCV)
+#  if(MT_OPENCV_FRAMEWORK)
+#    target_link_libraries(PlaySwarm ${MT_OPENCV_FRAMEWORK})
+#  else()
+#    target_link_libraries(PlaySwarm ${MT_OPENCV_LIBS})
+#  endif()
+#endif(MT_HAVE_OPENCV)  
 
-if(MSVC)
-  target_link_libraries(PlaySwarm
-    ${MT_ROOT}/lib/Release/MT_Core.lib
-    ${MT_ROOT}/lib/Release/MT_GUI.lib)
-endif(MSVC)
+#if(MSVC)
+#  target_link_libraries(PlaySwarm
+#    ${MT_ROOT}/lib/Release/MT_Core.lib
+#    ${MT_ROOT}/lib/Release/MT_GUI.lib)
+#endif(MSVC)
+
+target_link_libraries(PlaySwarm ${MT_GUI_LIBS} ${MT_GUI_EXTRA_LIBS})
 
 if(OS_X)
   SET_SOURCE_FILES_PROPERTIES(
@@ -87,6 +88,6 @@ if(OS_X)
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/Info.plist.in)
   if(MT_HAVE_OPENCV AND MT_OPENCV_FRAMEWORK)
   add_custom_command(TARGET PlaySwarm POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory /Users/dan/src/MADTraC/OpenCV.framework ${CMAKE_BINARY_DIR}/PlaySwarm.app/Contents/Frameworks/OpenCV.framework)
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${MT_OPENCV_FRAMEWORK} ${CMAKE_BINARY_DIR}/PlaySwarm.app/Contents/Frameworks/OpenCV.framework)
   endif()
 endif(OS_X)

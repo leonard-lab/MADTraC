@@ -6,6 +6,7 @@
  */
 
 #include "MT_RobotCommandDialog.h"
+#include "MT/MT_GUI/support/wxSupport.h"
 
 enum
 {
@@ -34,7 +35,7 @@ MT_RobotCommandDialog::MT_RobotCommandDialog(MT_AllRobotContainer* inRobots,
   
     wxBoxSizer* vbox1 = new wxBoxSizer(wxVERTICAL);
     vbox1->Add(new wxStaticText(panel, -1, wxT("Command")));
-    m_pCommandTextCtrl = new wxTextCtrl(panel, -1, m_pRobots->LastCommand, wxDefaultPosition, wxSize(450,20));
+    m_pCommandTextCtrl = new wxTextCtrl(panel, -1, MT_StringToWxString(m_pRobots->LastCommand), wxDefaultPosition, wxSize(450,20));
     vbox1->Add(m_pCommandTextCtrl,0,wxTOP,2);  
     vbox0->Add(vbox1, 0, wxALL, 10);
   
@@ -42,7 +43,7 @@ MT_RobotCommandDialog::MT_RobotCommandDialog(MT_AllRobotContainer* inRobots,
     for(unsigned int i = 0; i < MT_MAX_NROBOTS; i++)
     {
     
-        m_pRobotNamesText[i] = new wxStaticText(panel, -1, m_pRobots->RobotName[i]);
+        m_pRobotNamesText[i] = new wxStaticText(panel, -1, MT_StringToWxString(m_pRobots->RobotName[i]));
         if( !(m_pRobots->IsPhysical(i)) || !(m_pRobots->IsConnected(i)))
         {
             m_pRobotNamesText[i]->SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
@@ -91,10 +92,10 @@ void MT_RobotCommandDialog::OnSendButtonClicked(wxCommandEvent& WXUNUSED(event))
     {
         if(m_pRobotConnectCheckBox[i]->GetValue() && m_pRobots->IsPhysical(i) && m_pRobots->IsConnected(i))
         {
-            m_pRobots->GetRobot(i)->SendCommand(TheCommand.c_str());
+            m_pRobots->GetRobot(i)->SendCommand(TheCommand.mb_str());
         }
     }
-    m_pRobots->LastCommand = TheCommand;
+    m_pRobots->LastCommand = TheCommand.mb_str();
 }
 
 void MT_RobotCommandDialog::OnDoneButtonClicked(wxCommandEvent& WXUNUSED(event))

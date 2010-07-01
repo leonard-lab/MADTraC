@@ -24,13 +24,22 @@ endif()
 if(NOT WIN32)
   #  -Wall - see all warnings
   #  -O3   - highest optimization (potentially large files)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3 -fPIC")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3 -fPIC")
 else(NOT WIN32)
   # warnings are very aggressive in VS, so going with W1
   set(CMAKE_C_FFLAGS "${CMAKE_C_FLAGS} /W1")
   set(CMAKE_CXX_FFLAGS "${CMAKE_C_FLAGS} /W1")  
 endif(NOT WIN32)
+
+##################################################
+#  OpenGL Support
+find_package(OpenGL REQUIRED)
+if(OPENGL_FOUND)
+  include_directories(${OPENGL_INCLUDE_DIR})
+  set(GL_INCLUDE_DIR ${OPENGL_INCLUDE_DIR})
+  set(GL_LIBS ${OPENGL_LIBRARIES})
+endif(OPENGL_FOUND)
 
 ##################################################
 #  HDF5 Support
@@ -114,45 +123,90 @@ endif(WITH_CLF)
 #  OpenCV Support
 option(WITH_OPENCV "Build with OpenCV support (HIGHLY recommended)" ON)
 
+unset(OPENCV_INC CACHE)
+unset(OPENCV_LIBS_DIR CACHE)
+unset(OPENCV_LIBS_TMP CACHE)
+unset(OPENCV_LIBS CACHE)
+
 if(WITH_OPENCV)
   if(OS_X)
     set(OPENCV_FRAMEWORK "~/src/MADTraC/OpenCV.framework" CACHE PATH "Path to OpenCV framework")
     if(IS_DIRECTORY ${OPENCV_FRAMEWORK})
       set(HAVE_OPENCV_FRAMEWORK ON)
-    else()
-      message(SEND_ERROR "Could not find OpenCV framework at ${OPENCV_FRAMEWORK}")
-      unset(HAVE_OPENCV_FRAMEWORK)
-    endif()
+      set(OPENCV_INC ${OPENCV_FRAMEWORK})
+      set(OPENCV_LIBS_DIR "")
+      set(OPENCV_LIBS ${OPENCV_FRAMEWORK})
+      add_definitions(-DMT_HAVE_OPENCV_FRAMEWORK)
+    endif(IS_DIRECTORY ${OPENCV_FRAMEWORK})
   endif(OS_X)
-  if(MSVC)
+  
+  if(NOT MSVC)
+    if(NOT HAVE_OPENCV_FRAMEWORK)
+      set(CV_NOT_FOUND ON)
+      
+      find_package(PkgConfig)
+      if(PKG_CONFIG_FOUND)
+        pkg_check_modules(CV opencv)
+        if(CV_FOUND)
+          set(CV_NOT_FOUND OFF)
+          set(OPENCV_INC ${CV_INCLUDE_DIRS})
+          set(OPENCV_LIBS_DIR ${CV_LIBRARY_DIRS})
+          set(OPENCV_LIBS_TMP ${CV_LIBRARIES})
+          set(OPENCV_LIBS)
+          foreach(l IN LISTS OPENCV_LIBS_TMP)
+            list(APPEND OPENCV_LIBS ${OPENCV_LIBS_DIR}/lib${l}.la)
+          endforeach()
+        endif(CV_FOUND)
+      endif(PKG_CONFIG_FOUND)
+
+      if(CV_NOT_FOUND)
+        set(OPENCV_INC /usr/local/include)
+        set(OPENCV_LIBS_DIR /usr/local/lib)
+        set(OPENCV_LIBS_TMP cxcore cv highgui cvaux ml)
+        foreach(l IN LISTS OPENCV_LIBS_TMP)
+          list(APPEND OPENCV_LIBS ${OPENCV_LIBS_DIR}/lib${l}.la)
+        endforeach()
+        message(WARNING "Made a guess at OpenCV configuration.  You should check the values of OPENCV_INC and OPENCV_LIBS")
+      endif(CV_NOT_FOUND)  
+      
+    endif(NOT HAVE_OPENCV_FRAMEWORK)
+
+  else(NOT MSVC)
     set(OPENCV_ROOT "C:/Program\ Files/OpenCV/" CACHE PATH "OpenCV Root Directory")
     if(NOT IS_DIRECTORY ${OPENCV_ROOT})
       message(SEND_ERROR "Set OPENCV_ROOT to the OpenCV root directory")
     endif()
     set(OPENCV_INC ${OPENCV_ROOT}/cv/include)
-    set(OPENCV_LIB_DIR ${OPENCV_ROOT}/lib)
-    if(EXISTS ${OPENCV_LIB_DIR}/cxcore.lib)
+    set(OPENCV_LIBS_DIR ${OPENCV_ROOT}/lib)
+    if(EXISTS ${OPENCV_LIBS_DIR}/cxcore.lib)
       set(OPENCV_LIBS
-        ${OPENCV_LIB_DIR}/cxcore.lib
-        ${OPENCV_LIB_DIR}/highgui.lib
-        ${OPENCV_LIB_DIR}/cv.lib
-        ${OPENCV_LIB_DIR}/cvaux.lib)        
+        ${OPENCV_LIBS_DIR}/cxcore.lib
+        ${OPENCV_LIBS_DIR}/highgui.lib
+        ${OPENCV_LIBS_DIR}/cv.lib
+        ${OPENCV_LIBS_DIR}/cvaux.lib)        
     else()
       if(EXISTS ${OPENCV_LIB_DIR}/cxcore200.lib)
         set(OPENCV_LIBS
-          ${OPENCV_LIB_DIR}/cxcore200.lib
-          ${OPENCV_LIB_DIR}/highgui200.lib
-          ${OPENCV_LIB_DIR}/cv200.lib
-          ${OPENCV_LIB_DIR}/cvaux200.lib)        
+          ${OPENCV_LIBS_DIR}/cxcore200.lib
+          ${OPENCV_LIBS_DIR}/highgui200.lib
+          ${OPENCV_LIBS_DIR}/cv200.lib
+          ${OPENCV_LIBS_DIR}/cvaux200.lib)        
       else()
         message("You will need to manually set up OpenCV link directories in your project.")
       endif()
     endif()
-  endif(MSVC)  
+  endif(NOT MSVC)  
+
+  set(OPENCV_INC ${OPENCV_INC} CACHE PATH "OpenCV include directory")
+  set(OPENCV_LIBS_DIR ${OPENCV_LIBS_DIR} CACHE PATH
+    "OpenCV libraries directory (not needed if OPENCV_LIBS include full paths)")
+  set(OPENCV_LIBS ${OPENCV_LIBS} CACHE PATH "OpenCV libraries")
+  include_directories(${OPENCV_INC})
+  
 else(WITH_OPENCV)
   unset(OPENCV_FRAMEWORK CACHE)
   unset(OPENCV_ROOT CACHE)
-  add_definitions(-DMT_NO_OPENCnV)
+  add_definitions(-DMT_NO_OPENCV)
 endif(WITH_OPENCV)
 
 ##################################################
@@ -168,6 +222,15 @@ if(NOT AUTO_FIND_WX)
         AND (EXISTS ${WX_ROOT}/lib/libwx_mac_static.a)
         AND (IS_DIRECTORY ${WX_ROOT}/include))
       set(WX_LIB ${WX_ROOT}/lib/libwx_mac_static.a)
+      set(FMWK_PATH "${CMAKE_OSX_SYSROOT}/System/Library/Frameworks")
+      set(AGL_FMWK "${FMWK_PATH}/AGL.framework")
+      set(QT_FMWK "${FMWK_PATH}/QuickTime.framework")
+      set(AppKit_FMWK "${FMWK_PATH}/AppKit.framework")
+      set(Carbon_FMWK "${FMWK_PATH}/Carbon.framework")
+      set(IOKit_FMWK "${FMWK_PATH}/IOKit.framework")
+      set(LIB_iconv /opt/local/lib/libiconv.a)
+      set(LIB_z /opt/local/lib/libz.a)
+      set(WX_EXTRA_LIBS "${LIB_iconv};${LIB_z};${AGL_FMWK};${QT_FMWK};${AppKit_FMWK};${Carbon_FMWK};${IOKit_FMWK}")
       set(WX_INCLUDE ${WX_ROOT}/include)
       set(WX_DEFS -D__WX__ -DNO_GCC_PRAGMA -D__WXMAC__ -DwxUSE_BASE=1 -D
         _FILE_OFFSET_BITS=64 -D_LARGE_FILES -D__WXMAC_XCODE__=1 -D__WXDEBUG__=1)
@@ -177,8 +240,25 @@ if(NOT AUTO_FIND_WX)
   endif(OS_X)
 else(NOT AUTO_FIND_WX)
   unset(WX_ROOT CACHE)
-  find_package(wxWidgets REQUIRED)
+  if(NOT MSVC)
+    set(wxWidgets_USE_STATIC ON)
+    set(wxWidgets_USE_DEBUG OFF)
+    set(wxWidgets_USE_UNICODE OFF)
+  endif(NOT MSVC)  
+  find_package(wxWidgets COMPONENTS core base gl net REQUIRED)
+  if(wxWidgets_FOUND)
+    set(WX_INCLUDE ${wxWidgets_INCLUDE_DIRS})
+    set(WX_LIB ${wxWidgets_LIBRARIES})
+    set(WX_DEFS_TMP ${wxWidgets_DEFINITIONS})
+    foreach(d IN LISTS WX_DEFS_TMP)
+      list(APPEND WX_DEFS -D${d})
+    endforeach()
+  endif(wxWidgets_FOUND)
 endif(NOT AUTO_FIND_WX)
+
+set(WX_INCLUDE ${WX_INCLUDE} CACHE PATH "wxWidgets include directory")
+set(WX_LIB ${WX_LIB} CACHE PATH "wxWidgets libraries")
+set(WX_DEFS ${WX_DEFS} CACHE STRING "wxWidgets preprocessor definitions")
 
 ##################################################
 # ARToolKit Support
@@ -215,8 +295,21 @@ if(WITH_ARTK)
   endif(OS_X)
 endif(WITH_ARTK)  
 
+if(OS_X)
+  option(MT_USE_WX_JOYSTICK "Use WX Joystick API" OFF)
+  if(MT_USE_WX_JOYSTICK)
+    add_definitions(-DMT_GAMEPAD_USE_WX)
+  endif(MT_USE_WX_JOYSTICK)
+endif(OS_X)
+
 include_directories(.)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+
+set(BUILD_SHARED OFF CACHE BOOL "Build as shared libs (experimental)")
+
+if(OS_X)
+  set(CMAKE_INSTALL_NAME_DIR "@executable_path/../Frameworks/")
+endif(OS_X)  
 
 set(BUILD_GUI ON CACHE BOOL "Build MT_GUI")
 if(BUILD_GUI)

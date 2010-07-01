@@ -18,7 +18,7 @@
  */
 
 #ifndef MT_NO_OPENCV
-#ifdef __APPLE__
+#ifdef MT_HAVE_OPENCV_FRAMEWORK
   #include <OpenCV/OpenCV.h>
 #else
   #include <cv.h>

@@ -233,9 +233,9 @@ void MT_Server::OnServerEvent(wxSocketEvent& event)
 
     if(sock)
     {
-        wxString message = "New client connection to "
-            + get_socket_IPAddress(sock) + " accepted.\n";
-        fprintf(stdout, message.c_str());
+        wxString message = wxT("New client connection to ")
+            + get_socket_IPAddress(sock) + wxT(" accepted.\n");
+        fprintf(stdout, message.mb_str());
         fprintf(stdout, "have %d connections\n\n", m_numClients+1);
     }
     else
@@ -316,9 +316,9 @@ void MT_Server::OnSocketEvent(wxSocketEvent& event)
     case wxSOCKET_LOST:
     {
         m_numClients--;
-        wxString message = "Lost connection to "
-            + get_socket_IPAddress(sock) + ". Deleting socket.\n\n";
-        fprintf(stdout, message.c_str());
+        wxString message = wxT("Lost connection to ")
+            + get_socket_IPAddress(sock) + wxT(". Deleting socket.\n\n");
+        fprintf(stdout, message.mb_str());
         sock->Destroy();
         break;
     }
@@ -345,6 +345,6 @@ static wxString get_socket_IPAddress(wxSocketBase* sock)
     }
     else
     {
-        return "unknown client";
+        return wxT("unknown client");
     }
 }

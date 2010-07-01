@@ -20,7 +20,7 @@
 #endif
 /* End standard WX include block */
 
-#ifdef __APPLE__
+#ifdef MT_HAVE_OPENCV_FRAMEWORK
   #include <OpenCV/OpenCV.h>
 #else
   #include <cv.h>

@@ -15,7 +15,7 @@
 /* TODO this file will not compile - there are too many "old" pieces of code */
 
 // OpenCV for underlying CV algorithms and structures
-#if defined(__APPLE__) || defined(MACOSX)
+#ifdef MT_HAVE_OPENCV_FRAMEWORK
 #include <OpenCV/OpenCV.h>
 #include <OpenCV/cvcompat.h>
 #include <OpenCV/cvaux.h>

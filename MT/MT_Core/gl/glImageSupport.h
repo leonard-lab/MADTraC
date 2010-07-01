@@ -15,7 +15,7 @@
 // Carefully include OpenGL
 #if defined(__APPLE__) || defined(MACOSX)
 #include <OpenGL/gl.h>
-#include <GLUT/glut.h>
+//#include <GLUT/glut.h>
 #else
 #ifdef _WIN32
 #include <windows.h>
@@ -27,7 +27,7 @@
 // NOTE It may be possible to do this without linking against
 //  OpenCV, we really just need a few functions to work with IplImages
 #ifndef MT_NO_OPENCV
-#if defined(__APPLE__) || defined(MACOSX)
+#if defined(MT_HAVE_OPENCV_FRAMEWORK)
 #include <OpenCV/OpenCV.h>
 #else
 #include <cxtypes.h>

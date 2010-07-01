@@ -37,7 +37,17 @@ add_definitions(${WX_DEFS})
 
 # tell cmake this is a static library built from the
 #   given sources
-add_library(MT_GUI STATIC ${base_srcs} ${dialogs_srcs} ${server_srcs} ${support_srcs})
+if(BUILD_SHARED)
+  add_library(MT_GUI SHARED ${base_srcs} ${dialogs_srcs} ${server_srcs} ${support_srcs})  
+else(BUILD_SHARED)  
+  add_library(MT_GUI STATIC ${base_srcs} ${dialogs_srcs} ${server_srcs} ${support_srcs})
+endif(BUILD_SHARED)
+
+target_link_libraries(MT_GUI ${OPENGL_LIBRARIES})
+target_link_libraries(MT_GUI ${WX_LIB})
+if(WITH_CLF)
+  target_link_libraries(MT_GUI ${CLF_LIB} ${HDF5_LIBRARIES})
+endif(WITH_CLF)
 
 # copies the header files to the "include" directory
 if(OS_X)

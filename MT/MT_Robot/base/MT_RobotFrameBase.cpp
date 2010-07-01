@@ -28,7 +28,7 @@ MT_RobotFrameBase::~MT_RobotFrameBase()
 
 }
 
-void MT_RobotFrameBase::handleCommandLineArguments(int argc, char** argv)
+void MT_RobotFrameBase::handleCommandLineArguments(int argc, wxChar** argv)
 {
     MT_TrackerFrameBase::handleCommandLineArguments(argc, argv);
 }
