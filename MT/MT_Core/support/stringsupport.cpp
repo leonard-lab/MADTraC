@@ -172,6 +172,8 @@ MT_FORMAT_STRING_TYPE MT_hasFormatString(const char* s, int* p_start, int* p_end
         }
     }
 
+    return ret_fmt;
+
 }
 
 std::string MT_GetFileExtension(const std::string& path)
@@ -181,7 +183,7 @@ std::string MT_GetFileExtension(const std::string& path)
     std::string return_value = "";
 
     if(idx != std::string::npos
-       && (idx2 < idx))
+       && (idx2 == std::string::npos || (idx2 < idx)))
     {
         return_value = path.substr(idx+1);
     }
