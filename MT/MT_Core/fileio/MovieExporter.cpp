@@ -10,7 +10,17 @@
 #include <sys/stat.h>
 
 #ifndef MT_NO_OPENCV
+#ifndef _WIN32
 static int MT_FOURCC = CV_FOURCC('M','J','P','G');
+#else
+/* MJPG doesn't work right under windows.  This will pop up a dialog and
+ * allow the user to select a codec.  Alternatively setting this to 0 
+ * with an AVI filename will cause uncompressed video.
+ * see http://opencv.willowgarage.com/documentation/reading_and_writing_images_and_video.html?highlight=cv_fourcc#CvVideoWriter
+ *  - DTS 7/2/10
+ */
+static int MT_FOURCC = -1;
+#endif
 #endif
 
 static const int MAX_FILENAME_LENGTH = 512;
