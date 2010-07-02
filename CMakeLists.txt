@@ -293,7 +293,7 @@ else(NOT AUTO_FIND_WX)
     set(ENV{WXWIN} "${WX_ROOT}")
   endif(MSVC)
   
-  find_package(wxWidgets COMPONENTS core base gl net)  
+  find_package(wxWidgets COMPONENTS core base gl net adv)
 
   if(wxWidgets_FOUND)
     set(WX_INCLUDE ${wxWidgets_INCLUDE_DIRS})
