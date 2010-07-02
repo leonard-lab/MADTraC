@@ -30,11 +30,8 @@
 
 // pops up a console in windows and directs stdout (i.e. printf) to it
 //   very useful for debugging
-#ifdef _WIN32
 /** \def MT_WIN32_DEBUG_CONSOLE If this is defined under Windows, a console
     window is displayed to which e.g. printf is redirected. */
-#define MT_WIN32_DEBUG_CONSOLE
-#endif
 
 /** \def MT_FIXED_SIZE_FRAME 
     This is the same as wxDEFAULT_FRAME_STYLE except 

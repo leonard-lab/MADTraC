@@ -64,7 +64,7 @@ bool MT_AppBase::OnInit()
      * versions.  The code is fairly standard, but borrowed from some 
      * website.  On OS X this is unnecessary as stdout appears in the 
      * debug terminal. */
-#if defined(_DEBUG) && defined(MT_WIN32_DEBUG_CONSOLE) && defined(_WIN32)
+#if defined(MT_WIN32_DEBUG_CONSOLE) && defined(_WIN32)
     if(AllocConsole())
     {
         freopen("CONOUT$", "wt", stdout);
