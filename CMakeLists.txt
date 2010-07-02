@@ -356,8 +356,8 @@ if(MSVC)
         "c:/Program Files/"
         "c:/Program Files (x86)/"
       PATH_SUFFIXES
-        "Allied Vision Technologies/FirePackage64"
-        "Allied Vision Technologies/FirePackage"        
+        "intek/FirePackage64"
+        "intek/FirePackage64 2v34/"
     )
     set(AVT_ROOT "${AVT_ROOT}" CACHE PATH "AVT API Root")
     if(IS_DIRECTORY "${AVT_ROOT}/FireGrab/Lib32")
@@ -373,6 +373,13 @@ if(MSVC)
   endif(WITH_AVT)
   
 endif(MSVC)
+
+if(MSVC)
+  option(MT_DEBUG_CONSOLE "Enable debug console for printf output" OFF)
+  if(MT_DEBUG_CONSOLE)
+    add_definitions(-DMT_WIN32_DEBUG_CONSOLE)
+  endif(MT_DEBUG_CONSOLE)
+endif(MSVC)  
 
 if(OS_X)
   option(MT_USE_WX_JOYSTICK "Use WX Joystick API" OFF)
