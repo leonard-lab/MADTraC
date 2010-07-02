@@ -167,7 +167,7 @@ bool PlaySwarmFrame::doKeyboardCallback(wxKeyEvent& event)
 {
   
     char key = event.GetKeyCode();
-    
+
     switch(key)
     {
     case 'f':
@@ -195,7 +195,6 @@ bool PlaySwarmFrame::doKeyboardCallback(wxKeyEvent& event)
 
 void PlaySwarmFrame::handleCommandLineArguments(int argc, char** argv)
 {
- 
     /* Note doing this rather than m_bTails = parser.Found("t") allows
      * the value from the XML file to be accepted. */
     if(m_CmdLineParser.Found(wxT("t")))

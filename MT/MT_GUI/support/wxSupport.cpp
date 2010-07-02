@@ -295,16 +295,18 @@ wxArrayString MT_StringVectorToWxArrayString(std::vector<string> strings)
 wxString MT_ReplaceSpaces(wxString string_to_fix, const char* replace_char)
 {
     wxChar* space_char = wxT(" ");
+    wxString rstring(replace_char, wxConvUTF8);
     wxString return_val = string_to_fix;
-    return_val.Replace(space_char, (wxChar *)replace_char);
+    return_val.Replace(space_char, rstring);
     return return_val;
 }
 
 wxString MT_CharToSpace(wxString string_to_fix, const char* replace_char)
 {
     wxChar* space_char = wxT(" ");
+    wxString rstring(replace_char, wxConvUTF8);
     wxString return_val = string_to_fix;
-    return_val.Replace((wxChar *)replace_char, space_char);
+    return_val.Replace(rstring, space_char);
     return return_val;
 }
 
