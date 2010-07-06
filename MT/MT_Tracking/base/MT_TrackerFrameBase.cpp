@@ -533,7 +533,8 @@ bool MT_TrackerFrameBase::setupCameraCapture()
     // set the window size, giving priority to the client area
     //   automatically scales when frames are larger than screen area
     setSizeByClient(framewidth_pixels, frameheight_pixels);
-    setViewport(MT_BlankRectangle);
+	setViewport(MT_Rectangle(0,0,framewidth_pixels,frameheight_pixels));
+    //setViewport(MT_BlankRectangle);
     lockCurrentViewportAsOriginal();
 
     // don't unpause yet, but start the timer
