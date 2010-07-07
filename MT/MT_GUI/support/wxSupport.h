@@ -49,8 +49,11 @@ const bool MT_NO_DECIMAL = false;
     (MT_WITH_DECIMAL) or not (MT_NO_DECIMAL) */
 wxString MT_validate_number(const wxString& InText, bool with_decmial = MT_WITH_DECIMAL);
 
-/** Function to convert an unsigned int to a bit string wxString - i.e. 42 -> "00101010".  Default
-    number of bits = 8. */
+/** Function to convert an unsigned int to a bit string wxString
+ *    i.e. 42 -> "00101010".  Default number of bits = 8.  For negative
+ *  integers passed with unsigned int casting, gives twos
+ *  complement i.e. MT_UIntToBitString((unsigned int) -1, 2) -> "11"
+ */
 wxString MT_UIntToBitString(unsigned int bits, unsigned int Nbits = 8);
 
 /** Function to remove all instances of wxString "stringtoremove" from wxArrayString stringarray.
