@@ -15,7 +15,6 @@ cd %SRC_DIR%
 echo Copying header files:
 echo %pname%.h >> temp_exc.txt
 echo pyhungarian.h >> temp_exc.txt
-echo YASegmenter.h >> temp_exc.txt
 echo SerialMFC.h >> temp_exc.txt
 echo SerialEx.h >> temp_exc.txt
 echo SerialWnd.h >> temp_exc.txt
