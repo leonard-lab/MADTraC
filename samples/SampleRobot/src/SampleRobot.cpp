@@ -62,33 +62,6 @@ void RobotBasicFrame::initUserData()
  * functionality as shown. */
 void RobotBasicFrame::handleCommandLineArguments(int argc, char** argv)
 {
-    long temp;
-
-    /* looks for -n or --num-objects followed by a number and
-     * stores that number in temp.  If neither option is found
-     * then Found returns false and the middle lines are skipped */
-    if(m_CmdLineParser.Found("n", &temp))
-    {
-        /* sets the "default" number to track - either the
-         * number that is displayed when the user presses
-         * "start tracking" or the number looked for if the
-         * user supplied -T or --Track-now at the command
-         * line uses this number of objects for the tracker */
-        m_iDefaultNumToTrack = temp;
-
-        /* if user wants to start tracking now and they already
-         * told us how many to track, then we want to skip the
-         * dialog that asks.  Note the base method also looks
-         * for this argument and handles it appropriately,
-         * we just want to specialize what happens here. */
-        if(m_CmdLineParser.Found("T"))
-        {
-            /* if this is set true then the dialog that asks for
-             * the number to track is skipped */
-            m_bNumToTrackInCmdLine = true;
-        }
-    }
-
     /* call the base command line handler, which will handle all
      * the standard command line arguments */
     MT_RobotFrameBase::handleCommandLineArguments(argc, argv);
@@ -111,11 +84,13 @@ void RobotBasicFrame::initTracker()
      * copies of a pointer is relatively cheap and safe (as long
      * as we are careful to keep them in the same scope), 
      * but having to cast up is dangerous and slow. */
-    m_pGYTracker = new GYSegmenter(m_pCurrentFrame);
+    //m_pGYTracker = new GYSegmenter(m_pCurrentFrame);
+	m_YATracker = new Segmenter(m_pCurrentFrame);
     /* the m_pTracker pointer is how the base class accesses
      * the tracker for all of the base functionality, so
      * we need to cast our pointer down to an MT_TrackerBase */
-    m_pTracker = (MT_TrackerBase *) m_pGYTracker;
+    //m_pTracker = (MT_TrackerBase *) m_pGYTracker;
+	m_pTracker = (MT_TrackerBase *) m_YATracker;
 
     /* ask for the number of objects to track if the user did not
      * specify it at the command line with the -T / --Track-now 
@@ -154,7 +129,7 @@ void RobotBasicFrame::initTracker()
     /* set the number of objects to track in the segmenter, which is
      * an option specific to this derivative of MT_TrackerBase - hence
      * it needs to be done here */
-    m_pGYTracker->setNumObjects(m_iDefaultNumToTrack);
+    //m_pGYTracker->setNumObjects(m_iDefaultNumToTrack);
 
     /* note - do NOT call MT_TrackerBase::initTracker, which is
      * a placeholder function that sets m_pTracker to NULL! */

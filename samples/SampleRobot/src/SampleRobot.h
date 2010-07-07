@@ -18,6 +18,7 @@ class RobotBasicFrame : public MT_RobotFrameBase
 protected:
 
     GYSegmenter* m_pGYTracker;
+	Segmenter* m_YATracker;
     unsigned int m_iDefaultNumToTrack;
     bool m_bNumToTrackInCmdLine;
 
