@@ -99,7 +99,7 @@ void Segmenter::Init(IplImage* ProtoFrame)
   
     if(ProtoFrame)
     {
-        Train(ProtoFrame);
+        train(ProtoFrame);
     }
     else
     {
@@ -107,7 +107,7 @@ void Segmenter::Init(IplImage* ProtoFrame)
         FrameHeight = 0;
     }
   
-    m_pBlobFile = NULL;
+    //m_pBlobFile = NULL;
   
     m_YABlobs.resize(0);  
   
@@ -116,7 +116,7 @@ void Segmenter::Init(IplImage* ProtoFrame)
 Segmenter::~Segmenter()
 {
   
-    delete m_pBlobFile;
+    //delete m_pBlobFile;
   
     if(BG_frame)
     {
@@ -128,7 +128,7 @@ Segmenter::~Segmenter()
     /* note ~TrackerCore will release ROI_frame */
 }
 
-void Segmenter::Train(IplImage* frame)
+void Segmenter::train(IplImage* frame)
 {
   
     // TODO Should really check this against the ROI frame if it exists
@@ -138,7 +138,7 @@ void Segmenter::Train(IplImage* frame)
     FrameWidth = frame->width;
     FrameHeight = frame->height;  
   
-    CreateFrames();
+    createFrames();
   
     if(frame->nChannels == 3)
     {
@@ -149,7 +149,7 @@ void Segmenter::Train(IplImage* frame)
   
 }
 
-void Segmenter::CreateFrames()
+void Segmenter::createFrames()
 {
   
     CvSize framesize = cvSize(FrameWidth, FrameHeight);
@@ -169,7 +169,7 @@ void Segmenter::CreateFrames()
   
 }
 
-void Segmenter::DoMeasurement()
+void Segmenter::doMeasurement()
 {
  
     // get the blob centroids and areas
@@ -184,47 +184,47 @@ void Segmenter::DoMeasurement()
   
 }
 
-void Segmenter::SetBlobFile(const char* blobfilename, const char* description)
+void Segmenter::setBlobFile(const char* blobfilename, const char* description)
 {
   
-    if(!m_pBlobFile)
+    /*if(!m_pBlobFile)
     {
         m_pBlobFile = new BlobFile(blobfilename, description, FrameWidth, FrameHeight);
-    }
+    }*/
   
 }
 
-void Segmenter::SetDiffThreshLow(int newThresh)
+void Segmenter::setDiffThreshLow(int newThresh)
 {
     blob_val_thresh_low = newThresh;
 }
 
-void Segmenter::SetAreaThreshLow(int newThresh)
+void Segmenter::setAreaThreshLow(int newThresh)
 {
     blob_area_thresh_low = newThresh;
 }
 
-void Segmenter::SetAreaThreshHigh(int newThresh)
+void Segmenter::setAreaThreshHigh(int newThresh)
 {
     blob_area_thresh_high = newThresh;
 }
 
-int Segmenter::GetDiffThreshLow()
+int Segmenter::getDiffThreshLow()
 {
     return blob_val_thresh_low;
 }
 
-int Segmenter::GetAreaThreshLow()
+int Segmenter::getAreaThreshLow()
 {
     return blob_area_thresh_low;
 }
 
-int Segmenter::GetAreaThreshHigh()
+int Segmenter::getAreaThreshHigh()
 {
     return blob_area_thresh_high;
 }
 
-void Segmenter::DoImageProcessing()
+void Segmenter::doImageProcessing()
 {
   
     // Find regions that are darker than the background
@@ -248,7 +248,7 @@ void Segmenter::DoImageProcessing()
   
 }
 
-void Segmenter::DoSegmentation()
+void Segmenter::doSegmentation()
 {
   
     // Use the blob finding algorithm to find the blobs based on trhesholding
@@ -293,7 +293,7 @@ void Segmenter::DoSegmentation()
 
 }
 
-void Segmenter::DoMeasurementWithYABlobs()
+void Segmenter::doMeasurementWithYABlobs()
 {
   
     BlobIndexes.resize(NFound);
@@ -314,7 +314,7 @@ void Segmenter::DoMeasurementWithYABlobs()
 }
 
 // Main Tracking Function - this is the main workhorse.
-void Segmenter::DoTracking(IplImage* frame)
+void Segmenter::doTracking(IplImage* frame)
 {
     //printf("thresh low %d\n area low %d\n bool %d\n double %f\n", blob_val_thresh_low, blob_area_thresh_low, test_bool, test_double);
   
@@ -333,14 +333,19 @@ void Segmenter::DoTracking(IplImage* frame)
     // Keep a copy of the original frame pointer for display purposes
     org_frame = frame;
     
-    // Convert to grayscale
-    cvCvtColor(frame, GS_frame, CV_BGR2GRAY);
+    // Convert to grayscale if necessary
+	if(frame->nChannels == 3)
+    {
+        cvCvtColor(frame, GS_frame, CV_BGR2GRAY);
+    } else {
+        cvCopy(frame, GS_frame);
+    }
   
     double t0 = MT_getTimeSec();
 
     // image operations to extract regions where fish are likely
     //  e.g. background substitution, thresholding
-    DoImageProcessing();
+    doImageProcessing();
   
     // image segmentation - i.e. blob detection
     //DoSegmentation();  
@@ -356,12 +361,12 @@ void Segmenter::DoTracking(IplImage* frame)
     t1 = MT_getTimeSec();
     //printf("Blobbing %f\n", t1-t0);
     NFound = m_YABlobs.size();
-    DoMeasurementWithYABlobs();
+    doMeasurementWithYABlobs();
 
-    if(m_pBlobFile)
+    /*if(m_pBlobFile)
     {
         m_pBlobFile->WriteBlobs(frame_counter, dt, blobs);
-    }
+    }*/
     
 }
 
@@ -393,11 +398,11 @@ void Segmenter::glDraw(bool DrawBlobs)
             blobcenter.setx(m_YABlobs[i].COMx);
             blobcenter.sety(FrameHeight - m_YABlobs[i].COMy);
             blobcenter.setz( 0 );
-      
-            DrawArrow( blobcenter,
-                       1.5*m_YABlobs[i].area,
+			fprintf(stdout, "I'm drawing to (%f, %f)\n", m_YABlobs[i].COMx, FrameHeight - m_YABlobs[i].COMy);
+            MT_DrawArrow( MT_R3(3, 3, 0)/*blobcenter*/,
+                       250/*1.5*m_YABlobs[i].area*/,
                        MT_DEG2RAD*m_YABlobs[i].orientation,
-                       MT_Green,
+                       MT_Red,
                        1.0 // fixed arrow width
                 );    
         }
@@ -405,7 +410,7 @@ void Segmenter::glDraw(bool DrawBlobs)
   
 }
 
-void Segmenter::DoGLDrawing(int flags)
+void Segmenter::doGLDrawing(int flags)
 {
   
     glDraw(flags > 0);

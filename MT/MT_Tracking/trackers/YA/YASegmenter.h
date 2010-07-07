@@ -41,7 +41,7 @@
 
 #include "YABlobber.h"
 
-#include "cv/TrackerCore.h"
+#include "MT/MT_Tracking/base/MT_TrackerBase.h"
 
 // for STL vector & string
 #include <vector>
@@ -65,7 +65,8 @@ using namespace std;
 
 /*************************************************************/
 
-class BlobberFrameGroup : public TrackerFrameGroup
+#ifndef GYSEGMENTER_H
+class BlobberFrameGroup : public MT_TrackerFrameGroup
 {
     
 public:
@@ -96,7 +97,9 @@ public:
     
 };
 
-class Segmenter : public TrackerCore
+#endif          // GYSEGMENTER_H
+
+class Segmenter : public MT_TrackerBase
 {
     
 protected:
@@ -122,7 +125,7 @@ protected:
         
     int frame_counter;
     
-    BlobFile* m_pBlobFile;
+    //BlobFile* m_pBlobFile;
     
     std::vector<int> BlobIndexes;
     std::vector<double> XBlobs;
@@ -133,7 +136,7 @@ protected:
     std::vector<YABlob> m_YABlobs;
     
     virtual void Init(IplImage* ProtoFrame);
-    virtual void CreateFrames();
+    virtual void createFrames();
     
     /***************************************/
     // These functions split up the tasks of the tracker into easier-to-edit chunks
@@ -144,20 +147,20 @@ protected:
     /* DoImageProcessing takes the current frame and produces a black and white
        (i.e. binary) image that is set to 1 where there is high likelihood of a blob and
        set to 0 where there is low likelihood of a blob. */
-    void DoImageProcessing();
+    void doImageProcessing();
     
     /* DoSegmentation takes the black and white image from DoImageProcessing and
        does blob detection.  These blobs are then filtered based on allowed sizes, etc. */
-    void DoSegmentation();
+    void doSegmentation();
     
     /* DoMeasurement does the data association step.  That is, it takes the blobs
        found in DoSegmentation and figures out which of the myTrackedObjects to assign
        the measurements of each blob to. */
-    void DoMeasurement();
+    void doMeasurement();
     
     /***************************************/ 
     YABlobber m_Blobber;
-    void DoMeasurementWithYABlobs();
+    void doMeasurementWithYABlobs();
     
 public:
     /* The constructor needs a prototype frame for frame sizes, etc */
@@ -167,34 +170,34 @@ public:
     
     // Function for background training - sets the given frame as the background
     //   frame from which subtraction is computed
-    void Train(IplImage* frame);
+    void train(IplImage* frame);
     
     /* Main workhorse function of the tracker that should get called externally
        during each time step with the most current frame.  */
-    void DoTracking(IplImage* frame);
+    void doTracking(IplImage* frame);
     
     // Functions to set various parameters
     //    void SetNExpected(int newNExpected);  // <- Not clear at this point how to do this nicely
-    void SetDiffThreshLow(int newThresh);
-    void SetAreaThreshLow(int newThresh);
-    void SetAreaThreshHigh(int newThresh);
-    void SetBlobFile(const char* blobfilename, const char* description);
+    void setDiffThreshLow(int newThresh);
+    void setAreaThreshLow(int newThresh);
+    void setAreaThreshHigh(int newThresh);
+    void setBlobFile(const char* blobfilename, const char* description);
     
     // Functions to query various parameters
-    int GetDiffThreshLow();
-    int GetAreaThreshLow();
-    int GetAreaThreshHigh();
+    int getDiffThreshLow();
+    int getAreaThreshLow();
+    int getAreaThreshHigh();
     
     // function to draw (with flag for drawing tracked objects and/or blobs)
     void glDraw(bool DrawBlobs);
     
     // functions to access the various frames    
-    IplImage* GetBG_frame(){ return BG_frame;};
-    IplImage* GetGS_frame(){ return GS_frame;};
-    IplImage* Getdiff_frame(){ return diff_frame;};
-    IplImage* Getthresh_frame(){ return thresh_frame;};
+    IplImage* getBG_frame(){ return BG_frame;};
+    IplImage* getGS_frame(){ return GS_frame;};
+    IplImage* getDiff_frame(){ return diff_frame;};
+    IplImage* getThresh_frame(){ return thresh_frame;};
     
-    virtual void DoGLDrawing(int flags = TC_NO_FLAGS);
+    virtual void doGLDrawing(int flags = 1 /* TC_NO_FLAGS */);
     
 };
 

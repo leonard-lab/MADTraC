@@ -3,6 +3,7 @@
 # MT/MT_Tracking/CMakeLists.txt - cmake file for MT_Tracking
 #
 # History:
+#	* Changed to include YASegmenter - Valeri Karpov, 7/7/2010
 #   * Original file - Dan Swain, 6/10/10
 #   
 ##################################################
@@ -50,7 +51,8 @@ set(trackers_srcs
   ./trackers/GY/GYBlobs.cpp       ./trackers/GY/GYBlobs.h
   ./trackers/GY/GYSegmenter.cpp   ./trackers/GY/GYSegmenter.h
   ./trackers/GY/MixGaussians.cpp  ./trackers/GY/MixGaussians.h
-  ./trackers/YA/YABlobber.cpp     ./trackers/YA/YABlobber.h)  
+  ./trackers/YA/YABlobber.cpp     ./trackers/YA/YABlobber.h
+  ./trackers/YA/YASegmenter.cpp     ./trackers/YA/YASegmenter.h)  
 
 include_directories(${WX_INCLUDE})
 add_definitions(${WX_DEFS})
