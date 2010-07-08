@@ -1,0 +1,75 @@
+* Download and install Visual C++ 2008 Express (I had to install VC++ 2010 Express first and THEN VC++ 2008 Express)
+* Download and install CMake 2.8.2: http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe
+* Download OpenCV 2.1 "win.zip" version, not "win32-vs2008": http://sourceforge.net/projects/opencvlibrary/files/opencv-win/2.1/OpenCV-2.1.0-win.zip/download
+   - Unzip to d:\src\OpenCV-2.1.0
+* Open CMake
+   - "Where is the source code: " -> D:/src/OpenCV-2.1.0
+   - "WHere to build the binaries: " -> D:/src/OpenCV-2.1.0/build
+   - Configure, Yes to create the directory, 
+   - "Specify the generator for this project"  Visual Studio 9 2008 
+   - Configure again, options should no longer be red.
+   - Generate
+* In Visual C++, open d:\src\OpenCV-2.1.0\build\OpenCV.sln
+   - Build Menu -> Configuration Manager, change "Active solution configuration" to "Release"
+   - BUild Menu -> Build Solution 
+   - Build should finish "22 succeeded, 0 failed, 2 up-to-date, 3 skipped"
+* Add OpenCV to your system path:
+   - Start menu -> Right Click on "Computer" -> Properties
+   - On the left, select "Advanced system settings"
+   - Environment Variables
+   - Under System Variables (at the bottom), click New
+   - Variable name: "WXWIN"
+   - Variable value: "d:\src\wxWidgets-2.8.11"
+* Download and install wxWidgets (wxMSW):  http://prdownloads.sourceforge.net/wxwindows/wxMSW-2.8.11-Setup.exe
+   - At prompt "Setup will install wxWidgets into the following folder", enter d:\src\wxWidgets-2.8.11
+* In Visual C++, open d:\src\wxWidgets-2.8.11\build\msw\wx.vcxproj
+   - When prompted to convert projects to Visual C++ 2008, select "Yes to all"
+   - Open d:\src\wxWidgets-2.8.11\include\wx\msw\setup0.h and change the line
+      "#define wxUSE_GLCANVAS       0"   to   "#define wxUSE_GLCANVAS       1"
+   - Do the same for d:\src\wxWidgets-2.8.11\wx\msw\setup.h
+   - Make sure to save both files.
+   - Build Menu -> Configuration Manager, change "Active solution configuration" to "Release"
+   - BUild Menu -> Build Solution 
+   - Build should finish "20 succeeded, 0 failed, 0 up-to-date, 0 skipped"
+* Add the WXWIN environment variable:
+   - Start menu -> Right Click on "Computer" -> Properties
+   - On the left, select "Advanced system settings"
+   - Environment Variables
+   - Under System Variables (at the bottom), click New
+   - Select the "Path" variable and click "Edit"
+   - VERY CAREFULLY add ";D:\src\OpenCV-2.1.0\build\bin\Release" to the end of the list (note the semicolon)
+* OPTIONAL:  For Allied Vision Tech camera support on Win64, download the updated FirePackage from http://www.intek-darmstadt.de/FirePackage64_2v34.zip
+* Download and unzip MADTraC (or svn checkout) to d:\src\MADTraC\
+* Open CMake
+   - "Where is the source code: " -> D:/src/MADTraC
+   - "WHere to build the binaries: " -> D:/src/MADTraC/build
+   - Configure, Yes to create the directory, 
+   - "Specify the generator for this project"  Visual Studio 9 2008 
+   - OPTIONAL:
+       + Check MT_DEBUG_CONSOLE to enable a text window for "printf" output
+       + Uncheck BUILD_ROBOT if you don't need it
+       + Check WITH_AVT for Allied Vision Tech (e.g. Guppy) camera support
+   - Configure again, possibly a couple times, until no options are red
+   - Generate
+* In Visual C++, open d:\src\MADTraC\build\MADTraC.sln
+   - Build Menu -> Configuration Manager, change "Active solution configuration" to "Release"
+   - BUild Menu -> Build Solution 
+   - Build should finish "4 succeeded, 0 failed, 1 up-to-date, 1 skipped"
+
+To build an app, for example CameraUtility:
+* Open CMake
+   - "Where is the source code: " -> D:/src/MADTraC/apps/CameraUtility
+   - "WHere to build the binaries: " -> D:/src/MADTraC/apps/CameraUtility/build
+   - Configure, Yes to create the directory, 
+   - "Specify the generator for this project"  Visual Studio 9 2008 
+   - There Will almost certainly be an error.  This is expected.
+   - Under "Ungrouped Entries" change "MT_ROOT" to "d:\src\MADTraC\build"  (the "build" part is very important!)
+   - Configure again, possibly a couple times, until no options are red
+   - Generate
+* In Visual C++, open d:\src\MADTraC\apps\CameraUtility\build\CameraUtility.sln
+   - Build Menu -> Configuration Manager, change "Active solution configuration" to "Release"
+   - BUild Menu -> Build Solution 
+   - Build should finish "1 succeeded, 0 failed, 1 up-to-date, 0 skipped"
+   - Right click on "CameraUtility" in Solution Explorer and select "Set as startup project"
+   - When prompted about debug information say "Yes" (you can select "Don't show this dialog again")
+
