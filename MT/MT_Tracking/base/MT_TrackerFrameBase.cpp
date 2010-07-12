@@ -533,7 +533,10 @@ bool MT_TrackerFrameBase::setupCameraCapture()
     // set the window size, giving priority to the client area
     //   automatically scales when frames are larger than screen area
     setSizeByClient(framewidth_pixels, frameheight_pixels);
-	setViewport(MT_Rectangle(0,0,framewidth_pixels,frameheight_pixels));
+
+	//A really sleazy hack, but the initial zoom isn't set properly when you actually make this the correct size
+	//because setViewport thinks it doesn't have to redraw.
+	setViewport(MT_Rectangle(0,framewidth_pixels + 0.1,0,frameheight_pixels + 0.1));
     //setViewport(MT_BlankRectangle);
     lockCurrentViewportAsOriginal();
 
@@ -882,7 +885,6 @@ void MT_TrackerFrameBase::onMenuTrackerTrain(wxCommandEvent& WXUNUSED(event))
 
 void MT_TrackerFrameBase::onMenuTrackerParams(wxCommandEvent& event)
 {
-
     int parameter_group_id = event.GetId() - MT_TFB_ID_MENU_TRACKER_PARAMS00;
     if(m_pTracker)
     {
@@ -899,7 +901,6 @@ void MT_TrackerFrameBase::onMenuTrackerParams(wxCommandEvent& event)
 
 void MT_TrackerFrameBase::onMenuTrackerReports(wxCommandEvent& event)
 {
-
     int report_id = event.GetId() - MT_TFB_ID_MENU_TRACKER_REPORTS00;
     if(m_pTracker)
     {
