@@ -62,6 +62,11 @@ Segmenter::Segmenter(IplImage* ProtoFrame)
 
 }
 
+void segmenterTestMe(GLfloat x, GLfloat y)
+{
+  fprintf(stdout, "Printing (%f, %f)\n", x, y);
+}
+
 void Segmenter::Init(IplImage* ProtoFrame)
 {
   
@@ -374,6 +379,7 @@ void Segmenter::glDraw(bool DrawBlobs)
 {
   
     MT_R3 blobcenter;
+	MT_InitGLLists();
   
     if(DrawBlobs)
     {
@@ -391,20 +397,22 @@ void Segmenter::glDraw(bool DrawBlobs)
              1.0 // fixed arrow width
              );    
              }*/
-    
+
         for(int i = 0; i < m_YABlobs.size(); i++)
         {
       
             blobcenter.setx(m_YABlobs[i].COMx);
-            blobcenter.sety(FrameHeight - m_YABlobs[i].COMy);
-            blobcenter.setz( 0 );
-			fprintf(stdout, "I'm drawing to (%f, %f)\n", m_YABlobs[i].COMx, FrameHeight - m_YABlobs[i].COMy);
-            MT_DrawArrow( MT_R3(3, 3, 0)/*blobcenter*/,
-                       250/*1.5*m_YABlobs[i].area*/,
+            blobcenter.sety(FrameHeight-m_YABlobs[i].COMy);
+            blobcenter.setz( 0.0 );
+			
+			//fprintf(stdout, "I'm drawing to (%f, %f)\n", m_YABlobs[i].COMx, FrameHeight - m_YABlobs[i].COMy);
+            MT_DrawArrow( blobcenter,
+                       1.5*m_YABlobs[i].area,
                        MT_DEG2RAD*m_YABlobs[i].orientation,
                        MT_Red,
                        1.0 // fixed arrow width
-                );    
+                );
+
         }
     }
   
