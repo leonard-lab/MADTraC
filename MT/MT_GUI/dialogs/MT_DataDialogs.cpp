@@ -20,7 +20,7 @@ MT_DataDialog::MT_DataDialog(const wxArrayString& Headings,
                         pos, 
                         wxSize(MT_MIN(100*Headings.GetCount()+MT_SCROLLBAR_WIDTH, MT_MAX_LISTDIALOG_WIDTH), 
                                MT_MAX_LISTDIALOG_HEIGHT), 
-                        wxCAPTION | wxMINIMIZE_BOX | wxCLOSE_BOX)
+                        wxDEFAULT_DIALOG_STYLE)
 {
   
     m_pListControl = new wxListCtrl(this, 
