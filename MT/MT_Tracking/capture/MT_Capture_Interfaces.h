@@ -42,6 +42,7 @@ class MT_Cap_Iface_Base
         bool m_bEndOfCaptureFlag;
 
         IplImage* m_pCurrentFrame;
+		IplImage* m_tmpGrayFrame;
 
         std::string m_sTitle;
 

@@ -514,7 +514,8 @@ IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
     /* TODO this is very inflexible */
     if(!m_pCurrentFrame)
     {
-        m_pCurrentFrame = cvCreateImage(cvSize(m_iFrameWidth, m_iFrameHeight), IPL_DEPTH_8U, 1);
+        m_pCurrentFrame = cvCreateImage(cvSize(m_iFrameWidth, m_iFrameHeight), IPL_DEPTH_8U, 3);
+		m_tmpGrayFrame = cvCreateImage(cvSize(m_iFrameWidth, m_iFrameHeight), IPL_DEPTH_8U, 1);
 		m_iNChannelsPerFrame = 1;
         if(!m_pCurrentFrame)
         {
@@ -529,8 +530,10 @@ IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
 	 *     in the potentially volatile camera buffer) */
     for(unsigned int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
     {
-        ((uchar*)(m_pCurrentFrame->imageData))[i] = fg_frame.pData[i];
+        //((uchar*)(m_pCurrentFrame->imageData))[i] = fg_frame.pData[i];
+		((uchar*)(m_tmpGrayFrame->imageData))[i] = fg_frame.pData[i];
     }
+	cvCvtColor(m_tmpGrayFrame, m_pCurrentFrame, CV_BayerRG2RGB);
 
 	/* release the memory to the camera */
     m_Camera.PutFrame(&fg_frame);
