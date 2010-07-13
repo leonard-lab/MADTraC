@@ -5,13 +5,13 @@
  * This file is not intended to ever be compiled.
  */
 
-/** @defgroup PlaySwarm PlaySwarm
+/* @defgroup PlaySwarm PlaySwarm
  *
  * @brief Source code of the PlaySwarm app.  See @ref playswarm_tutorial
  *
  */
 
-/** @page playswarm_tutorial Tutorial - PlaySwarm
+/* @page playswarm_tutorial Tutorial - PlaySwarm
  *
  * This page uses PlaySwarm as a tutorial for how a visualization /
  * simulation app can be developed using MT_FrameBase.  It covers

@@ -3,7 +3,11 @@
 
 /** @mainpage MADTraC Framework Source Documentation
  *
- * @section Introduction
+ * - @ref mp_intro
+ * - @ref mp_quick_and_dirty
+ * - @ref mp_doc_overview
+ *
+ * @section mp_intro Introduction
  *
  * MADTraC contains:
  *  - A GUI framework suitable for any time-driven application with an
@@ -17,22 +21,55 @@
  *  - The <a
  * href="http://www.princeton.edu/~dswain/apps/">PlaySwarm</a> trajectory data visualization application.
  * 
- * MADTraC is, in some sense, an evolution of 
- * <A href="http://glswarm.sourceforge.net">glSwarm</A>.
+ * @section mp_quick_and_dirty Quick and Dirty Download and Build
  *
- * @section quick_and_dirty Quick and Dirty
- *
- * Anonymous svn checkout can be done via
- * \code
- * svn checkout http://poincare.princeton.edu/repos/MADTraC/trunk MADTraC
- * \endcode
- * Secure checkout (with write privileges) can be done with a valid
+ * Two methods to get MADTraC:
+ *    - Download the latest svn snapshot.  Go <a
+ * href="http://poincare.princeton.edu/websvn/listing.php?repname=MADTraC&">here</a>
+ * and click on the "Download" link next to "trunk".
+ *    - Secure checkout (with write privileges) can be done with a valid
  * username and password from
  * \code
  * svn checkout svn+ssh://username@poincare.princeton.edu/svn/repos/MADTraC/trunk MADTraC
  * \endcode
  * 
- * To get started, see the README file in the root MADTraC directory. 
+ * The MADTraC build system is now <a
+ * href="http://www.cmake.org/cmake/resources/software.html">CMake</a>-based.
+ * For most 
+ * applications, MADTraC requires you to first download and build <a
+ * href="http://wxwidgets.org">wxWidgets</a> and <a
+ * href="http://opencv.willowgarage.com/">OpenCV</a>.  Then,
+ *   - On Windows,
+ *       - Unzip the source somewhere, say c:/src/MADTraC
+ *       - Open the CMake GUI application
+ *       - Point the source directory to c:/src/MADTraC and the build
+ * directory to c:/src/MADTraC/build
+ *       - Click configure.  Choose Visual Studio 9 2008 as the generator.
+ *       - Configure the build
+ *       - Click configure until there are no more red entries (could take a couple tries).
+ *       - Click generate.
+ *       - Quit the CMake GUI
+ *       - Open c:/src/MADTraC/build/MADTraC.sln (e.g. in Visual
+ * Studio 2008 Express)
+ *       - Select the "Release" configuration
+ *       - Build Solution
+ *   - On OS X or linux,
+ *       - Unzip the source somewhere, say ~/src/MADTraC
+ *       - cd ~/src/MADTraC
+ *       - mkdir build
+ *       - cd build
+ *       - ccmake ..  (on OS X you can also do 'ccmake -G "Xcode"
+ * ..' to make an xcode project.  This is somewhat experimental.)
+ *       - Hit 'c' to configure, configure the build options, 'c'
+ * again until there are no more asterisked entries, then 'g' to
+ * generate and 'q' to quit.
+ *       - make
+ *
+ * To build an application, take a look at
+ * samples/SimpleBWTracker.CMakeLists.  This can be modified pretty
+ * easily for another application.
+ *
+ * @section mp_doc_overview Documentation Overview
  * 
  * Documentation of the code is here and is split among the four MT modules:
  *  - @ref MT_Core "MT Core" - Non-GUI data structures and support modules.
@@ -44,9 +81,13 @@
  *  - @ref MT_Robot "MT Robot" - Base classes for a generic
  * application involving video tracking and serial I/O.
  *
+ * Related documentation:
+ *  - @ref MT_App_Overview - Overview of MT Application structure
+ *  - @ref tracker_tutorial - Simple tracker tutorial (work in progress)
+ *
  */
 
-/** @page codeflow Flow of the Code
+/* @page codeflow Flow of the Code
  *
  * This page describes how the MADTraC code flows.  That is, what
  * functions are typically executed and in what order as a normal
