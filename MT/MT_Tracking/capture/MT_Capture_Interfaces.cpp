@@ -511,10 +511,14 @@ IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
         return m_pCurrentFrame;
     }
 
+	UINT32 param_value;
+	m_Camera.GetParameter(FGP_IMAGEFORMAT, &param_value);
+	int numChannels = IMGCOL(param_value) == CM_Y8 || IMGCOL(param_value) == CM_RGB8 || IMGCOL(param_value) == CM_RGB16 || IMGCOL(param_value) == CM_SRGB16 ? 3 : 1;
+
     /* TODO this is very inflexible */
     if(!m_pCurrentFrame)
     {
-        m_pCurrentFrame = cvCreateImage(cvSize(m_iFrameWidth, m_iFrameHeight), IPL_DEPTH_8U, 3);
+		m_pCurrentFrame = cvCreateImage(cvSize(m_iFrameWidth, m_iFrameHeight), IPL_DEPTH_8U, numChannels);
 		m_tmpGrayFrame = cvCreateImage(cvSize(m_iFrameWidth, m_iFrameHeight), IPL_DEPTH_8U, 1);
 		m_iNChannelsPerFrame = 1;
         if(!m_pCurrentFrame)
@@ -524,14 +528,11 @@ IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
         }
     }
 
-	UINT32 param_value;
-	m_Camera.GetParameter(FGP_IMAGEFORMAT, &param_value);
-
 	/* copies the raw image data into the frame 
 	 *   NOTE cvSetData (cvSetImageData) only assigns the pointer, it does not copy,
 	 *     so that's not the appropriate method here (we want to avoid collisions
 	 *     in the potentially volatile camera buffer) */
-	if (IMGCOL(param_value) == CM_RGB8 || CM_RGB16 || CM_SRGB16)
+	if (IMGCOL(param_value) == CM_Y8 || IMGCOL(param_value) == CM_RGB8 || IMGCOL(param_value) == CM_RGB16 || IMGCOL(param_value) == CM_SRGB16)
 	{
 		for(unsigned int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
 		{
