@@ -4,67 +4,33 @@
 #
 # History:
 #   * Original file - Dan Swain, 7/6/10
+#   * Simplied significantly - DTS 7/14/10
 #   
 ##################################################
 
-# require cmake version 2.8 since it has a module
-#  to find HDF5.  2.8 is available on mac via
-#  macports/darwinports
+# this is the most recent version of CMake
 cmake_minimum_required (VERSION 2.8)
 
 # name of the project - this has to come first
 project(SimpleBWTracker)
 
+# set the name of the built target
 set(APP_NAME SimpleBWTracker)
-# source files
-set(APP_SOURCE_FILES src/SimpleBWTracker.cpp src/SimpleBWTracker.h)
 
-# determine if this is OS X
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  set(OS_X ON)
-endif()
+# set this to a list of source and header files to be compiled
+set(APP_SRC
+  src/SimpleBWTracker.cpp
+  src/SimpleBWTracker.h)
 
-if(NOT MSVC)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3")
-else(NOT MSVC)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W1 /MT")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W1 /MT")
-endif(NOT MSVC)
-
-if(OS_X)
-  set(EXTRA_FILES
-    ${MT_OPENCV_FRAMEWORK})
-endif(OS_X)    
-
-# include directories for this project
+# adds src to the header search path
 include_directories(src)
 
-add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE
-  ${APP_SOURCE_FILES}
-  ${EXTRA_FILES})
+# sets up the build target
+add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE ${APP_SRC})
 
 # MADTRaC information
 set(MT_ROOT $ENV{MT_ROOT} CACHE PATH "MADTraC root directory")
+# sets variables related to MT
 include(${MT_ROOT}/cmake/MT_Config.cmake)
-
-# libraries to link - inherited from MT
-target_link_libraries(${APP_NAME} ${MT_TRACKING_LIBS} ${MT_TRACKING_EXTRA_LIBS})
-
-# Special bits to build an OS X application bundle
-if(OS_X)
-  # handle the Info.plist
-  SET_TARGET_PROPERTIES(${APP_NAME}
-    PROPERTIES
-    MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/Info.plist.in)
-  # copy OpenCV.framework into the bundle
-  if(MT_HAVE_OPENCV AND MT_OPENCV_FRAMEWORK)
-    if(${CMAKE_GENERATOR} MATCHES "Xcode")
-      set(FRAMEWORK_DEST "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
-    else()
-      set(FRAMEWORK_DEST "${CMAKE_BINARY_DIR}")      
-    endif()
-    add_custom_command(TARGET ${APP_NAME} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_directory ${MT_OPENCV_FRAMEWORK} ${FRAMEWORK_DEST}/${APP_NAME}.app/Contents/Frameworks/OpenCV.framework)
-  endif()
-endif(OS_X)
+# sets up the app to build correctly using the right libraries, etc
+MT_tracking_app(${APP_NAME})

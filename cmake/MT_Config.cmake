@@ -107,3 +107,70 @@ endif(MT_HAVE_AVT)
 
 #### MT_Robot extra libraries
 set(MT_ROBOT_EXTRA_LIBS "${MT_TRACKING_EXTRA_LIBS}")
+
+######################################################################
+# Helper functions
+
+#### Building OpenCV framework into a project if necessary
+# 1. Checks if Info.plist.in exists in the source path,
+#      if so uses it to generate the application's Info.plist
+# 2. If MT was built with an OpenCV framework, copies the framework
+#      to the proper path (which depends upon the generator and
+#      build configuration
+function(MT_osx_app_copy_step APP_NAME)
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    
+    # handle the Info.plist, if Info.plist.in exists
+    if(EXISTS "${CMAKE_SOUCE_DIR}/Info.plist.in")
+      SET_TARGET_PROPERTIES(${APP_NAME}
+        PROPERTIES
+        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/Info.plist.in)
+    endif(EXISTS "${CMAKE_SOUCE_DIR}/Info.plist.in")
+    
+    # copy OpenCV.framework into the bundle if necessary
+    if(MT_HAVE_OPENCV AND MT_OPENCV_FRAMEWORK)
+
+      # the final location is different if we're building with XCode
+      if(${CMAKE_GENERATOR} MATCHES "Xcode")
+        set(FRAMEWORK_DEST "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+      else(${CMAKE_GENERATOR} MATCHES "Xcode")
+        set(FRAMEWORK_DEST "${CMAKE_BINARY_DIR}")      
+      endif(${CMAKE_GENERATOR} MATCHES "Xcode")
+      
+      add_custom_command(TARGET ${APP_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MT_OPENCV_FRAMEWORK} ${FRAMEWORK_DEST}/${APP_NAME}.app/Contents/Frameworks/OpenCV.framework)
+      
+    endif(MT_HAVE_OPENCV AND MT_OPENCV_FRAMEWORK)
+    
+  endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+endfunction(MT_osx_app_copy_step)
+
+
+#### Linking functions
+function(MT_link_GUI_app APP_NAME)
+  target_link_libraries(${APP_NAME} ${MT_GUI_LIBS} ${MT_GUI_EXTRA_LIBS})
+endfunction(MT_link_GUI_app)  
+
+function(MT_link_tracking_app APP_NAME)
+  target_link_libraries(${APP_NAME} ${MT_TRACKING_LIBS} ${MT_TRACKING_EXTRA_LIBS})
+endfunction(MT_link_tracking_app)  
+
+function(MT_link_robot_app APP_NAME)
+  target_link_libraries(${APP_NAME} ${MT_ROBOT_LIBS} ${MT_ROBOT_EXTRA_LIBS})
+endfunction(MT_link_robot_app)
+
+#### Blanket functions
+function(MT_GUI_app APP_NAME)
+  MT_link_GUI_app(${APP_NAME})
+  MT_osx_app_copy_step(${APP_NAME})
+endfunction(MT_GUI_app)  
+
+function(MT_tracking_app APP_NAME)
+  MT_link_tracking_app(${APP_NAME})
+  MT_osx_app_copy_step(${APP_NAME})
+endfunction(MT_tracking_app)  
+
+function(MT_robot_app APP_NAME)
+  MT_link_robot_app(${APP_NAME})
+  MT_osx_app_copy_step(${APP_NAME})
+endfunction(MT_robot_app)  
