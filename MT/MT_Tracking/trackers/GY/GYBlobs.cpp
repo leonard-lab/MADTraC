@@ -13,6 +13,7 @@
 #include "GYBlobs.h"
 
 #include <math.h>
+#include <stdio.h>
 
 // Member functions for class GYBlob
 

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # shell script for xcode "Run Script" build phase
 #  - environment variables correspond to build settings in xcode project,
 #     e.g. ${PRODUCT_NAME} = MT_Core, MT_GUI, etc,

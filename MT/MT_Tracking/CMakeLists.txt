@@ -18,8 +18,8 @@ cmake_minimum_required (VERSION 2.8)
 #######################################################
 # sources
 set(3rdparty_srcs
-  ./3rdparty/cvBlobsLib/blob.cpp
-  ./3rdparty/cvBlobsLib/blob.h
+  ./3rdparty/cvBlobsLib/Blob.cpp
+  ./3rdparty/cvBlobsLib/Blob.h
   ./3rdparty/cvBlobsLib/BlobContour.cpp
   ./3rdparty/cvBlobsLib/BlobContour.h
   ./3rdparty/cvBlobsLib/BlobOperators.cpp      
@@ -73,13 +73,13 @@ add_library(MT_Tracking STATIC
   ${trackers_srcs})
 
 # copies the header files to the "include" directory
-if(OS_X)
+if(NOT MSVC)
   get_directory_property(defs DIRECTORY . COMPILE_DEFINITIONS)
   add_custom_command(TARGET MT_Tracking POST_BUILD
     COMMAND echo ARGS "\"${defs}\">defs.txt"
     COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/osx_cmake_target_script.sh ARGS "MT_Tracking" ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
     )
-endif(OS_X)
+endif(NOT MSVC)
 
 if(HAVE_OPENCV_FRAMEWORK)
   target_link_libraries(MT_Tracking ${OPENCV_FRAMEWORK})

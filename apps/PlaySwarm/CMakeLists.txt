@@ -73,6 +73,7 @@ endif()
 #    ${MT_ROOT}/lib/Release/MT_GUI.lib)
 #endif(MSVC)
 
+message("Libs are ${MT_GUI_LIBS} and ${MT_GUI_EXTRA_LIBS}")
 target_link_libraries(PlaySwarm ${MT_GUI_LIBS} ${MT_GUI_EXTRA_LIBS})
 
 if(OS_X)
