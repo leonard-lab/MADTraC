@@ -51,14 +51,19 @@
  * to manage configuration across multiple platforms and with many
  * build options.  You can run cmake on the MADTraC directory and
  * generate build files appropriate to your system - makefiles, XCode
- * Projects, Visual Studio Solutions, etc.  A CMake configuration file is
+ * Projects, Visual Studio Solutions, etc.
+ *
+ * Note that building an actual application requires first building
+ * the MADTraC libraries and then building your application that links
+ * against those libraries.  A CMake configuration file is
  * included that can be used to configure target applications to use
  * MADTraC.
  *
- * For more detailed information on optional dependencies and build
- * configurations, see @ref build_info.  For quick build instructions,
- * see @ref bi_quick.
- *
+ * For more detailed information, see
+ *   - @ref build_info
+ *   - @ref cmake_config
+ *   - @ref build_apps
+ * 
  * @section mp_doc_overview Documentation Overview
  * 
  * Documentation of the code is here and is split among the four MT modules:
