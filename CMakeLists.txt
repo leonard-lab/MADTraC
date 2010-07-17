@@ -130,7 +130,7 @@ unset(OPENCV_LIBS CACHE)
 
 if(WITH_OPENCV)
   if(OS_X)
-    set(OPENCV_FRAMEWORK "~/src/MADTraC/OpenCV.framework" CACHE PATH "Path to OpenCV framework")
+    set(OPENCV_FRAMEWORK "${CMAKE_SOURCE_DIR}/OpenCV.framework" CACHE PATH "Path to OpenCV framework")
     if(IS_DIRECTORY ${OPENCV_FRAMEWORK})
       set(HAVE_OPENCV_FRAMEWORK ON)
       set(OPENCV_INC ${OPENCV_FRAMEWORK})
@@ -312,7 +312,7 @@ set(WX_DEFS ${WX_DEFS} CACHE STRING "wxWidgets preprocessor definitions")
 ##################################################
 # ARToolKit Support
 if(OS_X)
-  option(WITH_ARTK "Build with ARToolKit support" ON)
+  option(WITH_ARTK "Build with ARToolKit support" OFF)
 else(OS_X)
   option(WITH_ARTK "Build with ARToolKit support" OFF)
 endif(OS_X)
