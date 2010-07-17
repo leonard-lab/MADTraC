@@ -26,8 +26,8 @@
  *
  * There are three methods to get MADTraC:
  *    - Download the nightly <a
- * href="http://poincare.princeton.edu/MADTraC/latest.tar.gz">tarball</a>
- * or <a href="http://poincare.princeton.edu/MADTraC/latest.zip">zip</a>.
+ * href="http://poincare.princeton.edu/MADTraC/MADTraC-nightly.tar.gz">tarball</a>
+ * or <a href="http://poincare.princeton.edu/MADTraC/MADTraC-nightly.zip">zip</a>.
  *    - Anonymous SVN checkout
  * @code
  * svn checkout http://poincare.princeton.edu/MADTraC/svn/MADTraC/trunk MADTraC
