@@ -62,11 +62,6 @@ Segmenter::Segmenter(IplImage* ProtoFrame)
 
 }
 
-void segmenterTestMe(GLfloat x, GLfloat y)
-{
-  fprintf(stdout, "Printing (%f, %f)\n", x, y);
-}
-
 void Segmenter::Init(IplImage* ProtoFrame)
 {
   
@@ -405,7 +400,6 @@ void Segmenter::glDraw(bool DrawBlobs)
             blobcenter.sety(FrameHeight-m_YABlobs[i].COMy);
             blobcenter.setz( 0.0 );
 			
-			//fprintf(stdout, "I'm drawing to (%f, %f)\n", m_YABlobs[i].COMx, FrameHeight - m_YABlobs[i].COMy);
             MT_DrawArrow( blobcenter,
                        1.5*m_YABlobs[i].area,
                        MT_DEG2RAD*m_YABlobs[i].orientation,
