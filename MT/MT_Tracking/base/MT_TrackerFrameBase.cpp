@@ -142,6 +142,7 @@ MT_TrackerFrameBase::~MT_TrackerFrameBase()
         delete m_pTracker;
         m_pTracker = NULL;
     }
+	MT_FrameBase::doQuit();
 }
 
 /********************************************************************/
