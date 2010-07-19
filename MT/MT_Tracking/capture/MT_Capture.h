@@ -232,15 +232,16 @@ public:
   
     /* ctor with camera parameters initializes to 
        OpenCV camera interface */
-    MT_Capture(int FW,   /* pass MT_FC_DEFAULT_CAM_PARAMS for all defaults
+    MT_Capture(int FrameWidth,   /* pass MT_FC_DEFAULT_CAM_PARAMS for all defaults
                             note this function declaration can't have default
                             parameters for FW b/c MT_Capture() would be
                             ambiguous */
-               int FH = MT_FC_DEFAULT_FH, 
+               int FrameHeight = MT_FC_DEFAULT_FH, 
                bool ShowDialog = MT_FC_SHOWDIALOG,
                bool FlipH = MT_FC_NOFLIP,
                bool FlipV = MT_FC_NOFLIP,
-               MT_Cap_Iface_Type type = MT_CAP_DEFAULT);
+               MT_Cap_Iface_Type type = MT_CAP_DEFAULT,
+			   int numInterface = 0);
   
     /* Destructor */
     ~MT_Capture();
@@ -260,7 +261,8 @@ public:
                                bool ShowDialog = MT_FC_SHOWDIALOG,
                                bool FlipH = MT_FC_NOFLIP,
                                bool FlipV = MT_FC_NOFLIP,
-                               MT_Cap_Iface_Type type = MT_CAP_DEFAULT);
+                               MT_Cap_Iface_Type type = MT_CAP_DEFAULT,
+							   int numInterface = 0);
    
     MT_Cap_Iface_Type getInterface(unsigned int iface_num) const;
     const char* getInterfaceName(unsigned int iface_num);

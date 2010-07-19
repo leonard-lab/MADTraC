@@ -68,7 +68,7 @@ class MT_Cap_Iface_Base
            everything down. */
         virtual bool initFromFile(const char* filename)
             {doSafeInit(); return false;};
-        virtual bool initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
+        virtual bool initCamera(int FrameWidth, int FrameHeight, bool ShowDialog, bool FlipH, bool FlipV, int numInterface = 0)
             {doSafeInit(); return false;};
 
         /* this only makes sense for file-based captures
@@ -208,7 +208,7 @@ class MT_Cap_Iface_AVT_Camera : public MT_Cap_Iface_Base
         MT_Cap_Iface_AVT_Camera();
         ~MT_Cap_Iface_AVT_Camera();
 
-        bool initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV);
+        bool initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV, int numInterface = 0);
         IplImage* getFrame(int frame_index = MT_FC_NEXT_FRAME);
 };
 

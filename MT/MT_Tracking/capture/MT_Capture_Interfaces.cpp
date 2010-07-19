@@ -421,11 +421,12 @@ MT_Cap_Iface_AVT_Camera::~MT_Cap_Iface_AVT_Camera()
 #endif
 }
 
-bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
+bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV, int numInterface)
 {
 #ifdef MT_HAVE_AVT
     UINT32 err_code = FGInitModule(NULL);
-    if(err_code != FCE_NOERROR)
+	//If returns FCE_ALREADYOPENED, means that FireGrab has already been initialized
+    if(err_code != FCE_NOERROR && err_code != FCE_ALREADYOPENED)
     {
         fprintf(stderr, "Could not open AVT Camera interface.  Error code: %ld\n", err_code);
         return false;
@@ -446,7 +447,7 @@ bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool F
         return false;
     }
 
-    err_code = m_Camera.Connect(&node_info[0].Guid);
+    err_code = m_Camera.Connect(&node_info[numInterface].Guid);
     if(err_code != FCE_NOERROR)
     {
         fprintf(stderr, "Could not connect to camera.  Error code: %ld\n", err_code);
