@@ -108,14 +108,26 @@ void MT_Sequence::setMinInterval(double min_interval)
     else
     {
         m_dMinInterval = min_interval;
+        /* reset the times so that they obey the new min interval */
+        std::vector<double> current_times = m_vdEventTimes;
+        setTimes(current_times);
     }
 }
 
 void MT_Sequence::setTimes(std::vector<double> set_times)
 {
+    /* don't allow this if the times are locked */
+    if(m_bTimesLock)
+    {
+        return;
+    }
+
+    /* clear existing times */
+    m_vdEventTimes.resize(0);
+
+    /* add the new times */
     for(unsigned int i = 0; i < set_times.size(); i++)
     {
-        /* note times will get ignored if m_bTimesLocked is true */
         pushTime(set_times[i]);
     }
 }
