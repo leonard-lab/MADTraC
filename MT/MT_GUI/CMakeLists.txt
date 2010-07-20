@@ -30,7 +30,8 @@ set(server_srcs
   ./server/MT_Server.cpp   ./server/MT_Server.h)
 set(support_srcs
   ./support/wxSupport.cpp       ./support/wxSupport.h
-  ./support/wxXMLSupport.cpp    ./support/wxXMLSupport.h)
+  ./support/wxXMLSupport.cpp    ./support/wxXMLSupport.h
+  ./support/Sequence.cpp        ./support/Sequence.h)
 
 include_directories(${WX_INCLUDE})
 add_definitions(${WX_DEFS})
@@ -54,7 +55,7 @@ if(NOT MSVC)
   get_directory_property(defs DIRECTORY . COMPILE_DEFINITIONS)
   add_custom_command(TARGET MT_GUI POST_BUILD
      COMMAND echo ARGS "\"${defs}\">defs.txt"
-     COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/osx_cmake_target_script.sh ARGS "MT_GUI" ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
+     COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/posix_cmake_target_script.sh ARGS "MT_GUI" ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
   )
 endif(NOT MSVC)
 
