@@ -72,8 +72,8 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
         TheRobots = inRobots;
     }
 
-    float maxspeed = MT_DEFAULT_MAX_SPEED;
-    float maxturningrate = MT_DEFAULT_MAX_TURNING_RATE;
+    MaxSpeed = MT_DEFAULT_MAX_SPEED;
+    MaxTurningRate = MT_DEFAULT_MAX_TURNING_RATE;
 
     // This needs to be initialized false - e.g. MSW does not do this for us!
     DoEvents = false;
@@ -162,14 +162,26 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
     wxBoxSizer* vbox1 = new wxBoxSizer(wxVERTICAL);
 
     wxString MaxString;
+
+	char initMaxSpeed[32];
+	sprintf(initMaxSpeed, "%f", MaxSpeed);
+	char initMaxTurningRate[32];
+	sprintf(initMaxTurningRate, "%f", MaxTurningRate);
+
+	myGamePadController.SetMaxSpeedMPS(MaxSpeed);
+	myGamePadController.SetMaxTurningRateRADPS(MaxTurningRate);
+
     MaxString.Printf(wxT("%3.2f"), myGamePadController.GetMaxSpeedMPS());
     vbox1->Add(new wxStaticText(this, -1, wxT("Max Speed")));
-    MaxSpeedCtrl = new wxTextCtrl(this, ID_MAXSPEED, MaxString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    MaxSpeedCtrl = new wxTextCtrl(this, ID_MAXSPEED, initMaxSpeed, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     vbox1->Add(MaxSpeedCtrl);
+	
+	MaxSpeedCtrl->Connect(wxID_ANY, wxEVT_KEY_UP, 
+		wxKeyEventHandler(MT_JoyStickFrame::onMaxSpeedCtrlTabKey), NULL, this);
 
     MaxString.Printf(wxT("%4.2f"), myGamePadController.GetMaxTurningRateRADPS());
     vbox1->Add(new wxStaticText(this, -1, wxT("Max Turning Rate")), 0, wxTOP, 10);
-    MaxTurningRateCtrl = new wxTextCtrl(this, ID_MAXTURNINGRATE, MaxString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    MaxTurningRateCtrl = new wxTextCtrl(this, ID_MAXTURNINGRATE, initMaxTurningRate, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     vbox1->Add(MaxTurningRateCtrl);
 
     ButtonToggleJoyStick = new wxButton(this, ID_BUTTON_TOGGLE_JOYSTICK, wxT("Disable"));
@@ -693,5 +705,15 @@ void MT_JoyStickFrame::onChildMove(wxCommandEvent& event)
 
     wxWindow* win = dynamic_cast<wxWindow*>(event.GetEventObject());
     MT_WriteWindowDataToXML(&m_RobotConfigXML, win->GetLabel(), win);
+}
+
+void MT_JoyStickFrame::onMaxSpeedCtrlTabKey(wxKeyEvent& event)
+{
+	char key = event.GetKeyCode();
+	if (key == '\t')
+	{
+		printf("Hello\n");
+		MaxTurningRateCtrl->SetFocus();
+	}
 }
 

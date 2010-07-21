@@ -133,6 +133,8 @@ public:
 
     void EnableEvents();
 
+	void onMaxSpeedCtrlTabKey(wxKeyEvent& event);
+
     DECLARE_EVENT_TABLE()
 
         };
