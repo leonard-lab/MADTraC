@@ -21,7 +21,13 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 
 # MADTRaC information
-set(MT_ROOT $ENV{MT_ROOT} CACHE PATH "MADTraC root directory")
+if($ENV{MT_ROOT})
+  set(MT_ROOT $ENV{MT_ROOT})
+else($ENV{MT_ROOT})  
+  set(MT_ROOT ${CMAKE_BINARY_DIR}/../../build/)
+endif($ENV{MT_ROOT})
+
+set(MT_ROOT ${MT_ROOT} CACHE PATH "MADTraC root directory")
 include(${MT_ROOT}/cmake/MT_Config.cmake)
 
 enable_testing()
@@ -54,10 +60,12 @@ list(APPEND MT_CORE_TESTS ${CURRENT_TEST})
 ######################################################################
 # MT_GUI/support
 
-if(APPLE)
-  add_definitions(-D__WX__ -DNO_GCC_PRAGMA -D__WXMAC__ -DwxUSE_BASE=1 -D
-          _FILE_OFFSET_BITS=64 -D_LARGE_FILES -D__WXMAC_XCODE__=1 -D__WXDEBUG__=1)
-endif(APPLE)
+# if(APPLE)
+#   add_definitions(-D__WX__ -DNO_GCC_PRAGMA -D__WXMAC__ -DwxUSE_BASE=1 -D
+#           _FILE_OFFSET_BITS=64 -D_LARGE_FILES -D__WXMAC_XCODE__=1 -D__WXDEBUG__=1)
+#endif(APPLE)
+message("MT_WX_DEFS is ${MT_WX_DEFS}")
+add_definitions(${MT_WX_DEFS})
 
 # wxSupport
 set(CURRENT_TEST test_wxSupport)
