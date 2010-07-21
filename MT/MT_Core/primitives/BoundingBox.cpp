@@ -35,6 +35,7 @@ MT_BoundingBox::MT_BoundingBox(double setxmin, double setxmax, double setymin, d
     zmin = setzmin; zmax = setzmax;
     initialized_xmin = initialized_ymin = initialized_zmin = true;
     initialized_xmax = initialized_ymax = initialized_zmax = true;
+    lock_xmin = lock_xmax = lock_ymin = lock_ymax = lock_zmin = lock_zmax = false;
 
 }
 
