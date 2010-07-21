@@ -24,6 +24,53 @@
 // Header for this module
 #include "mathsupport.h"
 
+/* Windows implementation of a (rough) high-res timer 
+ *   - Based on http://www.decompile.com/cpp/faq/windows_timer_api.htm
+ *      Note there are some potential issues with this
+ *      see http://msdn.microsoft.com/en-us/magazine/cc163996.aspx 
+ *      But I think this will work for most of our applications. */
+#ifdef _WIN32
+static LARGE_INTEGER getTicsPerSec()
+{
+    static bool got = false;
+    static LARGE_INTEGER tps;
+    if(!got)
+    {
+        QueryPerformanceFrequency(&tps);
+        got = true;
+    }
+    return tps;
+}
+
+static LARGE_INTEGER getTic()
+{
+    static bool got = false;
+    static LARGE_INTEGER tic;
+    if(!got)
+    {
+        QueryPerformanceCounter(&tic);
+        got = true;
+    }
+    return tic;
+}
+
+static LARGE_INTEGER getToc()
+{
+    LARGE_INTEGER toc;
+    QueryPerformanceCounter(&toc);
+    return toc;
+}
+
+static double getW32Time()
+{
+    LARGE_INTEGER tic = getTic();
+    LARGE_INTEGER toc = getToc();
+    LARGE_INTEGER tps = getTicsPerSec();
+    double t = ((double)(toc.QuadPart - tic.QuadPart))/((double) tps.QuadPart);
+    return t;
+}
+#endif // _WIN32
+
 //------------------------------------------------------------
 //    Random Number Functions
 //------------------------------------------------------------
@@ -129,9 +176,8 @@ double MT_getTimeSec(void)
 {
 
 #ifdef _WIN32
-    // Windows has to of course use this non-posix method
-    //   from Windows' time.h
-    return GetTickCount()/1000.0;
+    // See above
+    return getW32Time();
 #else
     // Everyone else uses a posix method
     timeval t;
