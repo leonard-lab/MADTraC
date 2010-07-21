@@ -71,18 +71,6 @@ MT_Sequence::MT_Sequence()
 {
 }
 
-MT_Sequence::MT_Sequence(std::vector<double> set_times,
-                         double min_interval)
-    : m_vdEventTimes(0),
-      m_pSequenceThread(NULL),
-      m_bIsRunning(false),
-      m_bTimesLock(false),
-      m_bThreadExitedNormally(false)      
-{
-    setMinInterval(min_interval);
-    setTimes(set_times);
-}
-
 MT_Sequence::~MT_Sequence()
 {
     unsigned int attempts = 0;
