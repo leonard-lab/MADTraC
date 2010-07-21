@@ -21,6 +21,9 @@ MT_RobotFrameBase::MT_RobotFrameBase(wxFrame* parent,
     m_bAutoIdentify(false),
     m_bRobotsIdentified(false)
 {
+	MT_RobotConnectDialog* dlg = new MT_RobotConnectDialog(&m_Robots, this);
+    registerDialogForXML(dlg);
+    dlg->Show(true);
 }
 
 MT_RobotFrameBase::~MT_RobotFrameBase()
