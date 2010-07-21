@@ -193,6 +193,11 @@ bool MT_Sequence::goSequence(bool force_stop)
         }
     }
 
+    if(m_vdEventTimes.size() == 0)
+    {
+        return false;
+    }
+
     m_pSequenceThread = new MT_SequenceThread(this, m_vdEventTimes);
     m_pSequenceThread->Create();
     if(m_pSequenceThread->Run() != wxTHREAD_NO_ERROR)

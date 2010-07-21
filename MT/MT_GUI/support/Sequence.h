@@ -180,6 +180,8 @@ public:
      * sec. */
     void setMinInterval(
         double min_interval = MT_SEQUENCE_DEFAULT_MIN_INTERVAL);
+    /** Returns the current minimum interval */
+    double getMinInterval() const {return m_dMinInterval;};
 
     /** Set event times (STL vector version).  Existing event times
      * will be deleted.  New event times will be added one at a time
@@ -189,6 +191,9 @@ public:
 
     /** Get a vector of the existing (sorted) event times. */
     std::vector<double> getTimes() const {return m_vdEventTimes;};
+    /** Clear the event times.  Ignored if a sequence thread is
+     * running */
+    void clearTimes(){if(!m_bIsRunning){m_vdEventTimes.resize(0);}};
 
     /** Query the interval in which time t (seconds) occurrs.  Returns
      * the index i such that EventTimes[i - 1] <= t < EventTimes[i].
@@ -222,8 +227,9 @@ public:
      * nothing occurrs and the function returns false.
      * If force_stop is true (MT_SEQUENCE_FORCE), the existing running
      * sequence thread is stopped and a new sequence thread is
-     * started.  If the thread starts successfully, true is
-     * returned.  Otherwise false is returned. */
+     * started.  If the event times are empty, no thread is started
+     * and false is returned.  If the thread starts successfully, true
+     * is returned.  Otherwise false is returned. */
     virtual bool goSequence(bool force_stop = MT_SEQUENCE_NO_FORCE);
     /** Stops an existing sequence thread and triggers onDone. */
     virtual bool stopSequence();

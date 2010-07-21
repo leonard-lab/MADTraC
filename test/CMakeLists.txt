@@ -70,6 +70,17 @@ target_link_libraries(${CURRENT_TEST}
 add_test(NAME wxSupport COMMAND ${CURRENT_TEST})
 list(APPEND MT_GUI_TESTS ${CURRENT_TEST})
 
+# Sequence
+set(CURRENT_TEST test_Sequence)
+add_executable(${CURRENT_TEST} src/MT_GUI/support/test_Sequence.cpp)
+target_link_libraries(${CURRENT_TEST}
+  ${MT_GUI_LIBS}
+  ${MT_WX_LIB}
+  ${MT_WX_EXTRA_LIBS}
+  ${MT_GL_LIBS})
+add_test(NAME Sequence COMMAND ${CURRENT_TEST})
+list(APPEND MT_GUI_TESTS ${CURRENT_TEST})
+
 include(${MT_ROOT}/cmake/MT_Config.cmake)
 
 add_custom_target(MT_Core_tests
