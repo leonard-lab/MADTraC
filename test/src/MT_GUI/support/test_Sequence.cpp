@@ -17,6 +17,8 @@ private:
 public:
     TestSeq1() : MT_Sequence(), m_dT0(MT_getTimeSec()), m_dTp(m_dT0){};
 
+    ~TestSeq1() {onDone();};
+
     void onEvent(unsigned int state)
     {
         double ta = MT_getTimeSec() - m_dT0;
@@ -32,6 +34,7 @@ public:
         }
         m_dTp = MT_getTimeSec();
         g_iState = state;
+        g_iCount++;
     };
 
     void onDone()
@@ -191,6 +194,79 @@ int main(int argc, char** argv)
     }
 
     delete pSeq1;
+
+    TestSeq1* pSeq2 = new TestSeq1;
+
+    g_iState = 0;
+    g_bSeqFinished = false;
+    count_now = g_iCount;
+    t0 = MT_getTimeSec();
+
+    pSeq2->pushTime(3.0);
+    pSeq2->goSequence();
+
+    wxMilliSleep(100);
+
+    /* sequence shouldn't allow us to add times while it's running */
+    int err = pSeq2->pushTime(10.0);
+    if(err >= 0)
+    {
+        fprintf(stderr,
+                "    Sequence did not respond with an error "
+                "while attempting to push a time while it "
+                "should have been running.\n");
+        status = MT_TEST_ERROR;
+    }
+    if(err != MT_SEQUENCE_ERR_LOCKED)
+    {
+        fprintf(stderr,
+                "    Sequence responded with wrong error "
+                "while attempting to push a time while it "
+                "should have been running.  Returned %d"
+                " when it should have returned %d\n",
+                err,
+                MT_SEQUENCE_ERR_LOCKED);
+        status = MT_TEST_ERROR;
+    }
+
+    printf("trying to delete\n");
+
+    wxCriticalSection crit;
+    crit.Enter();
+    bool done = false;
+    delete pSeq2;
+    done = true;
+    crit.Leave();
+
+    while(!done){};
+    
+    t = MT_getTimeSec() - t0;
+
+    /* deleting the sequence should stop the sequence,
+     * this should also stop it before the full 3 sec */
+    if(!g_bSeqFinished)
+    {
+        fprintf(stderr,
+                "    Sequence did not stop properly upon"
+                " deletion.\n");
+        status = MT_TEST_ERROR;
+    }
+
+    if(t > 2.9)
+    {
+        fprintf(stderr,
+                "    Sequence did not stop immediately."
+                "  Ran for %f sec\n", t);
+        status = MT_TEST_ERROR;
+    }
+
+    if(!g_ShowOnlyErrors)
+    {
+        fprintf(stdout,
+                "    Sequence stopped with time %f sec.\n",
+                t);
+    }
+
 
     return status;
 }

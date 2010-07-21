@@ -34,6 +34,7 @@ void* MT_SequenceThread::Entry()
             m_pSequence->flagEvent(m_iCurrentState++);
             if(m_iCurrentState >= m_vdTimes.size())
             {
+                printf("Thread finished\n");
                 /* done */
                 m_pSequence->flagThreadIsDone();
                 return NULL;
@@ -49,9 +50,11 @@ void* MT_SequenceThread::Entry()
         /* makes sure the thread exits when necessary */
         if(wxThread::TestDestroy())
         {
+            printf("Destroy thread\n");
+            m_pSequence->flagThreadIsDestroyed();
             return NULL;
         }
-        
+
     }
 
     return NULL;
@@ -73,18 +76,46 @@ MT_Sequence::MT_Sequence()
 
 MT_Sequence::~MT_Sequence()
 {
-    unsigned int attempts = 0;
-    while( (m_bIsRunning && m_pSequenceThread)
-           && (attempts++ < 100))
+    haltThread();
+}
+
+void MT_Sequence::haltThread()
+{
+
+    printf("halter\n");
+
+    if(m_bIsRunning && m_pSequenceThread)
     {
-        stopSequence();
+        printf("lock\n");
+        wxCriticalSectionLocker locker(m_CriticalSection);
+        m_bThreadIsDestroyed = false;
+        
+        m_pSequenceThread->Delete();
+
+        unsigned int attempts = 0;
+        
+        while(!m_bThreadIsDestroyed && attempts++ < 100){};
+        
+        onDone();
+
+        printf("unlock\n");
     }
+
+    m_bIsRunning = false;
+
 }
 
 void MT_Sequence::flagThreadIsDone()
 {
     m_bThreadExitedNormally = true;
+    m_bIsRunning = false;
     stopSequence();
+    onDone();
+}
+
+void MT_Sequence::flagThreadIsDestroyed()
+{
+    m_bThreadIsDestroyed = true;
 }
 
 void MT_Sequence::setMinInterval(double min_interval)
@@ -215,18 +246,16 @@ bool MT_Sequence::goSequence(bool force_stop)
 
 bool MT_Sequence::stopSequence()
 {
-    /* when the thread exits normally, it Delete's itself, so
-     * it would cause a segfault to try to Delete it here */
-    if(!m_bThreadExitedNormally)
+    printf("stopSequence\n");
+
+    if(m_bIsRunning)
     {
-        m_pSequenceThread->Delete();
+        haltThread();
     }
 
+    printf("after Halt\n");
     m_pSequenceThread = NULL;
     m_bThreadExitedNormally = false;
-    m_bIsRunning = false;
-
-    onDone();
 
     return true;
 }

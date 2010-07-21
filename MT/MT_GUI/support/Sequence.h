@@ -138,6 +138,9 @@ private:
     bool m_bIsRunning;
     bool m_bTimesLock;
     bool m_bThreadExitedNormally;
+    bool m_bThreadIsDestroyed;
+
+    wxCriticalSection m_CriticalSection;
 
 protected:
     /* these two functions get called directly by the thread and
@@ -146,7 +149,18 @@ protected:
      * passthrough to onEvent, but this leaves us room to modify
      * later. */
     void flagEvent(unsigned int state){onEvent(state);};
+    void flagThreadIsDestroyed();
     void flagThreadIsDone();
+
+    /** Attempt to halt the function.  If you want to ensure that
+     * the destructor of your derived sequence calls onDone, then
+     * derive a destructor containing this function. Will attempt to
+     * make sure that the thread is 
+     * deleted.  It will try 100 times to call stopSequence before
+     * giving up.  If all is well, either the sequence was already
+     * stopped or this will succeed on the first try.  The retrial is
+     * a safety measure. */
+    void haltThread();
 
 public:
     /** Constructor.  The default constructor initializes the sequence
@@ -155,12 +169,16 @@ public:
      * MT_SEQUENCE_DEFAULT_MIN_INTERVAL */
     MT_Sequence();
 
-    /** Destructor.  The destructor will attempt to make sure that the
-     * thread is 
-     * deleted.  It will try 100 times to call stopSequence before
-     * giving up.  If all is well, either the sequence was already
-     * stopped or this will succeed on the first try.  The retrial is
-     * a safety measure. */
+    /** Destructor.  Calls attemptHalt.  You probably want your
+     * derived sequence to have something like this to make sure that
+     * onDone gets called when the object is deleted.
+     * @code
+     * DerivedSequence::~DerivedSequence()
+     * {
+     *     attemptHalt();
+     * }
+     * @endcode
+     */
     virtual ~MT_Sequence();
 
     /** Set the minimum allowed interval in seconds.  This enforces a
