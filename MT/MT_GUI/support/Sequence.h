@@ -80,6 +80,8 @@ public:
  *     // ctor should set parent
  *     mySequence(SomeObj* parent)
  *      : MT_Sequence(), m_pParent(parent){};
+ *     // dtor should call haltThread to ensure onDone is called
+ *     ~mySequence(){haltThread();};
  *
  *     // Sequence event handler
  *     void onEvent(unsigned int state)
@@ -140,8 +142,6 @@ private:
     bool m_bThreadExitedNormally;
     bool m_bThreadIsDestroyed;
 
-    wxCriticalSection m_CriticalSection;
-
 protected:
     /* these two functions get called directly by the thread and
      * should *only* get called by the thread.  This allows us to do
@@ -152,14 +152,11 @@ protected:
     void flagThreadIsDestroyed();
     void flagThreadIsDone();
 
-    /** Attempt to halt the function.  If you want to ensure that
+    /** Attempt to halt the thread.  If you want to ensure that
      * the destructor of your derived sequence calls onDone, then
      * derive a destructor containing this function. Will attempt to
      * make sure that the thread is 
-     * deleted.  It will try 100 times to call stopSequence before
-     * giving up.  If all is well, either the sequence was already
-     * stopped or this will succeed on the first try.  The retrial is
-     * a safety measure. */
+     * deleted. */
     void haltThread();
 
 public:
@@ -169,13 +166,13 @@ public:
      * MT_SEQUENCE_DEFAULT_MIN_INTERVAL */
     MT_Sequence();
 
-    /** Destructor.  Calls attemptHalt.  You probably want your
+    /** Destructor.  Calls haltThread.  You probably want your
      * derived sequence to have something like this to make sure that
      * onDone gets called when the object is deleted.
      * @code
      * DerivedSequence::~DerivedSequence()
      * {
-     *     attemptHalt();
+     *     haltThread();
      * }
      * @endcode
      */

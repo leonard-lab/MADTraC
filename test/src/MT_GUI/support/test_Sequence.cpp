@@ -17,7 +17,7 @@ private:
 public:
     TestSeq1() : MT_Sequence(), m_dT0(MT_getTimeSec()), m_dTp(m_dT0){};
 
-    ~TestSeq1() {onDone();};
+    ~TestSeq1() {haltThread();};
 
     void onEvent(unsigned int state)
     {
@@ -62,7 +62,7 @@ void CHECK_SEQUENCE_TIMES(MT_Sequence* sequence,
                 "    MT_Sequence Error: Expected to have %d"
                 " events, but had %d\n",
                 n_expected,
-                times.size());
+                (int) times.size());
         return;
     }
 
@@ -229,17 +229,8 @@ int main(int argc, char** argv)
         status = MT_TEST_ERROR;
     }
 
-    printf("trying to delete\n");
-
-    wxCriticalSection crit;
-    crit.Enter();
-    bool done = false;
     delete pSeq2;
-    done = true;
-    crit.Leave();
 
-    while(!done){};
-    
     t = MT_getTimeSec() - t0;
 
     /* deleting the sequence should stop the sequence,
@@ -267,6 +258,155 @@ int main(int argc, char** argv)
                 t);
     }
 
+    TestSeq1* pSeq3 = new TestSeq1;
+
+    g_iState = 0;
+    g_bSeqFinished = false;
+    count_now = g_iCount;
+    t0 = MT_getTimeSec();
+
+    pSeq3->pushTime(3.0);
+    pSeq3->goSequence();
+
+    wxMilliSleep(100);
+
+    pSeq3->stopSequence();
+
+    t = MT_getTimeSec() - t0;
+
+    /* deleting the sequence should stop the sequence,
+     * this should also stop it before the full 3 sec */
+    if(!g_bSeqFinished)
+    {
+        fprintf(stderr,
+                "    Sequence did not stop properly upon"
+                " stopSequence.\n");
+        status = MT_TEST_ERROR;
+    }
+
+    if(t > 2.9)
+    {
+        fprintf(stderr,
+                "    Sequence did not stop immediately."
+                "  Ran for %f sec\n", t);
+        status = MT_TEST_ERROR;
+    }
+
+    if(!g_ShowOnlyErrors)
+    {
+        fprintf(stdout,
+                "    Sequence stopped with time %f sec.\n",
+                t);
+    }
+
+    pSeq3->clearTimes();
+
+    int o = pSeq3->pushTime(0.1);
+    if(o < 0)
+    {
+        fprintf(stderr,
+                "    MT_Sequence Error:  Sequence did not allow us"
+                " to add a time when it should have.  Error was"
+                " %d\n",
+                o);
+        status = MT_TEST_ERROR;
+    }
+
+    double exp2[] = {0.1};
+
+    CHECK_SEQUENCE_TIMES(pSeq3,
+                         exp2,
+                         1,
+                         &status);
+
+    g_bSeqFinished = false;
+
+    t0 = MT_getTimeSec();
+    pSeq3->goSequence();
+
+    if(pSeq3->goSequence())
+    {
+        fprintf(stderr,
+                "    MT_Sequence Error:  Sequence allowed to run twice"
+                " when it shouldn't have.\n");
+        status = MT_TEST_ERROR;
+    }
+        
+
+    while(!g_bSeqFinished){wxMilliSleep(1);};
+
+    t = MT_getTimeSec() - t0;
+
+    if(t > 0.15)
+    {
+        fprintf(stderr,
+                "    MT_Sequence Error:  Sequence ran with excessive length."
+                "  Ran for %f sec\n", t);
+        status = MT_TEST_ERROR;
+    }
+
+    if(!g_ShowOnlyErrors)
+    {
+        fprintf(stdout,
+                "    Sequence took %f sec\n",
+                t);
+    }
+
+    delete pSeq3;
+
+    TestSeq1* pSeq4 = new TestSeq1;
+
+    g_iState = 0;
+    g_bSeqFinished = false;
+    count_now = g_iCount;
+    t0 = MT_getTimeSec();
+    g_bSeqFinished = false;
+
+    pSeq4->pushTime(2.0);
+    pSeq4->goSequence();
+
+    wxSleep(1.0);
+
+    if(!g_ShowOnlyErrors)
+    {
+        fprintf(stdout,
+                "    Resetting sequence.  You will see a "
+                "\"Sequence is done.\" message, but that "
+                "is because we are resetting.\n");
+    }
+
+    if(!pSeq4->goSequence(MT_SEQUENCE_FORCE))
+    {
+        fprintf(stderr,
+                "    MT_Sequence Error:  Sequence did not allow"
+                " forced restart.\n");
+        status = MT_TEST_ERROR;
+    }
+
+    /* the above will call onDone, which sets this true, but
+     * we want to see how long the entire sequence takes. */
+    g_bSeqFinished = false;
+
+    while(!g_bSeqFinished){wxMilliSleep(1);};
+    
+    t = MT_getTimeSec() - t0;
+
+    if(t < 2.9)
+    {
+        fprintf(stderr,
+                "    MT_Sequence Error:  Sequence did not appear to restart."
+                "  Ran for %f sec\n", t);
+        status = MT_TEST_ERROR;
+    }
+
+    if(!g_ShowOnlyErrors)
+    {
+        fprintf(stdout,
+                "    Sequence took %f sec\n",
+                t);
+    }
+
+    delete pSeq4;
 
     return status;
 }

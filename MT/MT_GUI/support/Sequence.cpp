@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "wx/utils.h"
+
 /* simple sorting function */
 static bool sort_func(double x, double y)
 {
@@ -26,6 +28,13 @@ void* MT_SequenceThread::Entry()
 
     while(1)
     {
+        /* makes sure the thread exits when necessary */
+        if(wxThread::TestDestroy())
+        {
+            m_pSequence->flagThreadIsDestroyed();
+            return NULL;
+        }
+        
         /* current time */
         m_dT = MT_getTimeSec() - m_dT0;
 
@@ -34,7 +43,6 @@ void* MT_SequenceThread::Entry()
             m_pSequence->flagEvent(m_iCurrentState++);
             if(m_iCurrentState >= m_vdTimes.size())
             {
-                printf("Thread finished\n");
                 /* done */
                 m_pSequence->flagThreadIsDone();
                 return NULL;
@@ -50,7 +58,6 @@ void* MT_SequenceThread::Entry()
         /* makes sure the thread exits when necessary */
         if(wxThread::TestDestroy())
         {
-            printf("Destroy thread\n");
             m_pSequence->flagThreadIsDestroyed();
             return NULL;
         }
@@ -70,7 +77,8 @@ MT_Sequence::MT_Sequence()
       m_pSequenceThread(NULL),
       m_bIsRunning(false),
       m_bTimesLock(false),
-      m_bThreadExitedNormally(false)
+      m_bThreadExitedNormally(false),
+      m_bThreadIsDestroyed(false)
 {
 }
 
@@ -82,26 +90,26 @@ MT_Sequence::~MT_Sequence()
 void MT_Sequence::haltThread()
 {
 
-    printf("halter\n");
-
     if(m_bIsRunning && m_pSequenceThread)
     {
-        printf("lock\n");
-        wxCriticalSectionLocker locker(m_CriticalSection);
         m_bThreadIsDestroyed = false;
         
         m_pSequenceThread->Delete();
 
         unsigned int attempts = 0;
         
-        while(!m_bThreadIsDestroyed && attempts++ < 100){};
-        
-        onDone();
+        while(!m_bThreadIsDestroyed && attempts++ < 100){wxMilliSleep(10);};
+        if(attempts >= 100)
+        {
+            fprintf(stderr, "WARNING - MT_Sequence::haltThread dould not stop"
+                    "thread within 1 second.  Errors may result.\n");
+        }
 
-        printf("unlock\n");
+        onDone();
     }
 
     m_bIsRunning = false;
+    m_bTimesLock = false;
 
 }
 
@@ -109,6 +117,7 @@ void MT_Sequence::flagThreadIsDone()
 {
     m_bThreadExitedNormally = true;
     m_bIsRunning = false;
+    m_bTimesLock = false;
     stopSequence();
     onDone();
 }
@@ -246,14 +255,11 @@ bool MT_Sequence::goSequence(bool force_stop)
 
 bool MT_Sequence::stopSequence()
 {
-    printf("stopSequence\n");
-
     if(m_bIsRunning)
     {
         haltThread();
     }
 
-    printf("after Halt\n");
     m_pSequenceThread = NULL;
     m_bThreadExitedNormally = false;
 
