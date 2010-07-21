@@ -1,4 +1,5 @@
 #include <string>
+#include <string.h>
 
 #include "MT_Test.h"
 
