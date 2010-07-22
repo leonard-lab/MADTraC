@@ -696,6 +696,7 @@ MT_FrameBase::MT_FrameBase(wxFrame* parent,
     m_bQuitOnReset(false),
     m_bMakingMovie(false),
     m_iFramePeriod_msec(MT_DEFAULT_FRAME_PERIOD),
+    m_bDoQuitWasCalled(false),
     m_ClientSize(size),
     m_CmdLineParser(),
     m_XMLSettingsFile(MT_GetXMLPathForApp().mb_str()),
@@ -705,12 +706,16 @@ MT_FrameBase::MT_FrameBase(wxFrame* parent,
     m_sDescriptionText = wxString(wxT("Application description needs to be set")) +
         wxString(wxT(" in implementation.  Set m_sDescriptionText.\n"));
 
-    wxFrame::Connect(wxEVT_SIZE,
-                     wxID_ANY,
+    wxFrame::Connect(wxID_ANY,
+                     wxEVT_SIZE,
                      wxSizeEventHandler(MT_FrameBase::onSize));
 
     wxSizeEvent dummy_event;
     onSize(dummy_event);
+
+    wxFrame::Connect(wxID_ANY,
+                     wxEVT_CLOSE_WINDOW,
+                     wxCloseEventHandler(MT_FrameBase::onClose));
 
     /* client size gets clobbered by the initial call to onSize,
      * so reset it here -- the client size should get set
@@ -983,12 +988,27 @@ void MT_FrameBase::onSize(wxSizeEvent& event)
     m_ClientSize = GetClientSize();
 }
 
+void MT_FrameBase::onClose(wxCloseEvent& event)
+{
+    /* makes sure that the doQuit stuff gets called once and only once */
+    if(!m_bDoQuitWasCalled)
+    {
+        doQuit(false);
+    }
+
+    event.Skip();
+}
+
 /********************************************************************/
 /*           MT_FrameBase protected methods                         */
 /********************************************************************/
 
-void MT_FrameBase::doQuit()
+void MT_FrameBase::doQuit(bool force_close)
 {
+
+    /* our OnClose handler checks this to make sure that we don't
+     * try to call doQuit more than once. */
+    m_bDoQuitWasCalled = true;
 
     m_pTimer->Stop();
     m_bDoTimedEvents = false;
@@ -1004,7 +1024,14 @@ void MT_FrameBase::doQuit()
         m_pControlFrame->doQuit();
     }
 
-    wxFrame::Close(true);
+    /* normally, we want this to close the window, but
+     * we don't want that to happen if the close event has
+     * already been triggered and is calling this function 
+     * itself */
+    if(force_close)
+    {
+        wxFrame::Close(true);
+    }
 
 }
 

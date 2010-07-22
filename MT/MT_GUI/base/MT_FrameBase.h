@@ -491,6 +491,7 @@ private:
     bool m_bQuitOnReset;
     bool m_bMakingMovie;
     int m_iFramePeriod_msec;
+    bool m_bDoQuitWasCalled;
 
     wxSize m_ClientSize;
 
@@ -505,6 +506,7 @@ private:
     void onChildMove(wxCommandEvent& event);
 
     void onSize(wxSizeEvent& event);
+    void onClose(wxCloseEvent& event);
 
 protected:
     /** Command line parser.  The base frame adds the "-h"/"--help" options, which will
@@ -678,9 +680,14 @@ protected:
      * settings to XML and does whatever garbage collection is 
      * necessary.   Calls writeUserXML and doUserQuit.  
      *
+     * @par force_quit Pass false if you don't want the window to 
+     *                  actually close.  You almost always want to
+     *                  pass true, which is the default, i.e.
+     *                  doQuit() is equivalent to doQuit(true)
+     *
      * @see MT_FrameBase::writeUserXML 
      * @see MT_FrameBase::doUserQuit */
-    void doQuit();
+    void doQuit(bool force_quit = true);
 
     /** Register a dialog so that it will be automatically updated 
      * on each call to MT_FrameBasee::doStep (every time step when the
