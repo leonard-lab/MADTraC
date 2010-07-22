@@ -73,9 +73,12 @@ bool MT_AppBase::OnInit()
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 
                                 FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);
 
-        printf("\n");
-        printf(" MADTraC Debug Console\n");
-        printf("\n");
+        fprintf(stdout, "\n");
+        fprintf(stdout, " MADTraC Debug Console\n");
+        fprintf(stdout, "\n");
+        fprintf(stdout, "    Warning:  Do NOT close this window manually!\n");
+        fprintf(stdout, "\n");
+        fprintf(stdout, "\n");
     }
 #endif
 
