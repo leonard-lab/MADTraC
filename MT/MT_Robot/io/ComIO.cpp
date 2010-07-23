@@ -43,6 +43,7 @@ using namespace std;
 
 // Default constructor sets up to spit out to stdout (or wherever printf points)
 MT_ComIO::MT_ComIO()
+    : m_pFile(NULL)
 {
 
     // Set the port
@@ -55,7 +56,8 @@ MT_ComIO::MT_ComIO()
 // Constructor to initialize on a specific port
 /* Constructor to set up on a specific port by supplying
     a string descriptor of the resource. */
-MT_ComIO::MT_ComIO(const char* inComPortString, bool handshaking)
+MT_ComIO::MT_ComIO(const char* inComPortString, bool handshaking, FILE* file)
+    : m_pFile(file)
 {
 
     // Set the port
@@ -174,6 +176,14 @@ void MT_ComIO::ComInit(bool handshaking)
 
     }
 
+    if(m_pFile)
+    {
+        fprintf(m_pFile,
+                "This file is a mirror of output to a COM "
+                "port opened on %s by MADTraC\n",
+                PortString);
+    }
+
 }
 
 
@@ -191,6 +201,12 @@ MT_ComIO::~MT_ComIO()
 #else
         serial.Close();
 #endif
+    }
+
+    if(m_pFile)
+    {
+        fprintf(m_pFile,
+                "Closing COM port from destructor.\n");
     }
 
 }
@@ -218,6 +234,15 @@ int MT_ComIO::SendCommand(const char* cmd)
     
 int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
 {
+    if(m_pFile)
+    {
+        fprintf(m_pFile, "Attempting to write ");
+        for(unsigned int i = 0; i < n_bytes; i++)
+        {
+            fprintf(m_pFile, "%d, ", data[i]);
+        }
+        fprintf(m_pFile, " (%d bytes).\n", n_bytes);
+    }
     // Inform the user what's going on.  Always do this if 
     //  COM_DEBUG is defined, otherwise only if the port
     //  is set up as stderr.
@@ -240,6 +265,7 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
     if(n < 0 || (unsigned int) n != n_bytes){
         printf("Byte mismatch error writing command\n\t\"%s\" to %s\n",
                data,PortString);
+        if(m_pFile){fprintf(m_pFile, "Byte mismatch error!\n");};
         return 1;
     }
 
@@ -252,11 +278,13 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
     if(lLastError != ERROR_SUCCESS){
         printf("Serial error writing command\n\t\"%s\" to %s\n",
                data,PortString);
+        if(m_pFile){fprintf(m_pFile, "Serial Error!\n");};
         return 1;
     }
 
 #endif
 
+    if(m_pFile){fprintf(m_pFile, "Success.\n");};
     // All is well, return 0
     return 0;
 
@@ -277,6 +305,12 @@ const char* MT_ComIO::getComPort() const
 // Read a string from the port
 int MT_ComIO::ReadString(char* result)
 {
+    if(m_pFile)
+    {
+        fprintf(m_pFile,
+                "Attempting to read into string %s\n",
+                result);
+    }
     unsigned long length = strlen(result);
     unsigned char* data =
         (unsigned char*) calloc(length, sizeof(unsigned char));
@@ -289,6 +323,14 @@ int MT_ComIO::ReadString(char* result)
         result[i] = data[i];
     }
 
+    if(m_pFile)
+    {
+        fprintf(m_pFile,
+                "Got %s, error status %d\n",
+                result,
+                r);
+    }
+
     free(data);
 
     return r;
@@ -297,6 +339,12 @@ int MT_ComIO::ReadString(char* result)
 int MT_ComIO::ReadData(unsigned char* result, unsigned long max_length)
 {
 
+    if(m_pFile)
+    {
+        fprintf(m_pFile,
+                "Attempting to read up to %d bytes\n",
+                max_length);
+    }
     // Inform the user what's going on.  Always do this if 
     //  COM_DEBUG is defined, otherwise only if the port
     //  is set up as stderr.
@@ -306,7 +354,10 @@ int MT_ComIO::ReadData(unsigned char* result, unsigned long max_length)
                max_length, PortString);
 #endif
     if(strcmp(PortString,MT_STDERR) == 0)
+    {
+        fprintf(m_pFile, "But not doing it because port is stderr\n");
         return 0;
+    }
 
 #ifndef WINDOWS  // POSIX implementation
 
@@ -335,6 +386,10 @@ int MT_ComIO::ReadData(unsigned char* result, unsigned long max_length)
     if(N < max_length){
         printf("Problem reading from %s (error %d).\n",
                PortString, errno);
+        if(m_pFile)
+        {
+            fprintf(m_pFile, "Error reading data - too few bytes read\n");
+        }
         return 1;
     }
 
@@ -348,6 +403,10 @@ int MT_ComIO::ReadData(unsigned char* result, unsigned long max_length)
     if(lLastError != ERROR_SUCCESS){
         printf("Serial error recieving %d bytes on %s (error %d)\n",
                max_length,PortString,lLastError);
+        if(m_pFile)
+        {
+            fprintf(m_pFile, "Serial Error Reading!\n");
+        }
         return 1;
     }
 

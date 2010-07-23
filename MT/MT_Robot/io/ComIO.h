@@ -98,6 +98,8 @@ private:
     // Port File descriptor (linux/mac)
     int fd;
 
+    FILE* m_pFile;
+
 #ifdef _WIN32
     // Instance of serial control class (windows)
     CSerial serial;
@@ -120,10 +122,15 @@ public:
      * @param handshaking Pass false to disable handshaking
      * @see IsConnected to test status.
      */
-    MT_ComIO(const char* inComPortString, bool handshaking = true);
+    MT_ComIO(const char* inComPortString,
+             bool handshaking = true,
+             FILE* file = NULL);
 
     /** Destructor - closes the port. */
     virtual ~MT_ComIO();
+
+    /** Set a file for output mirroring */
+    void SetFile(FILE* file){m_pFile = file;};
 
     /** Send a null-terminated string to the COM port.  Returns 0 on
      * success, 1 on error.  Converts data to binary data and uses
