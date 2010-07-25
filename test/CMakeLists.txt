@@ -20,15 +20,31 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set(OS_X ON)
 endif()
 
-# MADTRaC information
-if($ENV{MT_ROOT})
-  set(MT_ROOT $ENV{MT_ROOT})
-else($ENV{MT_ROOT})  
-  set(MT_ROOT ${CMAKE_BINARY_DIR}/../../build/)
-endif($ENV{MT_ROOT})
-
-set(MT_ROOT ${MT_ROOT} CACHE PATH "MADTraC root directory")
+set(MT_ROOT ${CMAKE_BINARY_DIR}/../../build/
+  CACHE PATH "MADTraC root directory")
 include(${MT_ROOT}/cmake/MT_Config.cmake)
+
+# some build configurations will require that OpenCV.framework be
+# loaded from @executable_path/../Frameworks/ (as if it were in an
+# app bundle).  If this is the case, we can fake it out by creating
+# a Frameworks directory here and symlinking OpenCV.framework to it
+#   This should only matter if we're building on OS X using the
+#   OpenCV private bundle.
+function(ensure_OpenCV APP_NAME)
+  if(IS_DIRECTORY ${MT_OPENCV_FRAMEWORK})
+    if(NOT IS_DIRECTORY ${CMAKE_BINARY_DIR}/Frameworks)
+      add_custom_command(TARGET ${APP_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/Frameworks)
+    endif(NOT IS_DIRECTORY ${CMAKE_BINARY_DIR}/Frameworks)
+    if(NOT IS_DIRECTORY ${CMAKE_BINARY_DIR}/Frameworks/OpenCV.framework)
+      add_custom_command(TARGET ${APP_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E create_symlink ${MT_OPENCV_FRAMEWORK} ${CMAKE_BINARY_DIR}/Frameworks/OpenCV.framework)
+    endif(NOT IS_DIRECTORY ${CMAKE_BINARY_DIR}/Frameworks/OpenCV.framework)
+  endif(IS_DIRECTORY ${MT_OPENCV_FRAMEWORK})
+endfunction(ensure_OpenCV)
+
 
 enable_testing()
 include_directories(src)
@@ -55,6 +71,13 @@ set(CURRENT_TEST test_stringsupport)
 add_executable(${CURRENT_TEST} src/MT_Core/support/test_stringsupport.cpp)
 target_link_libraries(${CURRENT_TEST} ${MT_CORE_LIBS})
 add_test(NAME StringSupport COMMAND ${CURRENT_TEST})
+list(APPEND MT_CORE_TESTS ${CURRENT_TEST})
+
+# filesupport
+set(CURRENT_TEST test_filesupport)
+add_executable(${CURRENT_TEST} src/MT_Core/support/test_filesupport.cpp)
+target_link_libraries(${CURRENT_TEST} ${MT_CORE_LIBS})
+add_test(NAME FileSupport COMMAND ${CURRENT_TEST})
 list(APPEND MT_CORE_TESTS ${CURRENT_TEST})
 
 ######################################################################
@@ -84,6 +107,21 @@ target_link_libraries(${CURRENT_TEST}
 add_test(NAME Sequence COMMAND ${CURRENT_TEST})
 list(APPEND MT_GUI_TESTS ${CURRENT_TEST})
 
+######################################################################
+# MT_Robot/io tests
+set(CURRENT_TEST test_COMSequence)
+add_executable(${CURRENT_TEST} src/MT_Robot/io/test_COMSequence.cpp)
+target_link_libraries(${CURRENT_TEST}
+  ${MT_GUI_LIBS}
+  ${MT_ROBOT_LIBS}
+  ${MT_ROBOT_EXTRA_LIBS}
+  ${MT_WX_LIB}
+  ${MT_WX_EXTRA_LIBS}
+  ${MT_GL_LIBS})
+add_test(NAME COMSequence COMMAND ${CURRENT_TEST})
+ensure_OpenCV(${CURRENT_TEST})
+list(APPEND MT_ROBOT_TESTS ${CURRENT_TEST})
+
 include(${MT_ROOT}/cmake/MT_Config.cmake)
 
 add_custom_target(MT_Core_tests
@@ -93,3 +131,7 @@ add_custom_target(MT_Core_tests
 add_custom_target(MT_GUI_tests
   DEPENDS
   MT_GUI_TESTS)
+
+add_custom_target(MT_Robot_tests
+  DEPENDS
+  MT_ROBOT_TESTS)
