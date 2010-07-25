@@ -174,13 +174,13 @@ int MT_Sequence::getInterval(double t)
 
     for(unsigned int i = 1; i < m_vdEventTimes.size(); i++)
     {
-        if((t >= m_vdEventTimes[i - 1]) && (t < m_vdEventTimes[i]))
+        if((t > m_vdEventTimes[i - 1]) && (t <= m_vdEventTimes[i]))
         {
             return i;
         }
     }
     
-    return m_vdEventTimes.size();
+    return m_vdEventTimes.size() - 1;
 }
 
 int MT_Sequence::pushTime(double t)

@@ -216,6 +216,14 @@ public:
      */
     int getInterval(double t);
 
+    /** Returns the time corresponding to the event index given, or
+     * zero if the index doesn't correspond to an event. */
+    double getTimeFromIndex(unsigned int ix) const 
+    {
+        if(ix >= m_vdEventTimes.size())
+        {return 0;} else {return m_vdEventTimes[ix];}
+    };
+
     /** Add a single event time.
      *  - If the sequence is currently
      * running, this time is ignored and MT_SEQUENCE_ERR_LOCKED is
