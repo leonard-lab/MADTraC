@@ -2,7 +2,7 @@
 #define COMSEQUENCE_H
 
 #include "MT/MT_GUI/support/Sequence.h"
-#include "MT/MT_Robot/io/ComIO.h"
+ #include "MT/MT_Robot/io/ComIO.h"
 
 const double MT_COM_SEQUENCE_DEFAULT_MIN_TIME = 0.05;
 
@@ -21,6 +21,12 @@ private:
     std::vector<unsigned char*> m_vpData;
     std::vector<unsigned int> m_viNBytes;
     std::vector<bool> m_vbShifted;
+    
+    std::vector<double> m_vdRequestedTimes;
+    std::vector<unsigned char*> m_vpRequestedData;
+    std::vector<unsigned int> m_viRequestedNBytes;
+
+    int pushSeqTime(double t);
 
 protected:
     void onSeqEvent(unsigned int state);
@@ -30,7 +36,7 @@ public:
     static const bool s_bDoBase = true;
     
     MT_COMSequence(const char* port, FILE* file = NULL);
-    ~MT_COMSequence();
+    virtual ~MT_COMSequence();
 
     bool getIsConnected();
     bool forceReconnect(const char* port);
@@ -38,6 +44,8 @@ public:
     int pushEvent(double t,
                   const unsigned char* data,
                   unsigned int n_bytes);
+
+    void setMinDelay(double new_delay);
 
     void goSequence(bool force_stop = MT_SEQUENCE_NO_FORCE);
     bool getIsRunning() const;

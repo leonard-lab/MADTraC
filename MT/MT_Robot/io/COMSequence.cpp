@@ -42,6 +42,10 @@ MT_COMSequence::MT_COMSequence(const char* port, FILE* file)
     m_viNBytes.resize(0);
     m_vbShifted.resize(0);
     
+    m_vdRequestedTimes.resize(0);
+    m_vpRequestedData.resize(0);
+    m_viRequestedNBytes.resize(0);
+    
     if(port)
     {
         forceReconnect(port);
@@ -84,15 +88,16 @@ bool MT_COMSequence::forceReconnect(const char* port)
     return m_pComPort->IsConnected();
 }
 
-int MT_COMSequence::pushEvent(double t,
-                              const unsigned char* data,
-                              unsigned int n_bytes)
+int MT_COMSequence::pushSeqTime(double t)
 {
     if(!m_pSeq)
     {
         m_pSeq = new COM_SEQ(this);
-        m_pSeq->setMinInterval(m_dMinComTime);
     }
+
+    /* makes sure any changes to the minimum delay are
+     * effected before a new event is added */
+    setMinDelay(m_dMinComTime);
 
     bool ok = false;
     bool shifted = false;
@@ -120,6 +125,27 @@ int MT_COMSequence::pushEvent(double t,
             ok = true;
         }
     }
+    m_vbShifted.insert(m_vbShifted.begin() + ix, shifted);
+
+    return ix;
+}
+
+int MT_COMSequence::pushEvent(double t,
+                              const unsigned char* data,
+                              unsigned int n_bytes)
+{
+    int ix = pushSeqTime(t);
+    if(ix < 0)
+    {
+        return ix;
+    }
+
+    m_vdRequestedTimes.push_back(t);
+    unsigned char* t_data_r = (unsigned char *)calloc(n_bytes,
+                                              sizeof(unsigned char));
+    memcpy(t_data_r, data, n_bytes);
+    m_vpRequestedData.push_back(t_data_r);
+    m_viRequestedNBytes.push_back(n_bytes);
 
     unsigned char* t_data = (unsigned char *)calloc(n_bytes,
                                                     sizeof(unsigned char));
@@ -127,7 +153,6 @@ int MT_COMSequence::pushEvent(double t,
     
     m_vpData.insert(m_vpData.begin() + ix, t_data);
     m_viNBytes.insert(m_viNBytes.begin() + ix, n_bytes);
-    m_vbShifted.insert(m_vbShifted.begin() + ix, shifted);
 
     return ix;
 
@@ -210,12 +235,83 @@ bool MT_COMSequence::clearEvents(bool force_stop)
     {
         free(m_vpData[i]);
     }
+
+    for(unsigned int i = 0; i < m_vpRequestedData.size(); i++)
+    {
+        free(m_vpRequestedData[i]);
+    }
+
     m_vpData.resize(0);
     m_viNBytes.resize(0);
     m_vbShifted.resize(0);
 
+    m_vdRequestedTimes.resize(0);
+    m_vpRequestedData.resize(0);
+    m_viRequestedNBytes.resize(0);
+
     return true;
 }
+
+void MT_COMSequence::setMinDelay(double new_delay)
+{
+
+    if(new_delay < 0)
+    {
+        return;
+    }
+    
+    if(!m_pSeq || getIsRunning())
+    {
+        m_dMinComTime = new_delay;
+        return;
+    }
+
+    if(MT_IsEqual(new_delay, m_pSeq->getMinInterval()))
+    {
+        return;
+    }
+
+    m_dMinComTime = new_delay;
+    m_pSeq->clearTimes();
+    m_pSeq->setMinInterval(m_dMinComTime);
+
+    if(m_vdRequestedTimes.size() == 0)
+    {
+        return;
+    }
+
+    std::vector<double> rtimes = m_vdRequestedTimes;
+    std::vector<unsigned char*> rdata;
+    std::vector<unsigned int> rNBytes = m_viRequestedNBytes;
+    unsigned char* td;
+    for(unsigned int i = 0; i < rNBytes.size(); i++)
+    {
+        td = (unsigned char*)calloc(rNBytes[i],
+                                    sizeof(unsigned char));
+        memcpy(td, m_vpRequestedData[i], rNBytes[i]);
+        rdata.insert(rdata.begin() + i, td);
+        free(m_vpRequestedData[i]);
+        free(m_vpData[i]);
+    }
+    
+    m_vbShifted.resize(0);
+    m_vpData.resize(0);
+    m_viNBytes.resize(0);
+    
+    m_vdRequestedTimes.resize(0);
+    m_vpRequestedData.resize(0);
+    m_viRequestedNBytes.resize(0);
+
+    for(unsigned int i = 0; i < rtimes.size(); i++)
+    {
+        if(pushEvent(rtimes[i], rdata[i], rNBytes[i]) < 0)
+        {
+            cerr << "MT_COMSequence Error:  Unable to set new times.\n";
+        }
+    }
+
+}    
+        
 
 std::string MT_COMSequence::getEventTableAsString() const
 {

@@ -83,8 +83,15 @@ int main(int argc, char** argv)
 
     TRY_PUSH_EVENT(pSeq1, 0.1, d, 3, 0, &status);
     TRY_PUSH_EVENT(pSeq1, 0.2, d2, 3, 1, &status);
-    TRY_PUSH_EVENT(pSeq1, 0.225, d2, 3, 2, &status);
-    TRY_PUSH_EVENT(pSeq1, 0.201, d3, 4, 3, &status);
+    TRY_PUSH_EVENT(pSeq1, 0.23, d2, 3, 2, &status);
+    TRY_PUSH_EVENT(pSeq1, 0.22, d3, 4, 3, &status);
+
+    if(!g_ShowOnlyErrors)
+    {
+        cout << pSeq1->getEventTableAsString();
+    }
+
+    pSeq1->setMinDelay(0.025);
 
     if(!g_ShowOnlyErrors)
     {
