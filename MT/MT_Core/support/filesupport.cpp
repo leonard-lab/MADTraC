@@ -1,5 +1,7 @@
 #include "filesupport.h"
 
+#include "stringsupport.h"
+
 bool MT_CatTextFile(const char* filename)
 {
     std::string file_text = MT_TextFileToString(filename);
@@ -52,39 +54,26 @@ std::vector<std::string> MT_TextFileToStringVector(const char* filename)
 
 }
 
-std::string MT_StringVectorToString(const std::vector<std::string>& input,
-                                    const std::string& sep)
+
+std::string MT_GetFileExtension(const std::string& path)
 {
-    std::string all_lines;
-    for(unsigned int i = 0; i < input.size(); i++)
+    std::string::size_type idx = path.rfind('.');
+    std::string::size_type idx2 = path.rfind(MT_PathSeparator);
+    std::string return_value = "";
+
+    if(idx != std::string::npos
+       && (idx2 == std::string::npos || (idx2 < idx)))
     {
-        all_lines += input[i];
-        all_lines += sep;
+        return_value = path.substr(idx+1);
     }
-    return all_lines;
+
+    return return_value;
 }
 
-std::vector<std::string> MT_SplitString(const std::string& input,
-                                        const std::string& split_on)
+bool MT_PathHasFileExtension(const char* path, const char* extension)
 {
-    std::vector<std::string> result;
-    result.resize(0);
+    std::string ext(extension);
+    std::string actual = MT_GetFileExtension(std::string(path));
 
-    if(!split_on.size())
-    {
-        return result;
-    }
-
-    size_t found, foundp = 0;
-
-    found = input.find(split_on);
-    while(found != std::string::npos)
-    {
-        result.push_back(input.substr(foundp, found - foundp));
-        foundp = found + split_on.size();
-        found = input.find(split_on,
-                           foundp + 1);
-    }
-    result.push_back(input.substr(foundp, std::string::npos));
-    return result;
+    return (actual == ext);
 }

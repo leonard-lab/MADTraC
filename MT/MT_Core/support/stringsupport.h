@@ -12,6 +12,7 @@
  */
 
 #include <string>
+#include <vector>
 
 #ifndef isdigit
 #define isdigit MT_isdigit
@@ -33,14 +34,6 @@ typedef enum
     MT_FORMAT_STRING_FLOAT        /**< Float-type format string found.   */
 } MT_FORMAT_STRING_TYPE;
 
-/** Path separator for this platform.  On Windows = '\', otherwise =
- * '/' */
-#ifdef _WIN32
-const char MT_PathSeparator = '\\';
-#else
-const char MT_PathSeparator = '/';
-#endif
-
 /** Checks a string to determine if it contains a valid
  * printf-style format string (e.g. %5.4f, %d, etc).  I've done my
  * best to check against any valid formatter.  Returns an enum 
@@ -57,21 +50,10 @@ MT_FORMAT_STRING_TYPE MT_hasFormatString(const char* string_to_check,
         int* p_startof = NULL, 
         int* p_endof = NULL);
 
-/** Function to determine the file extension of a string.  The
- * extension is taken as everything past the last instance of '.' that
- * is not before a path separator (/ or \).
- * Otherwise "" is returned.
- *
- * @see MT_PathSeparator
- */
-std::string MT_GetFileExtension(const std::string& path);
-
-/** Function to check if a path has a given extension.  Uses
- * MT_GetFileExtension to determine extension.
- *
- * @see MT_GetFileExtension
- */
-bool MT_PathHasFileExtension(const char* path, const char* extension);
+std::string MT_StringVectorToString(const std::vector<std::string>& input,
+                                    const std::string& sep = std::string("\n"));
+std::vector<std::string> MT_SplitString(const std::string& input,
+                                        const std::string& split_on);
 
 /** @} */
 

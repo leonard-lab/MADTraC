@@ -176,25 +176,39 @@ MT_FORMAT_STRING_TYPE MT_hasFormatString(const char* s, int* p_start, int* p_end
 
 }
 
-std::string MT_GetFileExtension(const std::string& path)
+std::string MT_StringVectorToString(const std::vector<std::string>& input,
+                                    const std::string& sep)
 {
-    std::string::size_type idx = path.rfind('.');
-    std::string::size_type idx2 = path.rfind(MT_PathSeparator);
-    std::string return_value = "";
-
-    if(idx != std::string::npos
-       && (idx2 == std::string::npos || (idx2 < idx)))
+    std::string all_lines;
+    for(unsigned int i = 0; i < input.size(); i++)
     {
-        return_value = path.substr(idx+1);
+        all_lines += input[i];
+        all_lines += sep;
     }
-
-    return return_value;
+    return all_lines;
 }
 
-bool MT_PathHasFileExtension(const char* path, const char* extension)
+std::vector<std::string> MT_SplitString(const std::string& input,
+                                        const std::string& split_on)
 {
-    std::string ext(extension);
-    std::string actual = MT_GetFileExtension(std::string(path));
+    std::vector<std::string> result;
+    result.resize(0);
 
-    return (actual == ext);
+    if(!split_on.size())
+    {
+        return result;
+    }
+
+    size_t found, foundp = 0;
+
+    found = input.find(split_on);
+    while(found != std::string::npos)
+    {
+        result.push_back(input.substr(foundp, found - foundp));
+        foundp = found + split_on.size();
+        found = input.find(split_on,
+                           foundp + 1);
+    }
+    result.push_back(input.substr(foundp, std::string::npos));
+    return result;
 }
