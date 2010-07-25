@@ -182,6 +182,7 @@ void MT_ComIO::ComInit(bool handshaking)
                 "This file is a mirror of output to a COM "
                 "port opened on %s by MADTraC\n",
                 PortString);
+        fflush(m_pFile);
     }
 
 }
@@ -207,6 +208,7 @@ MT_ComIO::~MT_ComIO()
     {
         fprintf(m_pFile,
                 "Closing COM port from destructor.\n");
+        fflush(m_pFile);
     }
 
 }
@@ -242,6 +244,7 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
             fprintf(m_pFile, "%d, ", data[i]);
         }
         fprintf(m_pFile, " (%d bytes).\n", n_bytes);
+        fflush(m_pFile);
     }
     // Inform the user what's going on.  Always do this if 
     //  COM_DEBUG is defined, otherwise only if the port
@@ -265,7 +268,7 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
     if(n < 0 || (unsigned int) n != n_bytes){
         printf("Byte mismatch error writing command\n\t\"%s\" to %s\n",
                data,PortString);
-        if(m_pFile){fprintf(m_pFile, "Byte mismatch error!\n");};
+        if(m_pFile){fprintf(m_pFile, "Byte mismatch error!\n"); fflush(m_pFile);};
         return 1;
     }
 
@@ -278,13 +281,13 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
     if(lLastError != ERROR_SUCCESS){
         printf("Serial error writing command\n\t\"%s\" to %s\n",
                data,PortString);
-        if(m_pFile){fprintf(m_pFile, "Serial Error!\n");};
+        if(m_pFile){fprintf(m_pFile, "Serial Error!\n"); fflush(m_pFile);};
         return 1;
     }
 
 #endif
 
-    if(m_pFile){fprintf(m_pFile, "Success.\n");};
+    if(m_pFile){fprintf(m_pFile, "Success.\n"); fflush(m_pFile);};
     // All is well, return 0
     return 0;
 
@@ -310,6 +313,7 @@ int MT_ComIO::ReadString(char* result)
         fprintf(m_pFile,
                 "Attempting to read into string %s\n",
                 result);
+        fflush(m_pFile);
     }
     unsigned long length = strlen(result);
     unsigned char* data =
