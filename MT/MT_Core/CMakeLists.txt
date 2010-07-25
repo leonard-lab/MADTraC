@@ -43,7 +43,8 @@ set(primitives_srcs
   ./primitives/ringbuffer.cpp     ./primitives/ringbuffer.h) 
 set(support_srcs
   ./support/mathsupport.cpp    ./support/mathsupport.h
-  ./support/stringsupport.cpp  ./support/stringsupport.h)
+  ./support/stringsupport.cpp  ./support/stringsupport.h
+  ./support/filesupport.cpp    ./support/filesupport.h)
 
 # tell cmake this is a static library built from the
 #   given sources

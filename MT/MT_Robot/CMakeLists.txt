@@ -33,7 +33,8 @@ set(dialogs_srcs
   ./dialogs/MT_RobotConnectDialog.cpp ./dialogs/MT_RobotConnectDialog.h) 
 set(io_srcs
   ./io/ComIO.cpp    ./io/ComIO.h
-  ./io/gamepad.cpp  ./io/gamepad.h) 
+  ./io/gamepad.cpp  ./io/gamepad.h
+  ./io/COMSequence.cpp  ./io/COMSequence.h) 
 set(robot_srcs
   ./robot/AllRobotContainer.cpp  ./robot/AllRobotContainer.h
   ./robot/GamePadController.cpp  ./robot/GamePadController.h
