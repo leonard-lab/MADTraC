@@ -99,6 +99,7 @@ private:
     int fd;
 
     FILE* m_pFile;
+    double m_dT0;
 
 #ifdef _WIN32
     // Instance of serial control class (windows)

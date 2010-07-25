@@ -18,7 +18,7 @@
 
 // Header for this class
 #include "ComIO.h"
-//#include "com/Serial.h"
+#include "MT/MT_Core/support/mathsupport.h"
 
 // Headers for the POSIX implementation using read()/write()
 #ifndef _WIN32
@@ -43,7 +43,8 @@ using namespace std;
 
 // Default constructor sets up to spit out to stdout (or wherever printf points)
 MT_ComIO::MT_ComIO()
-    : m_pFile(NULL)
+    : m_pFile(NULL),
+      m_dT0(MT_getTimeSec())
 {
 
     // Set the port
@@ -57,7 +58,8 @@ MT_ComIO::MT_ComIO()
 /* Constructor to set up on a specific port by supplying
     a string descriptor of the resource. */
 MT_ComIO::MT_ComIO(const char* inComPortString, bool handshaking, FILE* file)
-    : m_pFile(file)
+    : m_pFile(file),
+      m_dT0(MT_getTimeSec())
 {
 
     // Set the port
@@ -238,12 +240,18 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
 {
     if(m_pFile)
     {
-        fprintf(m_pFile, "Attempting to write ");
+        fprintf(m_pFile,
+                "MT_Log %f | MT_ComIO::SendData | %d bytes | ",
+                MT_getTimeSec() - m_dT0, n_bytes);
         for(unsigned int i = 0; i < n_bytes; i++)
         {
-            fprintf(m_pFile, "%d, ", data[i]);
+            fprintf(m_pFile, "%d", data[i]);
+            if(i < n_bytes - 1)
+            {
+                fprintf(m_pFile, ", ");
+            }
         }
-        fprintf(m_pFile, " (%d bytes).\n", n_bytes);
+        fprintf(m_pFile, " | ");
         fflush(m_pFile);
     }
     // Inform the user what's going on.  Always do this if 
@@ -268,7 +276,7 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
     if(n < 0 || (unsigned int) n != n_bytes){
         printf("Byte mismatch error writing command\n\t\"%s\" to %s\n",
                data,PortString);
-        if(m_pFile){fprintf(m_pFile, "Byte mismatch error!\n"); fflush(m_pFile);};
+        if(m_pFile){fprintf(m_pFile, "-\n"); fflush(m_pFile);};
         return 1;
     }
 
@@ -281,13 +289,13 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
     if(lLastError != ERROR_SUCCESS){
         printf("Serial error writing command\n\t\"%s\" to %s\n",
                data,PortString);
-        if(m_pFile){fprintf(m_pFile, "Serial Error!\n"); fflush(m_pFile);};
+        if(m_pFile){fprintf(m_pFile, "-\n"); fflush(m_pFile);};
         return 1;
     }
 
 #endif
 
-    if(m_pFile){fprintf(m_pFile, "Success.\n"); fflush(m_pFile);};
+    if(m_pFile){fprintf(m_pFile, "+\n"); fflush(m_pFile);};
     // All is well, return 0
     return 0;
 
