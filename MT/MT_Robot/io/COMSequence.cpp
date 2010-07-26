@@ -343,3 +343,21 @@ std::string MT_COMSequence::getEventTableAsString() const
     return oss.str();
 
 }
+
+std::vector<unsigned char> MT_COMSequence::getDataForEvent(
+    unsigned int index)
+{
+    std::vector<unsigned char> result;
+    result.resize(0);
+
+    if(index >= m_vpData.size())
+    {
+        return result;
+    }
+
+    for(unsigned int i = 0; i < m_viNBytes[index]; i++)
+    {
+        result.push_back(*(m_vpData[index] + i));
+    }
+    return result;
+}

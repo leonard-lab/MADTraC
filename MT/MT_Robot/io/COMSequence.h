@@ -62,6 +62,8 @@ public:
 
     void setCOMFile(FILE* file){m_pFile = file;};
 
+    std::vector<unsigned char> getDataForEvent(unsigned int index);
+
 };
 
 #endif // COMSEQUENCE_H
