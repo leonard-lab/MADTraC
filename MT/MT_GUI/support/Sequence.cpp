@@ -191,7 +191,7 @@ int MT_Sequence::pushTime(double t)
         return MT_SEQUENCE_ERR_LOCKED;
     }
     
-    if(t < 0.5*m_dMinInterval)
+    if(t < 0) /* 0.5*m_dMinInterval) */
     {
         return MT_SEQUENCE_ERR_NEGATIVE;
     }

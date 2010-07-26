@@ -228,8 +228,7 @@ public:
      *  - If the sequence is currently
      * running, this time is ignored and MT_SEQUENCE_ERR_LOCKED is
      * returned.
-     *  - If t is negative or less than half of the minimum
-     * allowed interval, MT_SEQUENCE_ERR_NEGATIVE is returned.
+     *  - If t is negative, MT_SEQUENCE_ERR_NEGATIVE is returned.
      *  - If t is too close to an existing event time (see below),
      *  then MT_SEQUENCE_ERR_EXISTS is returned.
      *  - If the time is successfully added, the times are sorted and
