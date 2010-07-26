@@ -276,6 +276,7 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
     if(n < 0 || (unsigned int) n != n_bytes){
         printf("Byte mismatch error writing command\n\t\"%s\" to %s\n",
                data,PortString);
+        printf("n is %d, should have been %d, errno %d\n", n, n_bytes, errno);
         if(m_pFile){fprintf(m_pFile, "-\n"); fflush(m_pFile);};
         return 1;
     }
