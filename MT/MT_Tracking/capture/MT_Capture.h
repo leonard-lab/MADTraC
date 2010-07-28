@@ -240,8 +240,7 @@ public:
                bool ShowDialog = MT_FC_SHOWDIALOG,
                bool FlipH = MT_FC_NOFLIP,
                bool FlipV = MT_FC_NOFLIP,
-               MT_Cap_Iface_Type type = MT_CAP_DEFAULT,
-			   int numInterface = 0);
+               MT_Cap_Iface_Type type = MT_CAP_DEFAULT);
   
     /* Destructor */
     ~MT_Capture();
@@ -261,8 +260,7 @@ public:
                                bool ShowDialog = MT_FC_SHOWDIALOG,
                                bool FlipH = MT_FC_NOFLIP,
                                bool FlipV = MT_FC_NOFLIP,
-                               MT_Cap_Iface_Type type = MT_CAP_DEFAULT,
-							   int numInterface = 0);
+                               MT_Cap_Iface_Type type = MT_CAP_DEFAULT);
    
     MT_Cap_Iface_Type getInterface(unsigned int iface_num) const;
     const char* getInterfaceName(unsigned int iface_num);

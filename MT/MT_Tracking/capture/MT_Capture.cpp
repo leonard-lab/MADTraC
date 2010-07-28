@@ -40,12 +40,11 @@ MT_Capture::MT_Capture(int FW,
                        bool ShowDialog,
                        bool FlipH, 
                        bool FlipV,
-                       MT_Cap_Iface_Type type,
-					   int numInterface)
+                       MT_Cap_Iface_Type type)
 {
     doCommonInit(type);
   
-    initCaptureFromCamera(FW, FH, ShowDialog, FlipH, FlipV, type, numInterface);
+    initCaptureFromCamera(FW, FH, ShowDialog, FlipH, FlipV, type);
   
 }
 
@@ -199,8 +198,7 @@ bool MT_Capture::initCaptureFromCamera(int FW,
                                        bool ShowDialog,
                                        bool FlipH, 
                                        bool FlipV,
-                                       MT_Cap_Iface_Type iface_type,
-									   int numInterface)
+                                       MT_Cap_Iface_Type iface_type)
 {
     
     /* see MT_Cap_Iface_Type definition - all camera interfaces
@@ -252,7 +250,7 @@ bool MT_Capture::initCaptureFromCamera(int FW,
         return false;
     }
 
-    if(!new_iface->initCamera(FW, FH, ShowDialog, FlipH, FlipV, numInterface))
+    if(!new_iface->initCamera(FW, FH, ShowDialog, FlipH, FlipV))
     {
         delete new_iface;
         return false;

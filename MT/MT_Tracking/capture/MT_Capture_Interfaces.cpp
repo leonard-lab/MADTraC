@@ -421,7 +421,7 @@ MT_Cap_Iface_AVT_Camera::~MT_Cap_Iface_AVT_Camera()
 #endif
 }
 
-bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV, int numInterface)
+bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
 {
 #ifdef MT_HAVE_AVT
     UINT32 err_code = FGInitModule(NULL);
@@ -447,7 +447,22 @@ bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool F
         return false;
     }
 
-    err_code = m_Camera.Connect(&node_info[numInterface].Guid);
+    wxString cameras[16];
+    for (UINT32 i = 0; i < node_count; i++)
+    {
+        char tmp[128];
+        sprintf(tmp, "%i", node_info[i].Guid);
+        cameras[i] = wxString(tmp);
+    }
+    MT_AVTCameraDialog* dlg = new MT_AVTCameraDialog(NULL, wxPoint(0, 0), cameras, node_count);
+    bool success = dlg->Show();
+    int cameraNum = dlg->GetCameraSelection();
+    if (!success)
+    {
+        return false;
+    }
+
+    err_code = m_Camera.Connect(&node_info[cameraNum].Guid);
     if(err_code != FCE_NOERROR)
     {
         fprintf(stderr, "Could not connect to camera.  Error code: %ld\n", err_code);
