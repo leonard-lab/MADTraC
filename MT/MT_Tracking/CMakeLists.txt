@@ -39,7 +39,8 @@ set(base_srcs
   ./base/MT_TrackerFrameBase.cpp ./base/MT_TrackerFrameBase.h)
 set(capture_srcs
   ./capture/MT_Capture.cpp             ./capture/MT_Capture.h
-  ./capture/MT_Capture_Interfaces.cpp  ./capture/MT_Capture_Interfaces.h)
+  ./capture/MT_Capture_Interfaces.cpp  ./capture/MT_Capture_Interfaces.h
+  ./capture/MT_AVTCameraDialog.cpp	   ./capture/MT_AVTCameraDialog.h)
 set(cv_srcs
   ./cv/MT_BlobExtras.cpp             ./cv/MT_BlobExtras.h
   ./cv/MT_HungarianMatcher.cpp       ./cv/MT_HungarianMatcher.h
