@@ -130,7 +130,7 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
   
     int i;
     int numFilled = 0;
-    double t0 = MT_getTimeSec();
+    //double t0 = MT_getTimeSec();
     double tz;
     double ta = 0, tb = 0, tc = 0, td = 0, te = 0, tf = 0;
   
@@ -161,7 +161,7 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
         int x1 = BB.x;
         int y1 = BB.y;
         int w = BB.width;
-        int h = BB.height;
+        //int h = BB.height;
         
         BB.x = x1 - 0.5*w;
         BB.y = y1 - 0.5*w;

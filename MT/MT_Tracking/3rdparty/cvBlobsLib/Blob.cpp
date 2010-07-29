@@ -555,7 +555,7 @@ double CBlob::ExternPerimeter( IplImage *maskImage, bool xBorder /* = true */, b
 	cvStartAppendToSeq( externalPoints, &writer );
 
 	previousPoint.x = -1;
-
+    previousPoint.y = -1;  // DTS 7/29/10 to eliminate build warning
 
 
 	// which contour pixels touch border?
@@ -1377,7 +1377,7 @@ t_PointList CBlob::GetConvexHull()
 */
 
 // disable Mac format errors
-#pragma warning( disable : 4335 )
+//#pragma warning( disable : 4335 )  // DTS 7/29/10 to eliminate build warning
 
 void CBlob::JoinBlob( CBlob *blob )
 

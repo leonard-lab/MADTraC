@@ -1872,8 +1872,11 @@ void CBlobResult::PrintBlobs( char *nom_fitxer ) const
 
 	{
 
-		fprintf( fitxer_sortida, "blob %d ->\t a=%7.0f\t p=%8.2f (%8.2f extern)\t pconvex=%8.2f\t ext=%.0f\t m=%7.2f\t c=%3.2f\t l=%8.2f\n",
-
+//		fprintf( fitxer_sortida, "blob %d ->\t a=%7.0f\t p=%8.2f
+//		(%8.2f extern)\t pconvex=%8.2f\t ext=%.0f\t m=%7.2f\t
+//		c=%3.2f\t l=%8.2f\n",  // DTS 7/29/10 to eliminate build
+//		warning, removed m=%7.2f\t  not sure what m was supposed to be...
+		fprintf( fitxer_sortida, "blob %d ->\t a=%7.0f\t p=%8.2f (%8.2f extern)\t pconvex=%8.2f\t ext=%.0f\t c=%3.2f\t l=%8.2f\n",
 				 i, area[i], perimetre[i], externPerimeter[i], perimetreConvex[i], exterior[i], compacitat[i], longitud[i] );
 
 	}

@@ -539,7 +539,7 @@ void GYSegmenter::glDraw(bool DrawBlobs)
 
     if(m_pTrackedObjects)
     {
-        for(unsigned int i = 0; i < m_iNobj; i++)
+        for(unsigned int i = 0; i < (unsigned int) m_iNobj; i++)
         {
             blobcenter.setx(m_pTrackedObjects->getX(i));
             blobcenter.sety(m_iFrameHeight - m_pTrackedObjects->getY(i));
@@ -564,7 +564,7 @@ void GYSegmenter::doMatching()
         CvKalman* kalman;
 
         /* first time through just take the positions as initial */
-        for(unsigned int i = 0; i < m_iNobj; i++)
+        for(unsigned int i = 0; i < (unsigned int) m_iNobj; i++)
         {
             m_pTrackedObjects->setXY(i, XBlobs[i], YBlobs[i]);
 
@@ -646,7 +646,7 @@ void GYSegmenter::doMatching()
     double* pZt; /* measurement vector of TO */
 
     CvMat* pZ = cvCreateMat(3, 1, CV_32FC1); /* measurement vector */
-    CvMat* pXhat = cvCreateMat(6, 1, CV_32FC1); /* estimated state */
+    //CvMat* pXhat = cvCreateMat(6, 1, CV_32FC1); /* estimated state */
 
     for(int i = 0; i < m_iNobj; i++)
     {

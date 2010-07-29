@@ -393,7 +393,7 @@ void Segmenter::glDraw(bool DrawBlobs)
              );    
              }*/
 
-        for(int i = 0; i < m_YABlobs.size(); i++)
+        for(unsigned int i = 0; i < m_YABlobs.size(); i++)
         {
       
             blobcenter.setx(m_YABlobs[i].COMx);

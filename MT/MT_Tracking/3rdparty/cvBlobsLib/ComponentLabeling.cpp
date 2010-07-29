@@ -216,6 +216,10 @@ bool ComponentLabeling(	IplImage* inputImage,
 
 	CvPoint currentPoint;
 
+    // DTS 7/29/10 initialize pMask, pAboveMask, contourLabel to avoid
+    // compiler warnings
+    pMask = NULL;  pAboveMask = NULL;  contourLabel = 0;
+
 
 
 	// verify input image
