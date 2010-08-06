@@ -700,8 +700,7 @@ MT_FrameBase::MT_FrameBase(wxFrame* parent,
     m_ClientSize(size),
     m_CmdLineParser(),
     m_XMLSettingsFile(MT_GetXMLPathForApp().mb_str()),
-    m_PathGroup(wxT("Directories")),
-    m_Server(MT_SERVER_NO_INIT)  /* wait to init server manually */
+    m_PathGroup(wxT("Directories"))
 {
     m_sDescriptionText = wxString(wxT("Application description needs to be set")) +
         wxString(wxT(" in implementation.  Set m_sDescriptionText.\n"));

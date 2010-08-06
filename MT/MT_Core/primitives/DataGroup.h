@@ -391,11 +391,22 @@ public:
     /** See MT_DataGroup::AddDouble */
     void AddDouble(const string name, std::vector<double>* ptr);
 
+    /** Returns the number of elements in the i'th vector, or zero if
+     * i is out of range */
+    unsigned int GetVectorLength(unsigned int i) const;
+
     /** Calls MT_DataGroup::GetStringValue for the array_index'th
      * vector in the group and the data_index'th element of that
      * vector.  Returns "error" if unsuccessful. */
-    string GetStringValue(unsigned int array_index, unsigned int data_index) const;
+    string GetStringValue(unsigned int array_index,
+                          unsigned int data_index) const;
 
+    /** Calls MT_DataGroup::GetNumericValue for the array_index'th
+     * vector in the group and the data_idnex'th element of that
+     * vector.  Returns 0 if unsuccessful.  */
+    double GetNumericValue(unsigned int array_index,
+                           unsigned int data_index) const;
+    
     /** Builds an array of the results of GetStringValue for each
      * item in each vector.  Assumes that each vector has the same
      * length as the first one.  Shorter vectors will be padded with
@@ -410,6 +421,8 @@ public:
 
     /** Returns "error" as this operation should be undefined. */
     string GetStringValue(unsigned int i) const {return "error";};
+    /** Returns 0 as this operation should be undefined. */
+    double GetNumericValue(unsigned int i) const {return 0;};
 
 };
 

@@ -27,7 +27,10 @@ set(dialogs_srcs
   ./dialogs/MT_NumericInputDialog.cpp   ./dialogs/MT_NumericInputDialog.h
   ./dialogs/MT_ParameterDialog.cpp      ./dialogs/MT_ParameterDialog.h)   
 set(server_srcs
-  ./server/MT_Server.cpp   ./server/MT_Server.h)
+  ./server/MT_Server.cpp   ./server/MT_Server.h
+  ./server/MT_Client.cpp   ./server/MT_Client.h
+  ./server/MT_ServerModules.cpp
+  ./server/MT_ServerModules.h)
 set(support_srcs
   ./support/wxSupport.cpp       ./support/wxSupport.h
   ./support/wxXMLSupport.cpp    ./support/wxXMLSupport.h

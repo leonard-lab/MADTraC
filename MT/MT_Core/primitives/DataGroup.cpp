@@ -905,6 +905,27 @@ string MT_VectorDataGroup::GetStringValue(unsigned int array_index, unsigned int
     return m_vDataElements[array_index].GetStringValue(data_index);
 }
 
+double MT_VectorDataGroup::GetNumericValue(unsigned int array_index,
+                                           unsigned int data_index) const
+{
+    if(array_index >= m_vDataElements.size())
+    {
+        return 0;
+    }
+  
+    return m_vDataElements[array_index].GetNumericValue(data_index);
+}
+
+unsigned int MT_VectorDataGroup::GetVectorLength(unsigned int i) const
+{
+    if(i >= m_vDataElements.size())
+    {
+        return 0;
+    }
+
+    return m_vDataElements[i].GetVectorSize();
+}
+
 std::vector<string> MT_VectorDataGroup::GetStringValueArray() const
 {
     std::vector<string> result;

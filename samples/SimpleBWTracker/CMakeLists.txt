@@ -22,6 +22,12 @@ set(APP_SRC
   src/SimpleBWTracker.cpp
   src/SimpleBWTracker.h)
 
+# optionally build in a simple blob info server
+option(WITH_SERVER "Enable blob info server (see sample Matlab client)." OFF)
+if(WITH_SERVER)
+  add_definitions(-DWITH_SERVER)
+endif(WITH_SERVER)  
+
 # adds src to the header search path
 include_directories(src)
 

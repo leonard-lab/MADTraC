@@ -68,6 +68,7 @@ class SimpleBWTrackerFrame : public MT_TrackerFrameBase
 {
 protected:
     SimpleBWTracker* m_pSimpleBWTracker;
+    MT_Server* m_pServer;
 
 public:
     SimpleBWTrackerFrame(wxFrame* parent,
@@ -77,11 +78,47 @@ public:
                          const wxSize& size = wxSize(640,480),     
                          long style = MT_FIXED_SIZE_FRAME);
 
-    virtual ~SimpleBWTrackerFrame(){};
+    virtual ~SimpleBWTrackerFrame(){if(m_pServer) delete m_pServer;};
 
     void initTracker();
     void initUserData();
 };
+
+
+#ifdef WITH_SERVER
+/**********************************************************************
+ * Server Module Class (Optional)
+ *********************************************************************/
+
+class MT_SM_SimpleBWTracker : public MT_ServerModule
+{
+private:
+    SimpleBWTracker* m_pSimpleBWTracker;
+
+protected:
+    bool handleMessage(MT_Server::t_msg msg_code, wxSocketBase* sock);
+    MT_Server::t_msg_def* getMessageDefs();
+
+    enum
+    {
+        msg_GetBlobInfo = 0,
+        msg_Sentinel
+    } msg_index;
+
+public:
+    MT_SM_SimpleBWTracker()
+        : m_pSimpleBWTracker(NULL), MT_ServerModule("SimpleBWTracker"){};
+    MT_SM_SimpleBWTracker(MT_Server* pServer, SimpleBWTracker* pTracker)
+        : m_pSimpleBWTracker(pTracker),
+          MT_ServerModule(pServer, "SimpleBWTracker"){};
+
+    void sendBlobInfo(wxSocketBase* sock);
+
+    void getBlobInfo(wxSocketBase* sock);
+
+};
+#endif /* WITH_SERVER */    
+
 
 /**********************************************************************
  * GUI App Class

@@ -266,9 +266,86 @@ void SimpleBWTrackerFrame::initTracker()
     m_pSimpleBWTracker = new SimpleBWTracker(m_pCurrentFrame);
     m_pTracker = (MT_TrackerBase *) m_pSimpleBWTracker;
 
+#ifdef WITH_SERVER    
+    m_pServer = new MT_Server;
+    m_pServer->doInit();
+    m_pServer->registerModule(new MT_SM_SimpleBWTracker(m_pServer,
+                                                        m_pSimpleBWTracker));
+#endif /* WITH_SERVER */    
+
     /* note - do NOT call MT_TrackerBase::initTracker, which is
      * a placeholder function that sets m_pTracker to NULL! */
 }
+
+#ifdef WITH_SERVER
+/**********************************************************************
+ * Server Module Class (Optional)
+ *********************************************************************/
+
+MT_Server::t_msg_def* MT_SM_SimpleBWTracker::getMessageDefs()
+{
+    MT_Server::t_msg_def messages[2];
+
+    messages[msg_GetBlobInfo] = MT_Server::makeMessage(0,
+                                                       msg_GetBlobInfo,
+                                                       "Get Blob Info",
+                                                       this);
+    messages[msg_Sentinel] = MT_Server::sentinel_msg;
+
+    return setMessages(messages);
+}
+
+bool MT_SM_SimpleBWTracker::handleMessage(MT_Server::t_msg msg_code,
+                                          wxSocketBase* sock)
+{
+    if(msg_code == m_pMessages[msg_GetBlobInfo].server_code)
+    {
+        sendBlobInfo(sock);
+        return true;
+    }
+
+    return false;
+}
+
+void MT_SM_SimpleBWTracker::sendBlobInfo(wxSocketBase* sock)
+{
+    /* pull the data group from the tracker */
+    MT_DataReport* dr_blob = m_pSimpleBWTracker->getDataReport(0);
+    if(!dr_blob)
+    {
+        return;
+    }
+    
+    /* number of blobs */
+    unsigned int n_blobs = dr_blob->GetVectorLength(0);
+    MT_SendInt(n_blobs, sock);
+
+    if(n_blobs == 0)
+    {
+        return;
+    }
+
+    double* c_data = (double *)calloc(n_blobs, sizeof(double));
+    memset(c_data, 0, n_blobs*sizeof(double));
+
+    for(unsigned int i = 0; i < n_blobs; i++)
+    {
+        c_data[i] = dr_blob->GetNumericValue(0, i);
+    }
+
+    MT_SendDoubleArray(c_data, n_blobs, sock);
+
+    for(unsigned int i = 0; i < n_blobs; i++)
+    {
+        c_data[i] = dr_blob->GetNumericValue(1, i);
+    }
+
+    MT_SendDoubleArray(c_data, n_blobs, sock);
+
+    free(c_data);
+    
+}
+#endif /* WITH_SERVER */
 
 /**********************************************************************
  * GUI App Class

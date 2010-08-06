@@ -49,7 +49,6 @@
 #include "MT/MT_GUI/dialogs/MT_ParameterDialog.h"
 #include "MT/MT_GUI/support/wxSupport.h"
 #include "MT/MT_GUI/support/wxXMLSupport.h"
-#include "MT/MT_GUI/server/MT_Server.h"
 
 /* Headers for functionality */
 
@@ -814,9 +813,6 @@ protected:
     void drawStatusBar(double frac);
 
     void setupMovie(const wxString& filename = wxEmptyString);
-
-    MT_Server m_Server;
-    //void initServer(long port = MT_SERVER_DEFAULT_PORT);
 
 public:
     /** Basic constructor.  Doesn't do much.  Most initialization

@@ -107,6 +107,22 @@ target_link_libraries(${CURRENT_TEST}
 add_test(NAME Sequence COMMAND ${CURRENT_TEST})
 list(APPEND MT_GUI_TESTS ${CURRENT_TEST})
 
+# Server
+set(CURRENT_TEST test_Server)
+add_executable(${CURRENT_TEST} WIN32 src/MT_GUI/server/test_Server.cpp)
+target_link_libraries(${CURRENT_TEST}
+  ${MT_GUI_LIBS}
+  ${MT_WX_LIB}
+  ${MT_WX_EXTRA_LIBS}
+  ${MT_GL_LIBS})
+set(CURRENT_TEST test_Client)
+add_executable(${CURRENT_TEST} WIN32 src/MT_GUI/server/test_Client.cpp)
+target_link_libraries(${CURRENT_TEST}
+  ${MT_GUI_LIBS}
+  ${MT_WX_LIB}
+  ${MT_WX_EXTRA_LIBS}
+  ${MT_GL_LIBS})
+
 ######################################################################
 # MT_Robot/io tests
 set(CURRENT_TEST test_COMSequence)
