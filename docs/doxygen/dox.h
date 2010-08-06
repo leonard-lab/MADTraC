@@ -19,8 +19,6 @@
  * with robots and servo controllers.
  *  - A set of utility functions, constants, and classes.
  *  - Camera and robot utility applications.
- *  - The <a
- * href="http://www.princeton.edu/~dswain/apps/">PlaySwarm</a> trajectory data visualization application.
  * 
  * @section mp_get Getting MADTraC
  *

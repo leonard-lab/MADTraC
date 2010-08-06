@@ -587,7 +587,6 @@ WARN_LOGFILE           =
 
 INPUT                  = ../../MT/ \
                          ./ \
-                         ../../apps/PlaySwarm/src/ \
                          ../../samples/SimpleBWTracker/src/
 
 # This tag can be used to specify the character encoding of the source files 

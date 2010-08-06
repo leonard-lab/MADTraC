@@ -49,8 +49,7 @@
  * MT_tracking_app, or @c MT_robot_app macro (as in the example file),
  * on OS X cmake will automatically configure the build as a proper OS
  * X .app bundle.  This includes setting up the Info.plist file and
- * copying over the OpenCV framework if necessary.  For a more complex
- * example, see the PlaySwarm CMakeLists.txt.
+ * copying over the OpenCV framework if necessary.
  *
  * @section build_apps_ex_posix App Build Example on OS X or linux
  *

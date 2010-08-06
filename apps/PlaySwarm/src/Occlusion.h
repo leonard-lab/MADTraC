@@ -1,3 +1,5 @@
+/* NOTE This code is outdated!  See ../README */
+
 #ifndef Occlusion_H
 #define Occlusion_H
 

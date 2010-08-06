@@ -1,5 +1,16 @@
+/* NOTE This code is outdated!  See ../README */
+
+#ifdef __GNUC__
+#warning "NOTE:  This version of PlaySwarm is included only as an example of how to build an app with MADTraC - It could be outdated!  See the README file."
+#endif
+
+#ifdef _WIN32
+#pragma warning "NOTE:  This version of PlaySwarm is included only as an example of how to build an app with MADTraC - It could be outdated!  See the README file."
+#endif
+
+
 #ifndef PlaySwarm_H
-#define PlaySwarm_H
+#define PlaySwarm_H 
 
 /*
  *  PlaySwarm.h
@@ -70,7 +81,8 @@ protected:
 public:
     PlaySwarmFrame(wxFrame* parent,
                    wxWindowID id = wxID_ANY,
-                   const wxString& title = wxT("PlaySwarm"),
+                   const wxString& title =
+                       wxT("PlaySwarm  (MT Sample App Version)"),
                    const wxPoint& pos = wxDefaultPosition,
                    const wxSize& size = wxSize(DEFAULT_WINDOW_WIDTH,
                                                DEFAULT_WINDOW_HEIGHT),

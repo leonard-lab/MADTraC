@@ -1,3 +1,5 @@
+/* NOTE This code is outdated!  See ../README */
+
 /*
  *  PlaySwarm.cpp
  *

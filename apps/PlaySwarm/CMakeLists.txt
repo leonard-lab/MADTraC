@@ -4,6 +4,8 @@
 #
 # History:
 #   * Original file - Dan Swain, 6/11/10
+#   * NOTE as of 8/6/2010 this version of
+#      PlaySwarm is obsolete!  See the README
 #   
 ##################################################
 
@@ -19,6 +21,8 @@ project(PlaySwarm)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set(OS_X ON)
 endif()
+
+message(WARNING "This version of PlaySawrm is obsolete! See the README.")
 
 if(NOT MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3")
