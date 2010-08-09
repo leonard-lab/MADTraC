@@ -376,14 +376,14 @@ private:
                              double* view_dx, 
                              double* view_dy) const ;
 
-    void setMTParent(MT_FrameBase* parent){m_pMTParent = parent;};
-
 protected:
     void paintImage();
     void setBackgroundColor(const MT_Color& color){m_BackgroundColor = color;};
     void tellObjectLimits(const MT_Rectangle& object_limits, double exp_factor = 0);
 
 public:
+    void setMTParent(MT_FrameBase* parent){m_pMTParent = parent;};
+
     MT_GLCanvasBase(wxWindow* parent, 
                     wxWindowID id = wxID_ANY,
                     const wxPoint& pos = wxDefaultPosition,
@@ -468,9 +468,7 @@ class MT_FrameBase : public MT_FrameWithInit
     friend class MT_ControlFrameBase;
 
 private:
-    MT_TimerBase* m_pTimer;
     MT_ControlFrameBase* m_pControlFrame;
-    MT_GLCanvasBase* m_pCanvas;
 
     wxString m_sScreenSaveDirectory;
     wxString m_sScreenSavePath;
@@ -492,8 +490,6 @@ private:
     int m_iFramePeriod_msec;
     bool m_bDoQuitWasCalled;
 
-    wxSize m_ClientSize;
-
     void doMasterInitialization();
     void createMenus();
     void doTimedEvents();
@@ -508,6 +504,10 @@ private:
     void onClose(wxCloseEvent& event);
 
 protected:
+    wxSize m_ClientSize;
+    MT_TimerBase* m_pTimer;
+    MT_GLCanvasBase* m_pCanvas;
+
     /** Command line parser.  The base frame adds the "-h"/"--help" options, which will
      * respond with an automatically-generated help message.  You should add to the
      * parser using the wxCmdLineParser::AddXXX() functions in your derivative of
