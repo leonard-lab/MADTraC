@@ -236,7 +236,7 @@ protected:
     void selectDataFile();
 
     bool setupCameraCapture();
-    bool setupAVICapture(const char* filename);
+    virtual bool setupAVICapture(const char* filename);
     
     /* gets called after setupCameraCapture and setupAVICapture
      * if they were successful */
