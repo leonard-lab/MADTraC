@@ -680,9 +680,7 @@ MT_FrameBase::MT_FrameBase(wxFrame* parent,
                            const wxSize& size,
                            long style)
   : MT_FrameWithInit(parent, id, title, pos, size, style),
-    m_pTimer(NULL),
-    m_pControlFrame(NULL),
-    m_pCanvas(NULL),
+    m_pControlFrame(NULL),        
     m_sScreenSaveDirectory(wxGetCwd()),  /* directories default to working directory */
     m_sScreenSavePath(wxGetCwd()),
     m_sMovieExportDirectory(wxGetCwd()),
@@ -698,7 +696,9 @@ MT_FrameBase::MT_FrameBase(wxFrame* parent,
     m_iFramePeriod_msec(MT_DEFAULT_FRAME_PERIOD),
     m_bDoQuitWasCalled(false),
     m_ClientSize(size),
-    m_CmdLineParser(),
+    m_pTimer(NULL),
+    m_pCanvas(NULL),
+    m_CmdLineParser(),    
     m_XMLSettingsFile(MT_GetXMLPathForApp().mb_str()),
     m_PathGroup(wxT("Directories"))
 {

@@ -15,11 +15,11 @@ MT_RobotFrameBase::MT_RobotFrameBase(wxFrame* parent,
                                      long style)
   : MT_TrackerFrameBase(parent, id, title, pos, size, style),
     m_pRobotControlFrame(NULL),
-    m_Robots(),
-    m_pTrackedObjects(NULL),
     m_pJoyStickFrame(NULL),
     m_bAutoIdentify(false),
-    m_bRobotsIdentified(false)
+    m_bRobotsIdentified(false),
+    m_Robots(),
+    m_pTrackedObjects(NULL)
 {
 	MT_RobotConnectDialog* dlg = new MT_RobotConnectDialog(&m_Robots, this);
     registerDialogForXML(dlg);
@@ -269,7 +269,7 @@ void MT_RobotFrameBase::doAutoIdentify(bool DoAutoID)
     }
 
     /* loop through tracked objects (until match is found) */
-    for(int i = 0; i < m_pTrackedObjects->getNumObjects(); i++)
+    for(unsigned int i = 0; i < m_pTrackedObjects->getNumObjects(); i++)
     {
         /* if this TO has been in 5 or more frames and not attached to a robot
            and is moving */

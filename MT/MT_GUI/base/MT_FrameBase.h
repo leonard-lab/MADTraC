@@ -498,6 +498,7 @@ private:
     void writeXML();
     void readXML();
 
+
     void onChildMove(wxCommandEvent& event);
 
     void onSize(wxSizeEvent& event);
