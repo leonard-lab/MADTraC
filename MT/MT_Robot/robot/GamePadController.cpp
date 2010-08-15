@@ -320,7 +320,7 @@ void MT_GamePadController::cycle_robot(MT_SteeredRobot*& botToChange, char direc
     unsigned int myID = robotID(botToChange);
     direction = MT_SGN(direction);
   
-    for(int i = myID; i < AvailableRobots.size() && i >= 0; i = i + direction){
+    for(unsigned int i = myID; i < AvailableRobots.size() && i >= 0; i = i + direction){
         if( (i != myID) && (AssignRobot(botToChange,AvailableRobots[i]) == MT_ROBOT_ASSIGNMENT_OK) ){
       
             DisplayAssignedRobots();
@@ -339,7 +339,7 @@ void MT_GamePadController::DisplayAssignedRobots() const
     char Assigned[8];
     char c[2];
   
-    for(int i = 0; i < AvailableRobots.size(); i++){
+    for(unsigned int i = 0; i < AvailableRobots.size(); i++){
         sprintf(c,"%1d",i+1);
         Robots[i] = c[0];
         if(AvailableRobots[i] == myXYRobot)

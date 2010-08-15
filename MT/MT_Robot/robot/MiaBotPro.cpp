@@ -280,7 +280,12 @@ void MT_MiaBotPro::QueryCounters()
 
     SendCommand(":");
     MT_ComIO::ReadString(result);
-    int r = sscanf(result,"%*s %11d:%11d>",&LeftCount,&RightCount);
+    int r = sscanf(result,"%*s %11ld:%11ld>",&LeftCount,&RightCount);
+
+    if(r != 2)
+    {
+        fprintf(stderr, "Error:  Scanning for counter values in QueryCounters.");
+    }
 
 }
 

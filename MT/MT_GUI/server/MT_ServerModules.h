@@ -30,10 +30,9 @@ protected:
     } msg_index;
 
 public:
-    MT_SM_WindowProps() : m_pFrame(NULL), MT_ServerModule("WindowProps"){};
+    MT_SM_WindowProps() : MT_ServerModule("WindowProps"), m_pFrame(NULL){};
     MT_SM_WindowProps(MT_Server* pServer, wxFrame* pFrame)
-        : m_pFrame(pFrame),
-          MT_ServerModule(pServer, "WindowProps"){};
+        : MT_ServerModule(pServer, "WindowProps"), m_pFrame(pFrame){};
 
     /* server methods */
     void sendWinWidth(wxSocketBase* sock);

@@ -117,7 +117,7 @@ bool MT_Server::addMessagesToTable(t_msg_def* add_messages)
                     c_msg_copy.description,
                     c_msg_copy.server_code,
                     c_msg_copy.client_code,
-                    c_msg_copy.handler);
+                    (long int) c_msg_copy.handler);
         }
         c_msg++;
    }
@@ -256,7 +256,7 @@ void MT_Server::onServerEvent(wxSocketEvent& event)
             fprintf(m_pDebugFile,
                     "New client connection to %s accepted.\n"
                     "  Now have %d connections.\n",
-                    get_socket_IPAddress(sock).mb_str(),
+                    (const char *) get_socket_IPAddress(sock).mb_str(),
                     m_iNumClients+1);
         }
     }
@@ -321,7 +321,7 @@ void MT_Server::onSocketEvent(wxSocketEvent& event)
             fprintf(m_pDebugFile,
                     "Received command %X from %s.\n",
                     c,
-                    get_socket_IPAddress(sock).mb_str());
+                    (const char *) get_socket_IPAddress(sock).mb_str());
         }
 
         switch (c)
@@ -343,7 +343,7 @@ void MT_Server::onSocketEvent(wxSocketEvent& event)
                 fprintf(m_pDebugFile,
                         "Error:  Unrecognized command %X from %s.\n",
                         c,
-                        get_socket_IPAddress(sock).mb_str());
+                        (const char*) get_socket_IPAddress(sock).mb_str());
             }
             MT_SendMessage(msg_UNKNOWN, sock);
         }
@@ -359,7 +359,7 @@ void MT_Server::onSocketEvent(wxSocketEvent& event)
         {
             fprintf(m_pDebugFile,
                     "Lost connection to client %s\n",
-                    get_socket_IPAddress(sock).mb_str());
+                    (const char*) get_socket_IPAddress(sock).mb_str());
         }
         sock->Destroy();
         break;
@@ -421,7 +421,7 @@ void MT_Server::Communicate(wxSocketBase* sock)
     if(m_bDebugOutput)
     {
         fprintf(m_pDebugFile, "Initiating exchange with client %s\n",
-                get_socket_IPAddress(sock).mb_str());
+                (const char*) get_socket_IPAddress(sock).mb_str());
     }
     
     t_msg instr;
@@ -464,7 +464,7 @@ void MT_Server::Communicate(wxSocketBase* sock)
                 {
                     fprintf(m_pDebugFile,
                             "Delegating message to handler %ld\n",
-                            m_vMessageTable[instr].handler);
+                            (long int) m_vMessageTable[instr].handler);
                 }
                 message_handled =
                     m_vMessageTable[instr].handler->handleMessage(instr, sock);
@@ -477,7 +477,7 @@ void MT_Server::Communicate(wxSocketBase* sock)
                 fprintf(m_pDebugFile,
                         "Unknown message %d receieved from client %s.\n",
                         instr,
-                        get_socket_IPAddress(sock).mb_str());
+                        (const char*) get_socket_IPAddress(sock).mb_str());
             }
         }
         
@@ -496,7 +496,7 @@ void MT_Server::Communicate(wxSocketBase* sock)
     if(m_bDebugOutput)
     {
         fprintf(m_pDebugFile, "Exchange with client %s ended.\n",
-                get_socket_IPAddress(sock).mb_str());
+                (const char*) get_socket_IPAddress(sock).mb_str());
     }
     
 }
@@ -545,7 +545,7 @@ void MT_Server::sendMOTD(wxSocketBase* sock)
     {
         fprintf(m_pDebugFile, "Client %s requested MOTD, "
                 "which should be %s.\n",
-                get_socket_IPAddress(sock).mb_str(),
+                (const char*) get_socket_IPAddress(sock).mb_str(),
                 m_sMOTD.c_str());
     }
 
@@ -559,7 +559,7 @@ void MT_Server::sendUptime(wxSocketBase* sock)
     {
         fprintf(m_pDebugFile, "Client %s requested uptime, "
                 "which should be %f.\n",
-                get_socket_IPAddress(sock).mb_str(),
+                (const char*) get_socket_IPAddress(sock).mb_str(),
                 getUptime());
     }
     double t = getUptime();

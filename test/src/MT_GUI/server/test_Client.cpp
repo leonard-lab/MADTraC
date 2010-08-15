@@ -31,10 +31,11 @@ void test_frame::doTest(int argc, wxChar** argv)
 
     if(argc > 1)
     {
+        std::cout << "Enabling test output.\n";
         m_pClient->enableDebugOutput();
     }
 
-    MT_Server::err_code e = m_pClient->Connect("localhost", 3000);
+    MT_Server::err_code e = m_pClient->Connect(wxT("localhost"), 3000);
 
     if(e != MT_Server::err_no_error)
     {

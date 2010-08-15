@@ -58,8 +58,8 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
                    wxSize(375,160), 
                    wxMINIMIZE_BOX | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN),
     myGamePadController(),
+    m_RobotConfigXML(),    
     m_bOwnRobots(false),
-    m_RobotConfigXML(),
     m_pTimer(NULL)
 {
     if(!inRobots)
@@ -163,17 +163,22 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
 
     wxString MaxString;
 
-	char initMaxSpeed[32];
-	sprintf(initMaxSpeed, "%f", MaxSpeed);
-	char initMaxTurningRate[32];
-	sprintf(initMaxTurningRate, "%f", MaxTurningRate);
+    wxString initMaxSpeed;
+    initMaxSpeed.Printf(wxT("%f"),MaxSpeed);
+    wxString initMaxTurningRate;
+    initMaxTurningRate.Printf(wxT("%f"), MaxTurningRate);
 
 	myGamePadController.SetMaxSpeedMPS(MaxSpeed);
 	myGamePadController.SetMaxTurningRateRADPS(MaxTurningRate);
 
     MaxString.Printf(wxT("%3.2f"), myGamePadController.GetMaxSpeedMPS());
     vbox1->Add(new wxStaticText(this, -1, wxT("Max Speed")));
-    MaxSpeedCtrl = new wxTextCtrl(this, ID_MAXSPEED, initMaxSpeed, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+    MaxSpeedCtrl = new wxTextCtrl(this,
+                                  ID_MAXSPEED,
+                                  initMaxSpeed,
+                                  wxDefaultPosition,
+                                  wxDefaultSize,
+                                  wxTE_PROCESS_ENTER);
     vbox1->Add(MaxSpeedCtrl);
 	
 	MaxSpeedCtrl->Connect(wxID_ANY, wxEVT_KEY_UP, 
@@ -639,7 +644,7 @@ void MT_JoyStickFrame::DoTimedEvents()
         zprev = z;
     }
 
-    if(bprev < 0 || b != bprev)
+    if(bprev < 0 || b != (unsigned int) bprev)
     {
         ButtonText->SetLabel(wxT("Buttons: ") + MT_UIntToBitString(b,12));
         bprev = b;

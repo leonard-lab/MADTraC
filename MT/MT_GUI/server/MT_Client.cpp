@@ -32,7 +32,7 @@ MT_Server::err_code MT_Client::Connect(wxString hostname,
     {
         m_pSocketClient = new wxSocketClient();
     }
-        
+
     wxIPV4address addr;
     addr.Hostname(hostname);
     addr.Service(port);
@@ -41,7 +41,7 @@ MT_Server::err_code MT_Client::Connect(wxString hostname,
     {
         fprintf(m_pDebugFile,
                 "Attempting to connect to server at %s:%ld\n",
-                hostname.mb_str(),
+                (const char*) hostname.mb_str(),
                 port);
     }
 
@@ -56,7 +56,7 @@ MT_Server::err_code MT_Client::Connect(wxString hostname,
         {
             fprintf(m_pDebugFile,
                     "Failure to connect to server at %s:%ld\n",
-                    hostname.mb_str(),
+                    (const char*) hostname.mb_str(),
                     port);
         }
         return MT_Server::err_connect_failed;
@@ -67,7 +67,7 @@ MT_Server::err_code MT_Client::Connect(wxString hostname,
         {
             fprintf(m_pDebugFile,
                     "Success connecting to server at %s:%ld\n",
-                    hostname.mb_str(),
+                    (const char*) hostname.mb_str(),
                     port);
         }
         m_bIsConnected = true;
@@ -111,6 +111,7 @@ bool MT_Client::PingServer()
         }
         MT_SendAck(m_pSocketClient);
     }
+    return true;
 }
 
 double MT_Client::getServerUptime()
@@ -297,7 +298,7 @@ void MT_Client::getMessageTable()
     int n_messages = MT_ReadInt(m_pSocketClient);
 
     t_msg_table_entry c_entry;
-    for(unsigned int i = 0; i < n_messages; i++)
+    for(int i = 0; i < n_messages; i++)
     {
         /* force ack because the message might *be* an ack */
         c_entry.server_code = MT_ReceiveMessage(m_pSocketClient, true);
@@ -371,4 +372,6 @@ bool MT_Client::addModule(MT_ServerModule* p_module)
     if(!p_module->isForClient()){return false;};
 
     m_vpModules.push_back(p_module);
+
+    return true;
 }

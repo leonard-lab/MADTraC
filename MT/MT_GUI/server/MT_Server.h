@@ -4,6 +4,7 @@
 #include "wx/socket.h"
 
 #include <vector>
+#include <string>
 
 class MT_ServerModule;
 class MT_Client;

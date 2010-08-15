@@ -241,7 +241,7 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
     if(m_pFile)
     {
         fprintf(m_pFile,
-                "MT_Log %f | MT_ComIO::SendData | %d bytes | ",
+                "MT_Log %f | MT_ComIO::SendData | %ld bytes | ",
                 MT_getTimeSec() - m_dT0, n_bytes);
         for(unsigned int i = 0; i < n_bytes; i++)
         {
@@ -276,7 +276,7 @@ int MT_ComIO::SendData(const unsigned char* data, unsigned long n_bytes)
     if(n < 0 || (unsigned int) n != n_bytes){
         printf("Byte mismatch error writing command\n\t\"%s\" to %s\n",
                data,PortString);
-        printf("n is %d, should have been %d, errno %d\n", n, n_bytes, errno);
+        printf("n is %d, should have been %ld, errno %d\n", n, n_bytes, errno);
         if(m_pFile){fprintf(m_pFile, "-\n"); fflush(m_pFile);};
         return 1;
     }
@@ -355,7 +355,7 @@ int MT_ComIO::ReadData(unsigned char* result, unsigned long max_length)
     if(m_pFile)
     {
         fprintf(m_pFile,
-                "Attempting to read up to %d bytes\n",
+                "Attempting to read up to %ld bytes\n",
                 max_length);
     }
     // Inform the user what's going on.  Always do this if 

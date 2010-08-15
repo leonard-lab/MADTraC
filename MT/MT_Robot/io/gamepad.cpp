@@ -196,7 +196,7 @@ unsigned int MT_HIDGamePad::FindGamePad()
     IOReturn ioReturnValue = kIOReturnSuccess;
     io_name_t className;
 
-    while( hidDevice = IOIteratorNext(hidObjectIterator))
+    while( (hidDevice = IOIteratorNext(hidObjectIterator)) )
     {
         ioReturnValue = IOObjectGetClass(hidDevice,className);
         if(ioReturnValue != kIOReturnSuccess){
