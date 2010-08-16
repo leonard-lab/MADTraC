@@ -971,6 +971,15 @@ void MT_FrameBase::readXML()
 
 void MT_FrameBase::onChildMove(wxCommandEvent& event)
 {
+    /* once we ask the app to quit, the windows are no longer valid.
+     * even worse - as of wx 2.8.11, this event seems to get triggered
+     * when closing the application.  by exiting here, we make sure
+     * not to cause an access violation. */
+    if(m_bDoQuitWasCalled)
+    {
+        return;
+    }
+    
     wxWindow* win = dynamic_cast<wxWindow*>(event.GetEventObject());
     MT_WriteWindowDataToXML(&m_XMLSettingsFile, win->GetLabel(), win);
 }

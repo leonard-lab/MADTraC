@@ -134,7 +134,7 @@ void MT_ReadWindowDataFromXML(const MT_XMLFile& xmlfile, const wxString& Key, wx
 void MT_WriteWindowDataToXML(MT_XMLFile* xmlfile, const wxString& Key, wxWindow* window)
 {
   
-    if(!window)
+    if(!window || !xmlfile)
     {
         return;
     }
