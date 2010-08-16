@@ -493,7 +493,6 @@ private:
     void doMasterInitialization();
     void createMenus();
     void doTimedEvents();
-    void doStep();
 
     void writeXML();
     void readXML();
@@ -817,6 +816,7 @@ protected:
     void setupMovie(const wxString& filename = wxEmptyString);
 
     virtual void onPauseToggled(bool paused_state){};
+    void doStep();
 
 public:
     /** Basic constructor.  Doesn't do much.  Most initialization
