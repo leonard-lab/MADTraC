@@ -1080,6 +1080,7 @@ void MT_FrameBase::togglePause()
     {
         m_pControlFrame->onPlayPause(m_bPaused);
     }
+    onPauseToggled(m_bPaused);
 }
 
 void MT_FrameBase::setControlFrameStatusText(const wxString& text)

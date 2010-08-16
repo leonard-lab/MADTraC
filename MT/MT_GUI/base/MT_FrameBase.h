@@ -720,7 +720,8 @@ protected:
     /** Set the pause state manually.
      *
      * @see MT_FrameBase::togglePause */
-    void setPause(bool setting = true){m_bPaused = setting;};
+    void setPause(bool setting = true)
+        {m_bPaused = setting; onPauseToggled(m_bPaused);};
 
     /** Return the application's pause state. 
      *
@@ -814,6 +815,8 @@ protected:
     void drawStatusBar(double frac);
 
     void setupMovie(const wxString& filename = wxEmptyString);
+
+    virtual void onPauseToggled(bool paused_state){};
 
 public:
     /** Basic constructor.  Doesn't do much.  Most initialization
