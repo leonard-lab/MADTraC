@@ -173,6 +173,8 @@ if(WITH_OPENCV)
 
   else(NOT MSVC)
     set(CV_NOT_FOUND ON)
+
+    set(OpenCV_DIR "c:/src/OpenCV-2.1.0/build" CACHE PATH "Path to OpenCV build directory - should include OpenCVConfig.cmake.")
     
     find_package(OpenCV REQUIRED)
     if(OpenCV_FOUND)
