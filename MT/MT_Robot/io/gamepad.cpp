@@ -78,6 +78,8 @@ bool MT_HIDGamePad::GetStatus()
     return StatusGood;
 #elif defined(MT_GAMEPAD_USE_WX)
     return StatusGood && myJoystick.IsOk();
+#else /* no gamepad! */
+    return false;
 #endif
 }
 

@@ -4,8 +4,6 @@
 #include "ParticleFile.h"
 #include "MT/MT_Core/primitives/BufferAgent.h"
 
-#pragma mark MT_ParticleFile
-
 MT_ParticleFile::MT_ParticleFile(const char* inFileName, MT_ParticleFileTypes Type)
   : myBoundingBox()
 {
@@ -131,7 +129,14 @@ float MT_ParticleFile::getNextFloat()
  
     float value = 0;
   
-    fscanf(file, "%f", &value);
+    int r = fscanf(file, "%f", &value);
+    if(r != 1)
+    {
+        fprintf(stderr,
+                "Warning:  MT_ParticleFile::getNextFloat():"
+                "Failure to read float.  Returning 0.\n");
+        return 0;
+    }
   
     return value;
   
@@ -182,7 +187,11 @@ particle_counter MT_ParticleFile::CountNumberOfRows(FILE* file)
     printf("Counting the Number of Rows in File %s:  ",filename);
     while(!feof(file))
     {
-        fscanf(file,"%f", &junk);
+        int r = fscanf(file,"%f", &junk);
+        if(r != 1)
+        {
+            /* nothing */
+        }
         count++;
     }
     rewind(file);
@@ -254,8 +263,6 @@ void MT_ParticleFile::PushZ( particle_counter particle, float value)
 
 
 /****************************************************************/
-#pragma mark MT_FileReaderPrototype
-
 /* Prototype constructor for file reader.  */
 MT_FileReaderPrototype::MT_FileReaderPrototype( MT_ParticleFile* setFile )
 {
@@ -265,8 +272,6 @@ MT_FileReaderPrototype::MT_FileReaderPrototype( MT_ParticleFile* setFile )
 }
 
 /****************************************************************/
-#pragma mark MT_FileReaderClassic
-
 /* Get the number of particles. */
 particle_counter MT_FileReaderClassic::getNumParticles()
 {
@@ -341,8 +346,6 @@ void MT_FileReaderClassic::ReadFile()
 
 
 /****************************************************************/
-#pragma mark MT_FileReaderFishData
-
 /* Get the number of particles. */
 particle_counter MT_FileReaderFishData::getNumParticles()
 {
@@ -415,8 +418,6 @@ void MT_FileReaderFishData::ReadFile()
 
 
 /****************************************************************/
-#pragma mark MT_FileReaderThreeDee
-
 /* Get the number of particles. */
 particle_counter MT_FileReaderThreeDee::getNumParticles()
 {
@@ -478,8 +479,6 @@ void MT_FileReaderThreeDee::ReadFile()
 }
 
 /****************************************************************/
-#pragma mark Static Functions
-
 int isFloatDigit(char ch)
 {
     char valids[] = "0123456789eE-.+";

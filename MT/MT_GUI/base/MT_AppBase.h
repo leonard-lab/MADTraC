@@ -152,7 +152,7 @@ public:
         @param filename The full path of the file that was provided. 
         @see MT_FrameWithInit::handleOpenWithFile */
     void MacOpenFile(const wxString& filename);
-#endif __APPLE__
+#endif /* __APPLE__ */
 
 
 };

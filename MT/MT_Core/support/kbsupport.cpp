@@ -65,7 +65,14 @@ int MT_getch(){
         peek_character = -1;
         return ch;
     }
-    read(0,&ch,1);
+    int r = read(0,&ch,1);
+    if(r != 1)
+    {
+        fprintf(stderr,
+                "Warning:  MT_getch():  Could not read character "
+                "from stdin.  Returning 0.\n");
+        return 0;
+    }
     return ch;
 #else
     return _getch();

@@ -25,8 +25,6 @@
 #include "MT/MT_Core/primitives/BoundingBox.h"
 
 /*****************************************************************/
-#pragma mark Types
-#pragma mark -
 
 /** Specifies the type of data contained in an MT_ParticleFile
  * @see MT_ParticleFile for a description of the types. */
@@ -46,14 +44,11 @@ enum MT_ParticleFileTypes
 typedef unsigned long particle_counter;
 
 /*****************************************************************/
-# pragma mark Functions
 
 /* TODO this should be moved to stringsupport or some such. */
 int isFloatDigit(char ch);
 
 /*****************************************************************/
-# pragma mark -
-# pragma mark Classes
 
 // Forward declaration necessary
 class MT_FileReaderPrototype;
@@ -217,7 +212,6 @@ public:
 };
 
 /*****************************************************************/
-#pragma mark -
 
 /** @class MT_FileReaderPrototype
  *
@@ -252,7 +246,6 @@ public:
  * should not be accessed by the user. */
 
 /*****************************************************************/
-#pragma mark -
 class MT_FileReaderClassic : public MT_FileReaderPrototype
 {
   
@@ -269,7 +262,6 @@ MT_FileReaderClassic(MT_ParticleFile* setFile) : MT_FileReaderPrototype( setFile
 };
 
 /*****************************************************************/
-#pragma mark -
 class MT_FileReaderFishData : public MT_FileReaderPrototype
 {
   
@@ -286,7 +278,6 @@ MT_FileReaderFishData(MT_ParticleFile* setFile) : MT_FileReaderPrototype( setFil
 };
 
 /*****************************************************************/
-#pragma mark -
 class MT_FileReaderThreeDee : public MT_FileReaderPrototype
 {
     

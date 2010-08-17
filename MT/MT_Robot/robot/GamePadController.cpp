@@ -8,8 +8,6 @@
 
 #include "GamePadController.h"
 
-#pragma mark Constructors
-
 MT_GamePadController::MT_GamePadController()
     : MT_HIDGamePad()
 {
@@ -39,10 +37,6 @@ MT_GamePadController::MT_GamePadController(MT_SteeredRobot* setXYRobot, MT_Steer
         printf("Could not assign WZ robot.\n");
   
 }
-
-
-#pragma mark -
-#pragma mark Initialization and Parameter Adjustment
 
 void MT_GamePadController::common_init()
 {
@@ -99,10 +93,6 @@ float MT_GamePadController::GetMaxTurningRateRADPS() const
     return MaxTurningRate;
 }
 
-
-#pragma mark -
-#pragma mark Robot Posession
-
 void MT_GamePadController::SeizeControl()
 {
   
@@ -139,9 +129,6 @@ void MT_GamePadController::ReleaseControl()
     }
   
 }
-
-#pragma mark -
-#pragma mark Robot Assignment/Verification
 
 unsigned int MT_GamePadController::AddRobot(MT_SteeredRobot* newRobot)
 {
@@ -260,9 +247,6 @@ unsigned char MT_GamePadController::AssignRobot(MT_SteeredRobot*& RobotToChange,
     AddRobot(NewBot);
     return MT_ROBOT_ASSIGNMENT_OK;
 }
-
-#pragma mark -
-#pragma mark Input Handlers
 
 void MT_GamePadController::PollAndUpdate(bool DoControl)
 {
