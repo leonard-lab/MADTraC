@@ -1196,7 +1196,7 @@ void MT_FrameBase::stopTimer()
     m_pTimer->Stop();
 }
 
-void MT_FrameBase::setSizeByClient(int client_width, int client_height)
+void MT_FrameBase::setSizeByClient(int client_width, int client_height, int pad_height)
 {
 
     /* scales the size to fit the screen by dividing it by 2 repeatedly */
@@ -1205,7 +1205,7 @@ void MT_FrameBase::setSizeByClient(int client_width, int client_height)
     /* The new size is the desired canvas size (size of the paintable area)
        + the extra size required by window borders, menus, etc, calculated by taking
        the difference between the current window size and the current canvas size*/
-    wxSize NewSize = DesiredSize + wxFrame::GetSize() - m_pCanvas->GetSize();
+    wxSize NewSize = DesiredSize + wxFrame::GetSize() - m_pCanvas->GetSize() + wxSize(0, pad_height);
 
     /* we need to call SetSizeHints and setsize to make sure the window is
        allowed to actually be that size */
@@ -1214,7 +1214,7 @@ void MT_FrameBase::setSizeByClient(int client_width, int client_height)
     /* we need to resize the canvas as well as the window, but the canvas
        gets the desired size */
     m_pCanvas->SetSizeHints(DesiredSize);
-    m_pCanvas->SetSize(DesiredSize);  
+    m_pCanvas->SetSize(0, 0, DesiredSize.x, DesiredSize.y);  
 
     setViewport(MT_Rectangle(0, client_width, 0, client_height));
 

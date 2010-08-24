@@ -800,7 +800,7 @@ protected:
      * and the viewport will be set as MT_Rectangle(0, 1920, 0, 1080). 
      *
      * @see MT_FrameBase::setViewport */
-    void setSizeByClient(int client_width, int client_height);
+    void setSizeByClient(int client_width, int client_height, int pad_height = 0);
 
     /** Queries the paused state of the application. */
     bool getPaused() const {return m_bPaused;};
