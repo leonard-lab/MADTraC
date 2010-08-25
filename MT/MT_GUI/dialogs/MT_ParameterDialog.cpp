@@ -25,7 +25,8 @@ MT_DataGroupDialog::MT_DataGroupDialog(MT_DataGroup* datagroup,
                         MT_StringToWxString(datagroup->GetGroupName()),
                         pos,
                         size,
-                        wxDEFAULT_DIALOG_STYLE)
+                        wxDEFAULT_DIALOG_STYLE),
+    m_pParent(parent)
 {
     m_pCallBackFunction = pcallbackfunction;
     m_pDataGroup = datagroup;
@@ -251,6 +252,11 @@ void MT_DataGroupDialog::WriteValues()
             break;
         }
         }
+    }
+
+    if(m_pParent)
+    {
+        m_pParent->SendSizeEvent();
     }
   
     UpdateValues();

@@ -75,6 +75,7 @@ protected:
     std::vector<int> m_viIndexMap;
     void (*m_pCallBackFunction)(void* ParentObject);
     unsigned int m_iNParams;
+    wxFrame* m_pParent;
       
     bool m_bDestroyGroupOnClose;
     

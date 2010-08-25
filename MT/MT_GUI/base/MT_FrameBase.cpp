@@ -994,6 +994,8 @@ void MT_FrameBase::onSize(wxSizeEvent& event)
     m_pCurrentScreen = cvCreateImage(cvSize(GetClientSize().x, GetClientSize().y), IPL_DEPTH_8U, 3);
 #endif
     m_ClientSize = GetClientSize();
+    /* should redraw when resized */
+    ensureDraw();
 }
 
 void MT_FrameBase::onClose(wxCloseEvent& event)
