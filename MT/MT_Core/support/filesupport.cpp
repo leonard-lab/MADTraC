@@ -1,6 +1,14 @@
 #include "filesupport.h"
 
+#include <sys/stat.h>
+
 #include "stringsupport.h"
+
+#ifndef _WIN32
+#else
+  #include <direct.h>
+  #define mkdir(a,b) _mkdir(a)
+#endif
 
 bool MT_CatTextFile(const char* filename)
 {
@@ -76,4 +84,31 @@ bool MT_PathHasFileExtension(const char* path, const char* extension)
     std::string actual = MT_GetFileExtension(std::string(path));
 
     return (actual == ext);
+}
+
+bool MT_FileIsAvailable(const char* name, const char* method)
+{
+  FILE* tmp_file = fopen(name, method);
+  if(tmp_file)
+  {
+    fclose(tmp_file);
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+void MT_mkdir(const char* dir_name, unsigned int mode)
+{
+    struct stat st;
+    if(stat(dir_name, &st) == 0)
+    {
+        return;
+    }
+    else
+    {
+        mkdir(dir_name, mode);
+    }
 }
