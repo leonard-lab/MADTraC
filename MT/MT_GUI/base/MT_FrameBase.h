@@ -768,9 +768,6 @@ protected:
      * @see MT_ControlFrameBase */
     void setControlFrameStatusText(const wxString& text);
 
-    /** Function to set the image displayed on the canvas. */
-    void setImage(IplImage* image){m_pCanvas->setImage(image);};
-
     /** Function to save the current canvas to a file.  If filename
      * is NULL then a dialog is displayed asking for the user to
      * specify a file. */
@@ -845,6 +842,9 @@ public:
                  const wxPoint& pos = wxDefaultPosition,
                  const wxSize& size = wxSize(640,480),
                  long style = MT_FIXED_SIZE_FRAME);
+
+    /** Function to set the image displayed on the canvas. */
+    virtual void setImage(IplImage* image){m_pCanvas->setImage(image);};
 
     virtual ~MT_FrameBase();
 
