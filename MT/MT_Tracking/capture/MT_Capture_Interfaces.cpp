@@ -490,6 +490,10 @@ bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool F
     m_Camera.GetParameter(FGP_YSIZE, &param_value);
     m_iFrameHeight = param_value;
 
+    //Camera does weird stuff with white-balancing. The factory default is often more reasonable though
+    m_Camera.SetParameter(FGP_WHITEBALCB, PVAL_OFF);
+    m_Camera.SetParameter(FGP_WHITEBALCR, PVAL_OFF);
+
     m_Camera.GetParameter(FGP_IMAGEFORMAT, &param_value);
 
     char name[256];
