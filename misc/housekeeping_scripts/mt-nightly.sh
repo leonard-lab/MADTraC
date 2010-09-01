@@ -10,8 +10,8 @@ echo =======================================================
 echo === Log of mt-nightly for `date`
 
 cd $MT_DIR
-echo === SVN Update
-svn update
+echo === git pull
+git pull origin master
 cd $MT_DIR/docs/doxygen
 echo === Creating documentation
 doxygen Doxyfile
