@@ -26,14 +26,10 @@
  *    - Download the nightly <a
  * href="http://poincare.princeton.edu/MADTraC/MADTraC-nightly.tar.gz">tarball</a>
  * or <a href="http://poincare.princeton.edu/MADTraC/MADTraC-nightly.zip">zip</a>.
- *    - Anonymous SVN checkout
- * @code
- * svn checkout http://poincare.princeton.edu/MADTraC/svn/MADTraC/trunk MADTraC
- * @endcode
  *    - Secure checkout (with write privileges) can be done with a valid
  * username and password from
  * \code
- * svn checkout svn+ssh://username@poincare.princeton.edu/svn/repos/MADTraC/trunk MADTraC
+ * git clone ssh://username@poincare.princeton.edu/git/MADTraC.git
  * \endcode
  *
  * @section mp_build Prerequisites and Building
