@@ -80,6 +80,21 @@ target_link_libraries(${CURRENT_TEST} ${MT_CORE_LIBS})
 add_test(NAME FileSupport COMMAND ${CURRENT_TEST})
 list(APPEND MT_CORE_TESTS ${CURRENT_TEST})
 
+# OpenCVmath
+set(CURRENT_TEST test_OpenCVmath)
+add_executable(${CURRENT_TEST} src/MT_Core/support/test_OpenCVmath.cpp)
+target_link_libraries(${CURRENT_TEST} ${MT_CORE_LIBS} ${MT_CORE_EXTRA_LIBS})
+add_test(NAME OpenCVmath COMMAND ${CURRENT_TEST})
+list(APPEND MT_CORE_TESTS ${CURRENT_TEST})
+
+# UKF
+set(CURRENT_TEST test_UKF)
+add_executable(${CURRENT_TEST} src/MT_Core/support/test_UKF.cpp)
+target_link_libraries(${CURRENT_TEST} ${MT_CORE_LIBS} ${MT_CORE_EXTRA_LIBS})
+add_test(NAME UKF COMMAND ${CURRENT_TEST})
+list(APPEND MT_CORE_TESTS ${CURRENT_TEST})
+
+
 ######################################################################
 # MT_GUI/support
 

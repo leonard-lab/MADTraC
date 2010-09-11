@@ -45,7 +45,9 @@ set(support_srcs
   ./support/mathsupport.cpp    ./support/mathsupport.h
   ./support/stringsupport.cpp  ./support/stringsupport.h
   ./support/filesupport.cpp    ./support/filesupport.h
-  ./support/kbsupport.cpp      ./support/kbsupport.h)
+  ./support/kbsupport.cpp      ./support/kbsupport.h
+  ./support/OpenCVmath.cpp     ./support/OpenCVmath.h
+  ./support/UKF.cpp            ./support/UKF.h)
 
 # tell cmake this is a static library built from the
 #   given sources
