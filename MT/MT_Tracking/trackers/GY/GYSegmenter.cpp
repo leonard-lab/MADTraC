@@ -17,36 +17,6 @@
 #include "MT/MT_Core/primitives/Matrix.h"
 #include "MT/MT_Core/gl/glSupport.h"  // for blob drawing
 
-/* note these matrices are float, not double - the CvKalman
- * module uses floats, so using doubles would cause memcpy errors */
-static const float IDENTITY_MATRIX_6X6_F[36] = {
-    1, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 0, 0,
-    0, 0, 1, 0, 0, 0,
-    0, 0, 0, 1, 0, 0,
-    0, 0, 0, 0, 1, 0,
-    0, 0, 0, 0, 0, 1};
-
-static const float KALM_H_F[18] = {
-    1, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 0, 0,
-    0, 0, 0, 0, 1, 0};
-
-static const float KALM_R_F[9] = {
-    0.1, 0,   0,
-    0,   0.1, 0,
-    0,   0,   3};
-
-/* note this is actually treated as the square root of Q */
-static const float KALM_Q_F[36] = {
-    sqrt(0.5), 0,          0,          0,         0,         0,
-    0,         sqrt(0.25), 0,          0,         0,         0,
-    0,         0,          sqrt(10.0), 0,         0,         0,
-    0,         0,          0,          sqrt(4.0), 0,         0,
-    0,         0,          0,          0,         sqrt(0.1), 0,
-    0,         0,          0,          0,         0,         sqrt(2.0)};
-
-
 BlobberParameters::BlobberParameters(int* val_thresh_low, 
                                      int* area_thresh_low, 
                                      int* area_thresh_high)
@@ -561,21 +531,10 @@ void GYSegmenter::doMatching()
         /* note these get deleted by the tracker base if != NULL */
         m_HungarianMatcher.doInit(m_iNobj);
 
-        CvKalman* kalman;
-
         /* first time through just take the positions as initial */
         for(unsigned int i = 0; i < (unsigned int) m_iNobj; i++)
         {
             m_pTrackedObjects->setXY(i, XBlobs[i], YBlobs[i]);
-
-            /* Kalman filter initialization  - experimental */
-            kalman = m_pTrackedObjects->initKalmanFilter(i);
-            /* measurement matrix -> measuring x, y, and phi */
-            memcpy(kalman->measurement_matrix->data.fl, KALM_H_F, sizeof(KALM_H_F));
-            /* initial value of the "P" matrix */
-            cvSetIdentity(kalman->error_cov_post, cvRealScalar(1)); 
-            /* measurement covariance matrix */
-            memcpy(kalman->measurement_noise_cov->data.fl, KALM_R_F, sizeof(KALM_R_F));
         }
         return;
     }
@@ -605,119 +564,6 @@ void GYSegmenter::doMatching()
         m_pTrackedObjects->setMeasurement(j, meas);
     }
 
-    /* Kalman filter - experimental */
-    CvKalman* filter;
-    CvMat* pA, * pL, * pQ, * pQd;
-    pA = cvCreateMat(6, 6, CV_32FC1);
-    pL = cvCreateMat(6, 6, CV_32FC1);
-    pQ = cvCreateMat(6, 6, CV_32FC1);
-    pQd = cvCreateMat(6, 6, CV_32FC1);
-
-    /*
-     * state transition matrix "A"
-     * 1   0   m_dT 0    0   0          <- x_{k+1}      = x_k + m_dT*vx_k
-     * 0   1   0    m_dT 0   0          <- y_{k+1}      = y_k + m_dT*vy_k
-     * 0   0   1    0    0   0          <- vx_{k+1}     = vx_k
-     * 0   0   0    1    0   0          <- vy_{k+1}     = vy_k
-     * 0   0   0    0    1   m_dT       <- \phi_{k+1}   = \phi_k + m_dT \omega_k
-     * 0   0   0    0    0   1          <- \omega_{k+1} = \omega_k
-     */
-    cvSetIdentity(pA);            /* the matrix is basically the identity plus */
-    cvSetReal2D(pA, 0, 2, m_dT);  /* a few specific elements set to m_dT       */
-    cvSetReal2D(pA, 1, 3, m_dT);
-    cvSetReal2D(pA, 4, 5, m_dT);
-    
-    /* disturbance coupling matrix - state dependent, filled in below */
-    cvZero(pL);
-
-    /* continuous-time orthogonalized disturbance square root of covariance
-     * (see below) */
-    memcpy(pQ->data.fl, KALM_Q_F, 36*sizeof(float));
-
-    /* temporary matrices */
-    CvMat* pT1, * pT2;
-    pT1 = cvCreateMat(6, 6, CV_32FC1);
-    pT2 = cvCreateMat(6, 6, CV_32FC1);
-
-    /* state placeholder */
-    double* pX;
-    double vx, vy, v;
-
-    double* pZt; /* measurement vector of TO */
-
-    CvMat* pZ = cvCreateMat(3, 1, CV_32FC1); /* measurement vector */
-    //CvMat* pXhat = cvCreateMat(6, 1, CV_32FC1); /* estimated state */
-
-    for(int i = 0; i < m_iNobj; i++)
-    {
-        filter = m_pTrackedObjects->getKalmanFilterStruct(i);
-
-        /* filter prediction step */
-        cvKalmanPredict(filter);
-
-        /* the state transition matrix depends on the time step m_dT */
-        cvCopy(pA, filter->transition_matrix);
-        
-        /* calculate the noise coupling matrix L */
-        /* L = 
-         * vx/v  -vy/v  0     0    0    0
-         * vy/v  vx/v   0     0    0    0
-         * 0     0      vx/v  -vy  0    0
-         * 0     0      vy/v  vx   0    0
-         * 0     0      0     0    1    0
-         * 0     0      0     0    0    1
-         */
-
-        pX = m_pTrackedObjects->getState(i);
-        vx = pX[2];
-        vy = pX[3];
-        v = sqrt(vx*vx + vy*vy);
-        if(MT_IsEqual(v,0))
-        {
-            v = 0.00001;
-        }
-
-        cvSetReal2D(pL, 0, 0, vx/v); 
-        cvSetReal2D(pL, 0, 1, -vy/v); 
-        cvSetReal2D(pL, 1, 0, vy/v); 
-        cvSetReal2D(pL, 1, 1, vx/v); 
-        cvSetReal2D(pL, 2, 2, vx/v); 
-        cvSetReal2D(pL, 2, 3, -vy); 
-        cvSetReal2D(pL, 3, 2, vy/v); 
-        cvSetReal2D(pL, 3, 3, vx); 
-        cvSetReal2D(pL, 4, 4, 1.0);
-        cvSetReal2D(pL, 5, 5, 1.0);
-
-        /* the disturbance covariance matrix is 
-         * m_dT A L sqrt(Q)^2 L^T A^T,
-         * so we'll calculate T1 = L*sqrt(Q) and T2 = A*T1
-         * then use the MulTransposed function to get the
-         * quadratic form */
-        cvMatMul(pL, pQ, pT1);  /* pT1 = pL*pQ  */
-        cvMatMul(pA, pT1, pT2); /* pT2 = pA*pT1 */
-
-        /* pQd = m_dT*pT2*pT2^T = m_dT*pA*pL*pQ*pQ^T*pL^T*pA^T */
-        cvMulTransposed(pT2, pQd, 0, NULL, m_dT); 
-        
-        /* pQd is the "discrete" covariance matrix */
-        cvCopy(pQd, filter->process_noise_cov);
-
-        pZt = m_pTrackedObjects->getMeasurement(i);
-        cvSetReal1D(pZ, 0, pZt[0]);
-        cvSetReal1D(pZ, 1, pZt[1]);
-        cvSetReal1D(pZ, 2, pZt[2]);
-
-        /* Kalman filter update step */
-        cvKalmanCorrect(filter, pZ);
-
-        /* update the TO state */
-        pX[0] = cvGetReal1D(filter->state_post, 0);
-        pX[1] = cvGetReal1D(filter->state_post, 1);
-        pX[2] = cvGetReal1D(filter->state_post, 2);
-        pX[3] = cvGetReal1D(filter->state_post, 3);
-        pX[4] = cvGetReal1D(filter->state_post, 4);
-        pX[5] = cvGetReal1D(filter->state_post, 5);
-    }
 }
 
 // Main Tracking Function - this is the main workhorse.
