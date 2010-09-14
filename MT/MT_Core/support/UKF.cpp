@@ -22,7 +22,7 @@ static void alloc_CvMat_if_necessary(CvMat** M,
 {
     if(*M)
     {
-        if(((*M)->rows != rows) || ((*M)->cols != cols))
+        if(((*M)->rows != (int) rows) || ((*M)->cols != (int) cols))
         {
             cvReleaseMat(M);
             *M = NULL;
@@ -40,7 +40,7 @@ static void alloc_CvMatHeader_if_necessary(CvMat** M,
 {
     if(*M)
     {
-        if(((*M)->rows != rows) || ((*M)->cols != cols))
+        if(((*M)->rows != (int) rows) || ((*M)->cols != (int) cols))
         {
             cvReleaseMat(M);
             *M = NULL;
@@ -61,7 +61,7 @@ static void generate_sigma_points(const CvMat* x_aug,
 {
     unsigned int n_aug = x_aug->rows;
 
-    if(!P_aug || (P_aug->rows != n_aug) || (P_aug->cols != n_aug))
+    if(!P_aug || (P_aug->rows != (int) n_aug) || (P_aug->cols != (int) n_aug))
     {
         fprintf(stderr,
                 "UKF Error:  P_aug is not the right size or is uninitialized in "
@@ -76,7 +76,7 @@ static void generate_sigma_points(const CvMat* x_aug,
         return;
     }
 
-    if(!tmp_A || (tmp_A->rows != n_aug) || (tmp_A->cols != n_aug))
+    if(!tmp_A || (tmp_A->rows != (int) n_aug) || (tmp_A->cols != (int) n_aug))
     {
         fprintf(stderr,
                 "UKF Error:  tmp_A is not the right size or is uninitialized "
@@ -84,7 +84,7 @@ static void generate_sigma_points(const CvMat* x_aug,
         return;
     }
 
-    if(!tmp_Y || (tmp_Y->rows != n_aug) || (tmp_Y->cols != n_aug))
+    if(!tmp_Y || (tmp_Y->rows != (int) n_aug) || (tmp_Y->cols != (int) n_aug))
     {
         fprintf(stderr,
                 "UKF Error:  tmp_Y is not the right size or is uninitialized "
@@ -125,6 +125,11 @@ MT_UKF_struct* MT_UKFInit(unsigned int n_states,
                           double beta)
 {
     MT_UKF_struct* pUKF = (MT_UKF_struct *)malloc(sizeof(MT_UKF_struct));
+    if(!pUKF)
+    {
+        fprintf(stderr, "MT_UKFInit Error:  Could not allocate MT_UKF_struct.\n");
+        return NULL;
+    }
 
     pUKF->n = n_states;
     pUKF->m = n_meas;
@@ -140,14 +145,14 @@ MT_UKF_struct* MT_UKFInit(unsigned int n_states,
     pUKF->beta = beta;
     pUKF->c = 0;
     pUKF->lambda = 0;
-    
+
     pUKF->x = cvCreateMat(pUKF->n, 1, CV_64FC1);
     cvZero(pUKF->x);
     pUKF->z = cvCreateMat(pUKF->m, 1, CV_64FC1);
     cvZero(pUKF->z);
     pUKF->P = cvCreateMat(pUKF->n, pUKF->n, CV_64FC1);
     cvSetIdentity(pUKF->P);
-    
+
     pUKF->Q = NULL;
     pUKF->R = NULL;    
 
@@ -179,11 +184,25 @@ MT_UKF_struct* MT_UKFInit(unsigned int n_states,
     pUKF->P2inv = NULL;
 
     pUKF->K = NULL;
+
+    pUKF->tPa = NULL;
+    pUKF->tPa2 = NULL;
+    pUKF->tWx = NULL;
+    pUKF->tWz = NULL;
+    
+    pUKF->thQ = NULL;
+    pUKF->thR = NULL;
+    pUKF->thP = NULL;
+    pUKF->thx = NULL;
+    pUKF->thx2 = NULL;
+    pUKF->thxv = NULL;
+    pUKF->thxn = NULL;
+    pUKF->thz = NULL;
     
     alloc_CvMatHeader_if_necessary(&(pUKF->thP), pUKF->n, pUKF->n);
     alloc_CvMatHeader_if_necessary(&(pUKF->thx), pUKF->n, 1);
     alloc_CvMatHeader_if_necessary(&(pUKF->thx2), pUKF->n, 1);
-    
+
     return pUKF;
 }
 
@@ -197,7 +216,7 @@ void MT_UKFCopyQR(MT_UKF_struct* pUKF, CvMat* Q, CvMat* R)
     /* allocate a new Q if necessary, then copy */
     alloc_CvMat_if_necessary(&(pUKF->Q), Q->rows, Q->cols);
     cvCopy(Q, pUKF->Q);
-    
+
     /* allocate a new R if necessary, then copy */
     alloc_CvMat_if_necessary(&(pUKF->R), R->rows, R->cols);
     cvCopy(R, pUKF->R);
@@ -282,7 +301,7 @@ void MT_UKFCopyQR(MT_UKF_struct* pUKF, CvMat* Q, CvMat* R)
 
 void MT_UKFSetState(MT_UKF_struct* pUKF, CvMat* x_set)
 {
-    if(!x_set || (x_set->rows != pUKF->n) || (x_set->cols != 1))
+    if(!x_set || (x_set->rows != (int) pUKF->n) || (x_set->cols != 1))
     {
         fprintf(stderr,
                 "MT_UKFSetState Error:  x_set is the wrong "
@@ -295,7 +314,7 @@ void MT_UKFSetState(MT_UKF_struct* pUKF, CvMat* x_set)
 
 void MT_UKFSetMeasurement(MT_UKF_struct* pUKF, CvMat* z_set)
 {
-    if(!z_set || (z_set->rows != pUKF->m) || (z_set->cols != 1))
+    if(!z_set || (z_set->rows != (int) pUKF->m) || (z_set->cols != 1))
     {
         fprintf(stderr,
                 "MT_UKFSetMeasurement Error:  z_set is "
@@ -362,7 +381,7 @@ void MT_UKFUTState(MT_UKF_struct* pUKF, CvMat* u, MT_UKFStateTxfm f)
     cvZero(pUKF->x1);
     cvZero(pUKF->X1);
 
-    for(unsigned int i = 0; i < pUKF->X1->cols; i++)
+    for(int i = 0; i < pUKF->X1->cols; i++)
     {
         cvGetSubRect(pUKF->X, pUKF->thx, cvRect(i, 0, 1, pUKF->n));
         cvGetSubRect(pUKF->Xv, pUKF->thxv, cvRect(i, 0, 1, pUKF->n_q));
@@ -378,7 +397,7 @@ void MT_UKFUTState(MT_UKF_struct* pUKF, CvMat* u, MT_UKFStateTxfm f)
                       pUKF->x1);
     }
 
-    for(unsigned int i = 0; i < pUKF->X1->cols; i++)
+    for(int i = 0; i < pUKF->X1->cols; i++)
     {
         cvGetSubRect(pUKF->X2, pUKF->thx, cvRect(i, 0, 1, pUKF->n));
         cvGetSubRect(pUKF->X1, pUKF->thx2, cvRect(i, 0, 1, pUKF->n));
@@ -395,7 +414,7 @@ void MT_UKFUTMeas(MT_UKF_struct* pUKF, MT_UKFMeasTxfm h)
     cvZero(pUKF->z1);
     cvZero(pUKF->Z2);
 
-    for(unsigned int i = 0; i < pUKF->Z2->cols; i++)
+    for(int i = 0; i < pUKF->Z2->cols; i++)
     {
         cvGetSubRect(pUKF->Xn, pUKF->thxn, cvRect(i, 0, 1, pUKF->n_r));
         cvGetSubRect(pUKF->X1, pUKF->thx, cvRect(i, 0, 1, pUKF->n));
@@ -411,7 +430,7 @@ void MT_UKFUTMeas(MT_UKF_struct* pUKF, MT_UKFMeasTxfm h)
                       pUKF->z1);
     }
 
-    for(unsigned int i = 0; i < pUKF->X1->cols; i++)
+    for(int i = 0; i < pUKF->X1->cols; i++)
     {
         cvGetSubRect(pUKF->Z2, pUKF->thxn, cvRect(i, 0, 1, pUKF->n_r));
         cvGetSubRect(pUKF->Z, pUKF->thz, cvRect(i, 0, 1, pUKF->n_r));
