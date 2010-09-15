@@ -251,7 +251,7 @@ void BGC_frame::installSymlink(const wxString& to_path, const wxString& exe_path
 #ifdef __APPLE__
 
     wxFileName path(to_path + wxT("/BackgroundCreator"));
-    wxFileName full_exe_path(exe_path);
+    wxFileName full_exe_path(wxFileName::GetCwd() + wxT("/") + exe_path);
     wxString full_exe_path_string = full_exe_path.GetFullPath();
 
     if(!path.IsOk())
