@@ -9,12 +9,20 @@
 #include "MT_Tracking.h"
 
 #include <wx/cmdline.h>
+#include <wx/filename.h>
+
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 class BGC_frame : public MT_TestFrame
 {
 public:
     void doTest(int argc, wxChar** argv);
+    void installSymlink(const wxString& to_path, const wxString& exe_path);
 };
+
+#define DEFAULT_INSTALL_PATH "/usr/local/bin"
 
 IMPLEMENT_MT_TESTAPP(BGC_frame);
 
@@ -35,7 +43,7 @@ void BGC_frame::doTest(int argc, wxChar** argv)
 
     clp.AddParam(wxT("Input video file."),
                  wxCMD_LINE_VAL_STRING,
-                 wxCMD_LINE_OPTION_MANDATORY);
+                 wxCMD_LINE_PARAM_OPTIONAL);
 
     clp.AddOption(wxT("f"),
                   wxT("frames"),
@@ -54,6 +62,15 @@ void BGC_frame::doTest(int argc, wxChar** argv)
     clp.AddSwitch(wxT("F"),
                   wxT("Force"),
                   wxT("Force over-write of existing output files."));
+#ifdef __APPLE__    
+    clp.AddSwitch(wxT("I"),
+                  wxT("Install-symlink"),
+                  wxT("Install symlink.  Use -P to specify path.\n"));
+    clp.AddOption(wxT("P"),
+                  wxT("Prefix"),
+                  wxT("Symlink install path.  Default /usr/local/bin."),
+                  wxCMD_LINE_VAL_STRING);
+#endif    
     
     clp.SetCmdLine(wxTheApp->argc, wxTheApp->argv);
     if(clp.Parse() != 0)
@@ -63,6 +80,29 @@ void BGC_frame::doTest(int argc, wxChar** argv)
                     before close can be successful. */
     }
 
+
+    /* note that on systems where __APPLE__ is not defined, this just
+       prints usage and exits (as it should) */
+    if(clp.GetParamCount() == 0)
+    {
+        wxString inst_path = DEFAULT_INSTALL_PATH;
+        wxString tmp_path;
+        if(clp.Found(wxT("I")))
+        {
+            if(clp.Found(wxT("P"), &tmp_path))
+            {
+                inst_path = tmp_path;
+            }
+            installSymlink(inst_path, argv[0]);
+        }
+        else
+        {
+            clp.Usage();
+        }
+        Close();
+        return;        
+    }
+    
     wxString infile = clp.GetParam(0);
 
 
@@ -205,3 +245,44 @@ void BGC_frame::doTest(int argc, wxChar** argv)
 
     Close();
 }
+
+void BGC_frame::installSymlink(const wxString& to_path, const wxString& exe_path)
+{
+#ifdef __APPLE__
+
+    wxFileName path(to_path + wxT("/BackgroundCreator"));
+    wxFileName full_exe_path(exe_path);
+    wxString full_exe_path_string = full_exe_path.GetFullPath();
+
+    if(!path.IsOk())
+    {
+        fprintf(stderr,
+                "BackgroundCreator Error:  Symlink path %s has an"
+                "error.\n", path.GetFullPath().mb_str());
+        return;
+    }
+    else
+    {
+        fprintf(stderr,
+                "Attempting to install symlink to path %s\n",
+                path.GetFullPath().mb_str());
+    }
+
+    wxString inst_cmd = wxT("osascript -e 'do shell script \"ln -s ")
+        + full_exe_path_string + wxT(" ") + path.GetFullPath() + 
+        wxT("\"");
+
+    if(!path.IsDirWritable())
+    {
+        fprintf(stderr,
+                "Note:  Please enter your username in the dialog box.\n");
+        inst_cmd += wxT(" with administrator privileges");
+    }
+    inst_cmd += wxT("'");
+
+    system(inst_cmd.mb_str());
+
+#endif // __APPLE__    
+}
+
+//system("osascript -e 'do shell script \"echo hello > /text.txt\" with administrator privileges'");  break;
