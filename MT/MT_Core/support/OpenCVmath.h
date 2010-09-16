@@ -19,6 +19,8 @@
 #include <cv.h>
 #endif
 
+#include <stdio.h> /* for stdout, fprintf */
+
 /** Prints a CvMat to the specified FILE stream (stdout by default).
  * If name is NULL, no header is displayed */
 void MT_Display_CvMat(const CvMat* M,
