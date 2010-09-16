@@ -390,17 +390,14 @@ wxSize MT_FitSizeToScreen(const wxSize& DesiredSize)
 
 void MT_GetAbsolutePath(const wxString& input, wxString* abs_path, wxString* abs_dir)
 {
-    if(wxIsAbsolutePath(input))
-    {
-        *abs_path = input;
-    }
-    else
-    {
-        *abs_path = wxGetCwd() + input;
-    }
+    wxFileName fn(input);
+    fn.Normalize();
+
+    *abs_path = fn.GetFullPath();
+    
     if(abs_dir)
     {
-        *abs_dir = wxPathOnly(*abs_path);
+        *abs_dir = fn.GetPath();
     }
 }
 

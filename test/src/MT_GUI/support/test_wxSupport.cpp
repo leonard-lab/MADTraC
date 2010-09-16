@@ -3,6 +3,8 @@
 
 #include "MT/MT_GUI/support/wxSupport.h"
 
+#include <wx/filename.h>  /* for GetCwd and GetPathSeparator */
+
 bool g_ShowOnlyErrors = true;
 
 void VALIDATE_NUMBER_TEST(const wxString& input,
@@ -66,6 +68,48 @@ void SAFE_REMOVE_STRING_TEST(wxArrayString* stringarray,
     }
 }
 
+void GET_ABSOLUTE_PATH_TEST(const wxString& filename,
+                            const wxString& expected_path,
+                            const wxString& expected_dir,
+                            int* p_in_status)
+{
+    wxString got_path, got_dir;
+    bool success = true;
+    MT_GetAbsolutePath(filename, &got_path, &got_dir);
+
+    if(got_path != expected_path)
+    {
+        *p_in_status = MT_TEST_ERROR;
+        fprintf(stderr,
+                "    With input %s, got %s, expected %s\n",
+                filename.mb_str(),
+                got_path.mb_str(),
+                expected_path.mb_str());
+        success = false;
+    }
+
+    if(got_dir != expected_dir)
+    {
+        *p_in_status = MT_TEST_ERROR;
+        fprintf(stderr,
+                "    With input %s, got dir %s, expected %s\n",
+                filename.mb_str(),
+                got_dir.mb_str(),
+                expected_dir.mb_str());
+        success = false;        
+    }
+
+    if(success && !g_ShowOnlyErrors)
+    {
+        fprintf(stdout,
+                "    Successful test:  %s -> %s, %s\n",
+                filename.mb_str(),
+                got_path.mb_str(),
+                got_dir.mb_str());
+    }
+
+}
+
 int main(int argc, char** argv)
 {
     WX_CONSOLE_APP_INIT;
@@ -106,6 +150,12 @@ int main(int argc, char** argv)
     UINT_TO_BIT_STRING_TEST(42, 8, wxT("00101010"), &status);
     UINT_TO_BIT_STRING_TEST((unsigned int) -1, 2, wxT("11"), &status);
     UINT_TO_BIT_STRING_TEST(3, 1, wxT("1"), &status);
+
+    MT_TEST_START("MT_GetAbsolutePath");
+
+    wxString cwd = wxFileName::GetCwd();
+    wxString cwds = cwd + wxFileName::GetPathSeparator();
+    GET_ABSOLUTE_PATH_TEST("test.txt", cwds + "test.txt", cwd, &status);
 
     return status;
 }
