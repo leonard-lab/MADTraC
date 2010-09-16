@@ -246,6 +246,7 @@ void MT_UKFCopyQR(MT_UKF_struct* pUKF, CvMat* Q, CvMat* R)
     alloc_CvMat_if_necessary(&(pUKF->tWz), 2*(pUKF->n_aug)+1, pUKF->n_r);
     
     alloc_CvMat_if_necessary(&(pUKF->Wc), 2*(pUKF->n_aug)+1, 2*(pUKF->n_aug)+1);
+    cvZero(pUKF->Wc);
     cvSetReal2D(pUKF->Wc,
                 0,
                 0,
