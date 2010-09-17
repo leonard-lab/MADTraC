@@ -32,6 +32,15 @@ if (length(filename) < 4) || (~strcmp(filename(end-3 : end), '.xdf')),
 end
 
 XDInfo.XDFFile = filename;
+if(filename(1) == '/'),
+    XDInfo.PathRoot = pwd;
+else,
+    p = fileparts(filename);
+    the_cwd = pwd;
+    cd(p);
+    XDInfo.PathRoot = pwd;
+    cd(the_cwd);
+end
 
 try
     XMLStruct = parseXML(filename);

@@ -32,6 +32,8 @@ if isempty(filename),
     error(['XDF ' XDInfo.XDFFile ' does not have a file named ' name '.']);
 end
 
+filename = fullfile(XDInfo.PathRoot, filename);
+
 try
     data = load(filename, '-ascii');
     return
