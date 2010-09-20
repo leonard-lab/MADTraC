@@ -55,6 +55,9 @@ std::string MT_StringVectorToString(const std::vector<std::string>& input,
 std::vector<std::string> MT_SplitString(const std::string& input,
                                         const std::string& split_on);
 
+std::string MT_ReplaceCharWithSpaceInString(const std::string& input,
+                                            const char replacee);
+
 /** @} */
 
 #endif // STRINGSUPPORT_H

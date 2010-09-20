@@ -212,3 +212,18 @@ std::vector<std::string> MT_SplitString(const std::string& input,
     result.push_back(input.substr(foundp, std::string::npos));
     return result;
 }
+
+std::string MT_ReplaceCharWithSpaceInString(const std::string& input,
+                                            const char replacee)
+{
+    std::string result = input;
+    for(unsigned int i = 0; i < result.length(); i++)
+    {
+        if(result[i] == replacee)
+        {
+            result[i] = ' ';
+        }
+    }
+    return result;
+
+}
