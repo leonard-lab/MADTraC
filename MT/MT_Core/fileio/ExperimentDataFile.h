@@ -199,6 +199,7 @@ public:
     bool getParameterString(const char* param_name, 
                             std::string* result)
         const;
+    bool getParameterAsDouble(const char* param_name, double* val) const;
 
     /* UNTESTED */
     bool getDoubleValue(const char* stream_name,

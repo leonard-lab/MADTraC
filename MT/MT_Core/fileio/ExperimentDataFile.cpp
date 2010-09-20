@@ -9,6 +9,9 @@
 
 #include <sys/stat.h>
 
+#include <iostream>
+#include <sstream>
+
 static const int MT_XDF_STREAM_INDEX_ERROR = -1;
 static const bool MT_XDF_READ_ONLY = true;
 static const bool MT_XDF_READ_WRITE = false;
@@ -460,6 +463,24 @@ bool MT_ExperimentDataFile::getParameterString(const char* param_name,
     {
         *result = std::string(pElem->GetText());
         return MT_XDF_OK;
+    }
+}
+
+bool MT_ExperimentDataFile::getParameterAsDouble(const char* param_name,
+                                                 double* val)
+    const 
+{
+    std::string sv;
+
+    if(getParameterString(param_name, &sv) == MT_XDF_ERROR)
+    {
+        return setError();
+    }
+    else
+    {
+        std::stringstream ss(sv);
+        ss >> *val;
+        return setOK();
     }
 }
 
