@@ -19,6 +19,7 @@
 #endif
 
 bool MT_isdigit(char c);
+bool MT_IsFloatChar(char c);
 
 /* --------- String analysis functions --------------------- */
 

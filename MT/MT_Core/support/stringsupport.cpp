@@ -15,6 +15,12 @@ bool MT_isdigit(char c)
     return (c >= '0' && c <= '9'); 
 }
 
+bool MT_IsFloatChar(char c)
+{
+    return MT_isdigit(c) || (c == '+') || (c == '-')
+        || (c == 'E') || (c == 'e') || (c == '.');
+}
+
 //------------------------------------------------------------
 //    String analaysis functions
 //------------------------------------------------------------
@@ -227,3 +233,5 @@ std::string MT_ReplaceCharWithSpaceInString(const std::string& input,
     return result;
 
 }
+
+
