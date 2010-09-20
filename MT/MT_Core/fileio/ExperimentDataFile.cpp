@@ -469,6 +469,30 @@ bool MT_ExperimentDataFile::getParameterNames(
     return getStatus();
 }
 
+bool MT_ExperimentDataFile::getFilesFromXML(
+    std::vector<std::string>* labels_list,
+    std::vector<std::string>* filenames_list
+    ) const
+{
+    labels_list->resize(0);
+    filenames_list->resize(0);
+    
+    TiXmlElement* pElem =
+        m_XMLFile.FirstChild(MT_XDF_XML_FILES_KEY).FirstChild().Element();
+    for(/* already initialized */; pElem; pElem = pElem->NextSiblingElement())
+    {
+        const char* pKey = pElem->Value();
+        const char* pText = pElem->GetText();
+        if(pKey && pText)
+        {
+            std::string fixed_key = MT_ReplaceCharWithSpaceInString(pKey, '_');
+            labels_list->push_back(fixed_key);
+            filenames_list->push_back(std::string(pText));
+        }
+    }
+    return getStatus();    
+}
+
 bool MT_ExperimentDataFile::getParameterString(const char* param_name,
                                             std::string* result)
     const 

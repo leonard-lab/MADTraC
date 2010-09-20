@@ -202,6 +202,9 @@ public:
     bool getParameterAsDouble(const char* param_name, double* val) const;
     bool getParameterNames(std::vector<std::string>* params_list) const;
 
+    bool getFilesFromXML(std::vector<std::string>* labels_list,
+                         std::vector<std::string>* filenames_list) const;
+
     /* UNTESTED */
     bool getDoubleValue(const char* stream_name,
                         int time_index,
