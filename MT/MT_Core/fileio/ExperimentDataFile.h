@@ -200,6 +200,7 @@ public:
                             std::string* result)
         const;
     bool getParameterAsDouble(const char* param_name, double* val) const;
+    bool getParameterNames(std::vector<std::string>* params_list) const;
 
     /* UNTESTED */
     bool getDoubleValue(const char* stream_name,

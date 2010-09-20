@@ -12,6 +12,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "MT/MT_Core/support/stringsupport.h"
+
 static const int MT_XDF_STREAM_INDEX_ERROR = -1;
 static const bool MT_XDF_READ_ONLY = true;
 static const bool MT_XDF_READ_WRITE = false;
@@ -445,6 +447,26 @@ void MT_ExperimentDataFile::flushTimeStep()
          * we're ready to move on to the next time step */
         m_vWroteThisTimeStep[i] = false;
     }
+}
+
+bool MT_ExperimentDataFile::getParameterNames(
+    std::vector<std::string>* params_list) const
+{
+    params_list->resize(0);
+    
+    TiXmlElement* pElem =
+        m_XMLFile.FirstChild(MT_XDF_XML_PARAMS_KEY).FirstChild().Element();
+    for(/* already initialized */; pElem; pElem = pElem->NextSiblingElement())
+    {
+        const char* pKey = pElem->Value();
+        const char* pText = pElem->GetText();
+        if(pKey && pText)
+        {
+            std::string fixed_key = MT_ReplaceCharWithSpaceInString(pKey, '_');
+            params_list->push_back(fixed_key);
+        }
+    }
+    return getStatus();
 }
 
 bool MT_ExperimentDataFile::getParameterString(const char* param_name,
