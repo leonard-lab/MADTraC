@@ -91,6 +91,8 @@ private:
 
     void registerFile(const char* label, const char* filename);
 
+    bool loadFileForReadingByName(const char* name, int* index = NULL);    
+
 protected:
 
 public:
@@ -203,7 +205,9 @@ public:
     bool getParameterNames(std::vector<std::string>* params_list) const;
 
     bool getFilesFromXML(std::vector<std::string>* labels_list,
-                         std::vector<std::string>* filenames_list) const;
+                         std::vector<std::string>* filenames_list);
+
+
 
     /* UNTESTED */
     bool getDoubleValue(const char* stream_name,

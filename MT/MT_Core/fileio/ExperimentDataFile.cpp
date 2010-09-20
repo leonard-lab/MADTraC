@@ -472,7 +472,7 @@ bool MT_ExperimentDataFile::getParameterNames(
 bool MT_ExperimentDataFile::getFilesFromXML(
     std::vector<std::string>* labels_list,
     std::vector<std::string>* filenames_list
-    ) const
+    )
 {
     labels_list->resize(0);
     filenames_list->resize(0);
@@ -490,6 +490,12 @@ bool MT_ExperimentDataFile::getFilesFromXML(
             filenames_list->push_back(std::string(pText));
         }
     }
+
+    m_vNames.resize(0);
+    m_vFileNames.resize(0);
+    m_vNames = *labels_list;
+    m_vFileNames = *filenames_list;
+    
     return getStatus();    
 }
 
@@ -549,3 +555,50 @@ void MT_ExperimentDataFile::writeXML()
     m_XMLFile.SaveFile();
 
 }
+
+bool MT_ExperimentDataFile::loadFileForReadingByName(const char* name,
+                                                     int* index)
+{
+    int i = findStreamIndexByLabel(name);
+    if(i == MT_XDF_STREAM_INDEX_ERROR)
+    {
+        return MT_XDF_ERROR; /* return error, but don't set error */
+    }
+
+    if(index)
+    {
+        *index = i;
+    }
+
+    FILE* fp = m_vpDataFiles[i];
+    if(!fp)
+    {
+        fp = fopen(m_vFileNames[i].c_str(), "r");
+        if(!fp)
+        {
+            return MT_XDF_ERROR;
+        }
+        else
+        {
+            m_vpDataFiles[i] = fp;
+        }
+    }
+    return MT_XDF_OK;
+}
+
+/*bool MT_ExperimentDataFile::readNextLineOfDoublesFromStream(
+    const char* stream_name,
+    std::vector<double>* data)
+{
+    int index = 0;
+    if(loadFileForReadingByName(stream_name, &index)
+       == MT_XDF_STREAM_INDEX_ERROR)
+    {
+        return MT_XDF_ERROR;
+    }
+
+    FILE* fp = m_vpDataFiles[index];
+
+//    *data = MT_ReadFloatsToEndOfLine(fp);
+    
+}*/
