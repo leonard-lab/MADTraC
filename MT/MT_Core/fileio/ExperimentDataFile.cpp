@@ -62,7 +62,7 @@ static std::string dir_from_xdf(const std::string& xdf_path)
 static std::string fix_extension(const std::string& path)
 {
     unsigned int l = path.length();
-    if(l <= 3 || (path.substr(l-5, l-1) != ".xdf"))
+    if(l <= 5 || (path.substr(l-5, l-1) != ".xdf"))
     {
         return path + ".xdf";
     }
