@@ -39,6 +39,10 @@ std::string MT_TextFileToString(const char* filename);
 
 std::vector<std::string> MT_TextFileToStringVector(const char* filename);
 
+std::string MT_TextToEndOfLine(FILE* fp);
+std::vector<double> MT_ReadDoublesToEndOfLine(FILE* fp);
+int MT_GetNumberOfLinesInFile(const char* filename);
+    
 /** Returns true if the given file can be opened with the given method
  *  (default is "r") */
 bool MT_FileIsAvailable(const char* name, const char* method = "r");

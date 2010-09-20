@@ -1,6 +1,7 @@
 #include "filesupport.h"
 
 #include <sys/stat.h>
+#include <sstream>
 
 #include "stringsupport.h"
 
@@ -62,6 +63,63 @@ std::vector<std::string> MT_TextFileToStringVector(const char* filename)
 
 }
 
+int MT_GetNumberOfLinesInFile(const char* filename)
+{
+    std::string line;
+    std::ifstream readfile(filename);
+    int nlines = 0;
+
+    if(readfile.is_open())
+    {
+        while(!readfile.eof())
+        {
+            getline(readfile, line);
+            nlines++;
+        }
+        readfile.close();
+    }
+    return nlines - 1;
+}
+
+std::string MT_TextToEndOfLine(FILE* fp)
+{
+
+    std::string r;
+    if(!fp)
+    {
+        r = "MT_TextToEndOfLineInFile Error:  Null file descriptor";
+        std::cerr << r << std::endl;
+        return r;
+    }
+
+    std::stringstream ss;
+    char c = fgetc(fp);
+    while(c != '\n' && c != EOF)
+    {
+        ss << c;
+        c = fgetc(fp);
+    }
+
+    r = ss.str();
+    
+    return r;
+}
+
+std::vector<double> MT_ReadDoublesToEndOfLine(FILE* fp)
+{
+    std::string s = MT_TextToEndOfLine(fp);
+    std::vector<double> D;
+    double d;
+    std::stringstream ss;
+
+    D.resize(0);
+    ss.str(s);
+    while(ss >> d)
+    {
+        D.push_back(d);
+    }
+    return D;
+}
 
 std::string MT_GetFileExtension(const std::string& path)
 {
