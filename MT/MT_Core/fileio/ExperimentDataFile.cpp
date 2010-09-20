@@ -13,6 +13,7 @@
 #include <sstream>
 
 #include "MT/MT_Core/support/stringsupport.h"
+#include "MT/MT_Core/support/filesupport.h"
 
 static const int MT_XDF_STREAM_INDEX_ERROR = -1;
 static const bool MT_XDF_READ_ONLY = true;
@@ -495,6 +496,12 @@ bool MT_ExperimentDataFile::getFilesFromXML(
     m_vFileNames.resize(0);
     m_vNames = *labels_list;
     m_vFileNames = *filenames_list;
+    m_vpDataFiles.resize(0);
+
+    for(unsigned int i = 0; i < m_vFileNames.size(); i++)
+    {
+        m_vpDataFiles.push_back(NULL);
+    }
     
     return getStatus();    
 }
@@ -586,7 +593,7 @@ bool MT_ExperimentDataFile::loadFileForReadingByName(const char* name,
     return MT_XDF_OK;
 }
 
-/*bool MT_ExperimentDataFile::readNextLineOfDoublesFromStream(
+bool MT_ExperimentDataFile::readNextLineOfDoublesFromStream(
     const char* stream_name,
     std::vector<double>* data)
 {
@@ -599,6 +606,20 @@ bool MT_ExperimentDataFile::loadFileForReadingByName(const char* name,
 
     FILE* fp = m_vpDataFiles[index];
 
-//    *data = MT_ReadFloatsToEndOfLine(fp);
+    *data = MT_ReadDoublesToEndOfLine(fp);
+
+    return MT_XDF_OK;
     
-}*/
+}
+
+int MT_ExperimentDataFile::getNumberOfLinesInStream(const char* stream_name)
+{
+    int index = 0;
+    if(loadFileForReadingByName(stream_name, &index)
+       == MT_XDF_STREAM_INDEX_ERROR)
+    {
+        return MT_XDF_ERROR;
+    }
+
+    return MT_GetNumberOfLinesInFile(m_vFileNames[index].c_str());
+}

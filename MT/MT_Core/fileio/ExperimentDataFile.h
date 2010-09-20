@@ -208,7 +208,11 @@ public:
                          std::vector<std::string>* filenames_list);
 
 
-
+    bool readNextLineOfDoublesFromStream(
+        const char* stream_name,
+        std::vector<double>* data);
+    int getNumberOfLinesInStream(const char* stream_name);
+    
     /* UNTESTED */
     bool getDoubleValue(const char* stream_name,
                         int time_index,
