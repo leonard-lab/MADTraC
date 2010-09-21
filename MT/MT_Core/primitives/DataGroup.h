@@ -259,6 +259,9 @@ public:
      * color.  For MT_Choice the value is the string associated with
      * the currently selected choice. */
     virtual string GetStringValue(unsigned int i) const;
+    /** Retrieve the numerical value of the i'th element.  Returns 0
+     * if this is not possible. */
+    virtual double GetNumericValue(unsigned int i) const;
     /** Get a vector of the names of all elements. */
     virtual std::vector<string> GetNameStringArray() const;
     /** Get the name of the i'th element. */

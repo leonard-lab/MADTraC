@@ -718,6 +718,18 @@ string MT_DataGroup::GetStringValue(unsigned int i) const
     }
 }
 
+double MT_DataGroup::GetNumericValue(unsigned int i) const
+{
+    if(i < 0 || i >= GetGroupSize())
+    {
+        return 0;
+    }
+    else
+    {
+        return m_vDataElements[i].GetNumericValue();
+    }
+}
+
 std::vector<string> MT_DataGroup::GetNameStringArray() const
 {
   
