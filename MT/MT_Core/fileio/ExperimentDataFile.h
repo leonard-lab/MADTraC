@@ -46,6 +46,41 @@ const char* const MT_XDF_XML_PARAMS_KEY = "Parameters";
 const char* const MT_XDF_XML_USERNOTE_KEY = "User_Note";
 const char* const MT_XDF_XML_VIDEOSOURCE_KEY = "Video_Source";
 
+class MT_XDFSettingsGroup : public MT_DataGroup
+{
+public:
+    static std::string SettingsName;
+    static std::string XPlaybackName;
+    static std::string YPlaybackName;
+    static std::string PlaybackFramePeriodName;
+    
+    MT_XDFSettingsGroup()
+        : MT_DataGroup(SettingsName),
+          m_sXDataName("Unknown"),
+          m_sYDataName("Unknown"),
+          m_iFramePeriod(32)
+    { doSetup(); };
+    MT_XDFSettingsGroup(const std::string& x_name,
+                                const std::string& y_name,
+                                unsigned int frame_period = 32)
+        : MT_DataGroup(SettingsName),
+          m_sXDataName(x_name),
+          m_sYDataName(y_name),
+          m_iFramePeriod(frame_period)
+    { doSetup(); };
+    
+private:
+    std::string m_sXDataName;
+    std::string m_sYDataName;
+    unsigned int m_iFramePeriod;
+    void doSetup()
+    {
+        AddString(XPlaybackName, &m_sXDataName);
+        AddString(YPlaybackName, &m_sYDataName);
+        AddUInt(PlaybackFramePeriodName, &m_iFramePeriod);
+    }
+};
+
 /** @class MT_ExperimentDataFile
  *
  * @brief Standardized data outputter.
@@ -75,6 +110,8 @@ private:
     std::vector<bool> m_vWroteThisTimeStep;
 
     std::vector<unsigned int> m_viCheckedOut;
+
+    MT_XDFSettingsGroup m_Settings;
 
     bool m_bReadOnly;
     mutable bool m_bStatus;
@@ -185,6 +222,8 @@ public:
 
     /** Write an MT_DataGroup to the XDF file. */
     bool writeDataGroupToXML(MT_DataGroup* dg);
+    /** Read an MT_DataGroup from the XDF file. */
+    bool readDataGroupFromXML(MT_DataGroup* dg);    
 
     /** Loop through each of the data streams and flush the output
      * stream.  Also, if the stream was not written to during that
@@ -219,11 +258,14 @@ public:
                         double* value) 
         const;
 
+    MT_XDFSettingsGroup* getSettingsGroup();
+
     /** Save the XML portion to disk.  Gets called automatically on
      * destructor. */
     void writeXML();
 
 };
+
 
 /* @} */
 

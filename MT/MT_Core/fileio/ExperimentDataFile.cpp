@@ -27,6 +27,11 @@ static const bool MT_XDF_READ_WRITE = false;
   static std::string path_sep = "\\";
 #endif
 
+std::string MT_XDFSettingsGroup::SettingsName = "XDF Settings";
+std::string MT_XDFSettingsGroup::XPlaybackName = "X Playback Data";
+std::string MT_XDFSettingsGroup::YPlaybackName = "Y Playback Data";
+std::string MT_XDFSettingsGroup::PlaybackFramePeriodName = "Playback Frame Period";
+
 static bool file_is_available(const char* name, const char* method = "r")
 {
   FILE* tmp_file = fopen(name, method);
@@ -87,6 +92,7 @@ MT_ExperimentDataFile::MT_ExperimentDataFile()
       m_vNames(0),
       m_vWroteThisTimeStep(0),
       m_viCheckedOut(0),
+      m_Settings(),
       m_bReadOnly(true),
       m_bStatus(MT_XDF_ERROR)
 {
@@ -181,6 +187,8 @@ MT_ExperimentDataFile::~MT_ExperimentDataFile()
             fclose(m_vpDataFiles[i]);
         }
     }
+
+    writeDataGroupToXML(&m_Settings);
 
     /* write the XML */
     m_XMLFile.SaveFile();
@@ -425,6 +433,16 @@ bool MT_ExperimentDataFile::writeDataGroupToXML(MT_DataGroup* dg)
     return setOK();
 }
 
+bool MT_ExperimentDataFile::readDataGroupFromXML(MT_DataGroup* dg)
+{
+    if(m_bStatus == MT_XDF_ERROR)
+    {
+        return setError();
+    }
+    ReadDataGroupFromXML(m_XMLFile, dg);
+    return setOK();
+}
+
 void MT_ExperimentDataFile::flushTimeStep()
 {
     if(m_bStatus == MT_XDF_ERROR)
@@ -622,4 +640,10 @@ int MT_ExperimentDataFile::getNumberOfLinesInStream(const char* stream_name)
     }
 
     return MT_GetNumberOfLinesInFile(m_vFileNames[index].c_str());
+}
+
+MT_XDFSettingsGroup* MT_ExperimentDataFile::getSettingsGroup()
+{
+    readDataGroupFromXML(&m_Settings);
+    return &m_Settings;
 }
