@@ -48,7 +48,6 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
     if(pDG && (pDG->GetGroupName() == MT_XDFSettingsGroup::SettingsName))
     {
         unsigned int i = pDG->GetIndexByName(MT_XDFSettingsGroup::XPlaybackName);
-        printf("i is %d\n", i);
         if(i >= 0 && i < pDG->GetGroupSize())
         {
             wxString X_Found(pDG->GetStringValue(i).c_str());
@@ -168,7 +167,14 @@ void MT_LoadXDFDialog::onOKClicked(wxCommandEvent& event)
     m_pDG->SetStringValueByName(MT_XDFSettingsGroup::PlaybackFramePeriodName,
                                 FR);
 
-    Close();
+    if(IsModal())
+    {
+        EndModal(wxID_OK);
+    }
+    else
+    {
+        Close();
+    }
 }
 
 void MT_LoadXDFDialog::getInfo(std::string* x_name,
