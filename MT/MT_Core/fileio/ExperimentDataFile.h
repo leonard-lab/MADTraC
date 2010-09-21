@@ -103,6 +103,7 @@ private:
     TiXmlElement* m_FilesNode;
     TiXmlElement* m_ParametersNode;
 
+    std::string m_sPathPrefix;
     std::vector<FILE*> m_vpDataFiles;
     std::vector<std::string> m_vFileNames;
     std::vector<std::string> m_vNames;

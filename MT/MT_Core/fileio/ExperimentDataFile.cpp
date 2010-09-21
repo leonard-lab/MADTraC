@@ -59,11 +59,11 @@ static void mkdir_if_necessary(const char* dir_name)
     }
 }
 
-/*static std::string directory_from_path(const std::string& path)
-  {
-  size_t found = path.find_last_of("/\\");
-  return path.substr(0,found);
-  }*/
+static std::string get_prefix(const std::string& path)
+{
+  size_t found = path.find_last_of(MT_PathSeparator);
+  return path.substr(0,found) + MT_PathSeparator;
+}
 
 static std::string dir_from_xdf(const std::string& xdf_path)
 {
@@ -81,6 +81,15 @@ static std::string fix_extension(const std::string& path)
     {
         return path;
     }
+}
+
+static bool is_absolute_path(const std::string& path)
+{
+    if(path.size() == 0)
+    {
+        return false;
+    }
+    return (path[0] == '/') || (path.compare(1, 2, ":\\") == 0);
 }
 
 MT_ExperimentDataFile::MT_ExperimentDataFile()
@@ -105,6 +114,7 @@ bool MT_ExperimentDataFile::init(const char* filename,
     m_bReadOnly = asreadonly;
 
     std::string _filename = fix_extension(std::string(filename));
+    m_sPathPrefix = get_prefix(filename);
 
     bool exists = file_is_available(_filename.c_str());
 
@@ -518,6 +528,10 @@ bool MT_ExperimentDataFile::getFilesFromXML(
 
     for(unsigned int i = 0; i < m_vFileNames.size(); i++)
     {
+        if(!is_absolute_path(m_vFileNames[i]))
+        {
+            m_vFileNames[i] = m_sPathPrefix + m_vFileNames[i];
+        }
         m_vpDataFiles.push_back(NULL);
     }
     
@@ -601,6 +615,8 @@ bool MT_ExperimentDataFile::loadFileForReadingByName(const char* name,
         fp = fopen(m_vFileNames[i].c_str(), "r");
         if(!fp)
         {
+            std::cerr << "MT_XDF Error:  Loading file "
+                      << m_vFileNames[i] << std::endl;
             return MT_XDF_ERROR;
         }
         else
