@@ -26,7 +26,8 @@ set(dialogs_srcs
   ./dialogs/MT_DialogManagement.cpp     ./dialogs/MT_DialogManagement.h
   ./dialogs/MT_MovieExporterDialog.cpp  ./dialogs/MT_MovieExporterDialog.h
   ./dialogs/MT_NumericInputDialog.cpp   ./dialogs/MT_NumericInputDialog.h
-  ./dialogs/MT_ParameterDialog.cpp      ./dialogs/MT_ParameterDialog.h)   
+  ./dialogs/MT_ParameterDialog.cpp      ./dialogs/MT_ParameterDialog.h
+  ./dialogs/MT_XDFDialogs.cpp           ./dialogs/MT_XDFDialogs.h)   
 set(server_srcs
   ./server/MT_Server.cpp   ./server/MT_Server.h
   ./server/MT_Client.cpp   ./server/MT_Client.h
