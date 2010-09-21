@@ -73,7 +73,7 @@ static std::string dir_from_xdf(const std::string& xdf_path)
 static std::string fix_extension(const std::string& path)
 {
     unsigned int l = path.length();
-    if(l <= 5 || (path.substr(l-5, l-1) != ".xdf"))
+    if(l <= 4 || !MT_PathHasFileExtension(path.c_str(), "xdf"))
     {
         return path + ".xdf";
     }
@@ -646,4 +646,31 @@ MT_XDFSettingsGroup* MT_ExperimentDataFile::getSettingsGroup()
 {
     readDataGroupFromXML(&m_Settings);
     return &m_Settings;
+}
+
+bool MT_ExperimentDataFile::isXDF(const char* filename)
+{
+    if(!filename)
+    {
+        return false;
+    }
+
+    std::string _filename = fix_extension(std::string(filename));
+    bool exists = file_is_available(_filename.c_str());
+
+    if(!exists)
+    {
+        return false;
+    }
+
+    MT_XMLFile xmlfile;
+    if(!xmlfile.ReadFile(_filename.c_str()))
+    {
+        return false;
+    }
+    if(!xmlfile.HasRootname(MT_XDF_XML_ROOT))
+    {
+        return false;
+    }
+    return true;
 }

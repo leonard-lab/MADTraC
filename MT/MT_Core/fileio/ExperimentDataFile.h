@@ -264,6 +264,8 @@ public:
      * destructor. */
     void writeXML();
 
+    static bool isXDF(const char* filename);
+
 };
 
 
