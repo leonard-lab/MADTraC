@@ -39,6 +39,9 @@ public:
     MT_LoadXDFDialog(wxWindow* parent,
                      MT_ExperimentDataFile* pXDF);
 
+    void getInfo(std::string* x_name,
+                 std::string* y_name,
+                 unsigned int* frame_period_msec);
 
 };
 

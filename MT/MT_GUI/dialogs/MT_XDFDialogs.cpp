@@ -171,3 +171,14 @@ void MT_LoadXDFDialog::onOKClicked(wxCommandEvent& event)
     Close();
 }
 
+void MT_LoadXDFDialog::getInfo(std::string* x_name,
+                               std::string* y_name,
+                               unsigned int* frame_period_msec)
+{
+    *x_name = std::string(m_pXChoice->GetStringSelection().mb_str());
+    *y_name = std::string(m_pYChoice->GetStringSelection().mb_str());
+    *frame_period_msec = MT_ClampTextCtrlInt(m_pTimeStepCtrl,
+                                             0,
+                                             MT_max_int);
+    
+}
