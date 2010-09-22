@@ -15,6 +15,13 @@ cmake_minimum_required (VERSION 2.8)
 # name of the project
 project(MADTraC)
 
+# versioning
+set(MT_VER_MAJOR 0)
+set(MT_VER_MINOR 7)
+set(MT_VER_PATCH 0)
+set(MT_VERSION "${MT_VER_MAJOR}.${MT_VER_MINOR}.${MT_VER_PATCH}")
+math(EXPR MT_VERSION_NUMBER "${MT_VER_MAJOR}*10000 + ${MT_VER_MINOR}*100 + ${MT_VER_PATCH}")
+
 # determine if this is OS X
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set(OS_X ON)
