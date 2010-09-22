@@ -19,6 +19,8 @@
  *
  */
 
+#include "MT_Config.h"
+
 #ifdef _MSC_VER
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")

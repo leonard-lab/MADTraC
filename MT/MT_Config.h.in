@@ -1,0 +1,10 @@
+#ifndef MT_CONFIG_H
+#define MT_CONFIG_H
+
+#define MT_VER_MAJOR ${MT_VER_MAJOR} 
+#define MT_VER_MINOR ${MT_VER_MINOR} 
+#define MT_VER_PATCH ${MT_VER_PATCH} 
+#define MT_VERSION "${MT_VERSION}"
+#define MT_VERSION_NUMBER ${MT_VERSION_NUMBER}
+
+#endif /* MT_CONFIG_H */

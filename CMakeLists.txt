@@ -474,3 +474,5 @@ set(MT_INCLUDE_INSTALL_DIR ${CMAKE_BINARY_DIR}/include)
 set(MT_LIBS_INSTALL_DIR ${CMAKE_BINARY_DIR}/lib)
 configure_file(cmake/MT_Config.cmake cmake/MT_Config.cmake COPYONLY)
 configure_file(cmake/MT_Exports.cmake.in cmake/MT_Exports.cmake)
+
+configure_file(MT/MT_Config.h.in include/MT_Config.h)
