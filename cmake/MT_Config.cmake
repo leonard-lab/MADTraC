@@ -15,9 +15,6 @@ include(${MT_ROOT}/cmake/MT_Exports.cmake)
 if(NOT IS_DIRECTORY ${MT_INCLUDE})
   message(SEND_ERROR "Couldn't find MADTraC includes")
 endif(NOT IS_DIRECTORY ${MT_INCLUDE})
-if(NOT IS_DIRECTORY ${MT_LIBS_DIR})
-  message(SEND_ERROR "Couldn't find MADTraC libraries directory")
-endif(NOT IS_DIRECTORY ${MT_LIBS_DIR})
 
 ######################################################################
 # Include directories
