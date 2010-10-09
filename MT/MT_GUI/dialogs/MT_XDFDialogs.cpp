@@ -27,7 +27,7 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
     unsigned int frame_period_guess = 32;
     for(unsigned int i = 0; i < datanames.size(); i++)
     {
-        wxString cname(datanames[i].c_str());
+        wxString cname(MT_StringToWxString(datanames[i].c_str()));
         m_asXChoices.Add(cname);
         m_asYChoices.Add(cname);
         if(cname.Find(wxT("X")) != wxNOT_FOUND ||
@@ -50,7 +50,7 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
         unsigned int i = pDG->GetIndexByName(MT_XDFSettingsGroup::XPlaybackName);
         if(i >= 0 && i < pDG->GetGroupSize())
         {
-            wxString X_Found(pDG->GetStringValue(i).c_str());
+            wxString X_Found(MT_StringToWxString(pDG->GetStringValue(i).c_str()));
             int j = m_asXChoices.Index(X_Found);
             if(j != wxNOT_FOUND)
             {
@@ -60,7 +60,7 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
         i = pDG->GetIndexByName(MT_XDFSettingsGroup::YPlaybackName);
         if(i >= 0 && i < pDG->GetGroupSize())
         {
-            wxString Y_Found(pDG->GetStringValue(i).c_str());
+            wxString Y_Found(MT_StringToWxString(pDG->GetStringValue(i).c_str()));
             int j = m_asXChoices.Index(Y_Found);
             if(j != wxNOT_FOUND)
             {
@@ -119,7 +119,7 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
     hbox1->Add(new wxStaticText(this, wxID_ANY, wxT("Time Step [msec]")),
                0, wxLEFT | wxRIGHT, 10);
     wxString sDt;
-    sDt.Printf("%d", frame_period_guess);
+    sDt.Printf(wxT("%d"), frame_period_guess);
     m_pTimeStepCtrl = new wxTextCtrl(this,
                                      ID_TIMESTEP,
                                      sDt,
