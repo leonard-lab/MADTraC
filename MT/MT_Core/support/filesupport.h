@@ -32,6 +32,9 @@ std::string MT_GetFileExtension(const std::string& path);
  */
 bool MT_PathHasFileExtension(const char* path, const char* extension);
 
+std::string MT_EnsurePathHasExtension(const std::string& path,
+                                      const std::string& extension);
+
 bool MT_PathIsAbsolute(const std::string& path);
 std::string MT_CalculateRelativePath(const std::string& from_path,
                                      const std::string& to_path);
@@ -52,6 +55,8 @@ int MT_GetNumberOfLinesInFile(const char* filename);
 bool MT_FileIsAvailable(const char* name, const char* method = "r");
 
 /** Create the specified directory with given mode (posix-only,
- * default is 0777).  If the directory exists, nothing is done. */
-void MT_mkdir(const char* dir_name, unsigned int mode = 077);
+ * default is O755).  If the directory exists, nothing is done. */
+void MT_mkdir(const char* dir_name, unsigned int mode = 0755);
+
+int MT_RMDIR(const char* dir_name);
 #endif // FILESUPPORT_H

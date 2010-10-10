@@ -225,6 +225,32 @@ bool MT_PathHasFileExtension(const char* path, const char* extension)
     return (actual == ext);
 }
 
+std::string MT_EnsurePathHasExtension(const std::string& path,
+                                      const std::string& extension)
+{
+    std::string _extension = extension;
+    
+    if(extension.size() == 0)
+    {
+        return path;
+    }
+
+    if(extension[0] == '.')
+    {
+        _extension = extension.substr(1);
+    }
+    
+    if(MT_PathHasFileExtension(path.c_str(), _extension.c_str()))
+    {
+        return path;
+    }
+    else
+    {
+        std::string result = path + std::string(".") + _extension;
+        return result;
+    }
+}
+
 bool MT_FileIsAvailable(const char* name, const char* method)
 {
   FILE* tmp_file = fopen(name, method);
@@ -250,4 +276,18 @@ void MT_mkdir(const char* dir_name, unsigned int mode)
     {
         mkdir(dir_name, mode);
     }
+}
+
+int MT_RMDIR(const char* filename)
+{
+    std::string cmd;
+#ifdef _WIN32
+    cmd = "rmdir /s /q ";
+#else
+    cmd = "rm -rf ";
+#endif
+
+    cmd += filename;
+
+    return system(cmd.c_str()); 
 }
