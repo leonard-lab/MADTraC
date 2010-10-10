@@ -81,3 +81,8 @@ endif(MSVC)
 if(HAVE_OPENCV_FRAMEWORK)
   target_link_libraries(MT_Core ${OPENCV_FRAMEWORK})
 endif()
+
+set(MT_CORE_SOURCES ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
+
+include(${CMAKE_SOURCE_DIR}/cmake/MT_BuildFunctions.cmake)
+MT_MAKE_MODULE_HEADER(. "MT_Core" "${MT_CORE_SOURCES}")
