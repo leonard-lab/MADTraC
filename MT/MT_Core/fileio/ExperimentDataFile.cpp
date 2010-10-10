@@ -22,8 +22,6 @@ static const bool MT_XDF_READ_WRITE = false;
 #ifndef _WIN32
   static std::string path_sep = "/";
 #else
-  #include <direct.h>
-  #define mkdir(a,b) _mkdir(a)
   static std::string path_sep = "\\";
 #endif
 
@@ -31,33 +29,6 @@ std::string MT_XDFSettingsGroup::SettingsName = "XDF Settings";
 std::string MT_XDFSettingsGroup::XPlaybackName = "X Playback Data";
 std::string MT_XDFSettingsGroup::YPlaybackName = "Y Playback Data";
 std::string MT_XDFSettingsGroup::PlaybackFramePeriodName = "Playback Frame Period";
-
-static bool file_is_available(const char* name, const char* method = "r")
-{
-  FILE* tmp_file = fopen(name, method);
-  if(tmp_file)
-  {
-    fclose(tmp_file);
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-static void mkdir_if_necessary(const char* dir_name)
-{
-    struct stat st;
-    if(stat(dir_name, &st) == 0)
-    {
-        return;
-    }
-    else
-    {
-        mkdir(dir_name, 0777);
-    }
-}
 
 static std::string get_prefix(const std::string& path)
 {
@@ -68,28 +39,6 @@ static std::string get_prefix(const std::string& path)
 static std::string dir_from_xdf(const std::string& xdf_path)
 {
     return xdf_path.substr(0,xdf_path.length()-4) + path_sep;
-}
-
-static std::string fix_extension(const std::string& path)
-{
-    unsigned int l = path.length();
-    if(l <= 4 || !MT_PathHasFileExtension(path.c_str(), "xdf"))
-    {
-        return path + ".xdf";
-    }
-    else
-    {
-        return path;
-    }
-}
-
-static bool is_absolute_path(const std::string& path)
-{
-    if(path.size() == 0)
-    {
-        return false;
-    }
-    return (path[0] == '/') || (path.compare(1, 2, ":\\") == 0);
 }
 
 MT_ExperimentDataFile::MT_ExperimentDataFile()
@@ -113,10 +62,10 @@ bool MT_ExperimentDataFile::init(const char* filename,
 {
     m_bReadOnly = asreadonly;
 
-    std::string _filename = fix_extension(std::string(filename));
+    std::string _filename = MT_EnsurePathHasExtension(std::string(filename), "xdf");
     m_sPathPrefix = get_prefix(filename);
 
-    bool exists = file_is_available(_filename.c_str());
+    bool exists = MT_FileIsAvailable(_filename.c_str());
 
     if(m_bReadOnly == MT_XDF_READ_WRITE &&
        force_overwrite == MT_XDF_NO_OVERWRITE &&
@@ -129,6 +78,15 @@ bool MT_ExperimentDataFile::init(const char* filename,
                 "initAsNew(filename, MT_XDF_READ_WRITE, MT_XDF_OVERWRITE) "
                 "if you really mean to overwrite this file.\n",
                 _filename.c_str());
+        return setError();
+    }
+
+    if(m_bReadOnly == MT_XDF_READ_ONLY
+       && !exists)
+    {
+        m_bStatus = MT_XDF_ERROR;
+        std::cerr << "MT_ExperimentDataFile init error:  File " << filename
+                  << " does not exist\n";
         return setError();
     }
 
@@ -253,11 +211,15 @@ void MT_ExperimentDataFile::registerFile(
     const char* filename)
 {
     std::string _label(label);
+    std::string _filename(filename);
 
     /* the label can't have any spaces */
     _label = MT_ReplaceSpacesInString(_label);
+    /* store the filename as relative to the XDF */
+    std::string rel_filename = MT_CalculateRelativePath(filename,
+                                                        m_XMLFile.GetFilename());
 
-    MT_AddOrReplaceNodeValue(getFilesNode(), _label.c_str(), filename);
+    MT_AddOrReplaceNodeValue(getFilesNode(), _label.c_str(), rel_filename.c_str());
 }
 
 FILE* MT_ExperimentDataFile::checkoutStreamByName(const char* stream_name)
@@ -318,10 +280,10 @@ bool MT_ExperimentDataFile::addDataStream(const char* label,
 
     std::string dir = dir_from_xdf(m_XMLFile.GetFilename());
     _filename = dir + _filename;
-    mkdir_if_necessary(dir.c_str());
+    MT_mkdir(dir.c_str());
 
     /* check to see if filename exists (for reading) */
-    bool exists = file_is_available(_filename.c_str(), "r");
+    bool exists = MT_FileIsAvailable(_filename.c_str(), "r");
 
     /* if it does and force_overwrite is false, then
      * return false. if force_overwrite is true, then
@@ -528,7 +490,7 @@ bool MT_ExperimentDataFile::getFilesFromXML(
 
     for(unsigned int i = 0; i < m_vFileNames.size(); i++)
     {
-        if(!is_absolute_path(m_vFileNames[i]))
+        if(!MT_PathIsAbsolute(m_vFileNames[i]))
         {
             m_vFileNames[i] = m_sPathPrefix + m_vFileNames[i];
         }
@@ -671,8 +633,8 @@ bool MT_ExperimentDataFile::isXDF(const char* filename)
         return false;
     }
 
-    std::string _filename = fix_extension(std::string(filename));
-    bool exists = file_is_available(_filename.c_str());
+    std::string _filename = MT_EnsurePathHasExtension(std::string(filename), "xdf");
+    bool exists = MT_FileIsAvailable(_filename.c_str());
 
     if(!exists)
     {
