@@ -160,6 +160,12 @@ add_test(NAME COMSequence COMMAND ${CURRENT_TEST})
 ensure_OpenCV(${CURRENT_TEST})
 list(APPEND MT_ROBOT_TESTS ${CURRENT_TEST})
 
+######################################################################
+# non-CTest Tests
+add_executable(testXDF src/nonCTest/testXDF.cpp)
+target_link_libraries(testXDF ${MT_CORE_LIBS})
+ensure_OpenCV(testXDF)
+
 include(${MT_ROOT}/cmake/MT_Config.cmake)
 
 add_custom_target(MT_Core_tests
