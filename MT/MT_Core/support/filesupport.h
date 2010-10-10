@@ -32,6 +32,10 @@ std::string MT_GetFileExtension(const std::string& path);
  */
 bool MT_PathHasFileExtension(const char* path, const char* extension);
 
+bool MT_PathIsAbsolute(const std::string& path);
+std::string MT_CalculateRelativePath(const std::string& from_path,
+                                     const std::string& to_path);
+
 bool MT_CatTextFile(const char* filename);
 
     
