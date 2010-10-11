@@ -63,20 +63,20 @@ if(WITH_CLF)
 endif(WITH_CLF)  
 
 # copies the header files to the "include" directory
-if(NOT MSVC)
-  get_directory_property(defs DIRECTORY . COMPILE_DEFINITIONS)
-  add_custom_command(TARGET MT_Core POST_BUILD
-     COMMAND echo ARGS "\"${defs}\">defs.txt"
-     COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/posix_cmake_target_script.sh ARGS "MT_Core" ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
-  )
-endif(NOT MSVC)
+# if(NOT MSVC)
+#   get_directory_property(defs DIRECTORY . COMPILE_DEFINITIONS)
+#   add_custom_command(TARGET MT_Core POST_BUILD
+#      COMMAND echo ARGS "\"${defs}\">defs.txt"
+#      COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/posix_cmake_target_script.sh ARGS "MT_Core" ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
+#   )
+# endif(NOT MSVC)
 
-if(MSVC)
-  string(REPLACE "/" "\\" ARG2 ${CMAKE_SOURCE_DIR})
-  string(REPLACE "/" "\\" ARG3 ${CMAKE_BINARY_DIR})
-  add_custom_command(TARGET MT_Core POST_BUILD
-    COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/MSVC_cmake_post_build.bat ARGS "MT_Core" ${ARG2} ${ARG3})
-endif(MSVC)    
+# if(MSVC)
+#   string(REPLACE "/" "\\" ARG2 ${CMAKE_SOURCE_DIR})
+#   string(REPLACE "/" "\\" ARG3 ${CMAKE_BINARY_DIR})
+#   add_custom_command(TARGET MT_Core POST_BUILD
+#     COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/MSVC_cmake_post_build.bat ARGS "MT_Core" ${ARG2} ${ARG3})
+# endif(MSVC)    
 
 if(HAVE_OPENCV_FRAMEWORK)
   target_link_libraries(MT_Core ${OPENCV_FRAMEWORK})
@@ -86,3 +86,4 @@ set(MT_CORE_SOURCES ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs
 
 include(${CMAKE_SOURCE_DIR}/cmake/MT_BuildFunctions.cmake)
 MT_MAKE_MODULE_HEADER(. "MT_Core" "${MT_CORE_SOURCES}")
+MT_COPY_MODULE_HEADERS("${MT_CORE_SOURCES}" "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/include/MT/MT_Core")

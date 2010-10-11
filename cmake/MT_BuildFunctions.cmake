@@ -63,3 +63,18 @@ function(MT_MAKE_MODULE_HEADER dir mod_name src_list)
   file(APPEND ${header_file} "\n#endif /* MT_HAVE_${mod_name} */\n")
 
 endfunction(MT_MAKE_MODULE_HEADER)
+
+
+function(MT_TRANSPOSE_FILE_IN_TREE filename src_path dest_path)
+  get_filename_component(tree_part "${filename}" PATH)
+  message(STATUS "Should be copying ${filename} from ${src_path} to ${dest_path}/${tree_part}, treepart is ${tree_part}")
+  file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/${filename}" DESTINATION "${dest_path}/${tree_part}/")
+endfunction(MT_TRANSPOSE_FILE_IN_TREE)
+
+function(MT_COPY_MODULE_HEADERS src_list src_path dest_path)
+  foreach(sfile ${src_list})
+    if(${sfile} MATCHES ".*\\.h")
+      MT_TRANSPOSE_FILE_IN_TREE(${sfile} ${src_path} ${dest_path})
+    endif()
+  endforeach()
+endfunction(MT_COPY_MODULE_HEADERS)
