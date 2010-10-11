@@ -51,6 +51,7 @@ function(MT_MAKE_MODULE_HEADER dir mod_name src_list)
   get_directory_property(DEFS DIRECTORY ${dir} COMPILE_DEFINITIONS)
   foreach(def ${DEFS})
     string(REGEX REPLACE "=.*" "" def_name "${def}")
+    string(REGEX REPLACE "=" " " def "${def}")
     file(APPEND ${header_file} "#ifndef ${def_name}\n    #define ${def}\n#endif\n\n")
   endforeach()
 

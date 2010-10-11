@@ -48,6 +48,8 @@ set(module_srcs ${base_srcs} ${dialogs_srcs} ${server_srcs} ${support_srcs})
 #   given sources
 if(BUILD_SHARED)
   add_library(${module_name} SHARED ${module_srcs})
+  target_link_libraries(${module_name} MT_Core)
+  target_link_libraries(${module_name} ${WX_EXTRA_LIBS})
 else(BUILD_SHARED)  
   add_library(${module_name} STATIC ${module_srcs})
 endif(BUILD_SHARED)
