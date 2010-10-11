@@ -78,12 +78,6 @@ if(HAVE_OPENCV_FRAMEWORK)
   target_link_libraries(${module_name} ${OPENCV_FRAMEWORK})
 endif()
 
-# file(MAKE_DIRECTORY "lib" "include")
-# set(MT_GUI_SOURCES ${base_srcs} ${dialogs_srcs} ${server_srcs} ${support_srcs})
-# include(${CMAKE_SOURCE_DIR}/cmake/MT_BuildFunctions.cmake)
-# MT_MAKE_MODULE_HEADER(. "MT_GUI" "${MT_GUI_SOURCES}")
-# MT_COPY_MODULE_HEADERS("${MT_GUI_SOURCES}" "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/include/MT/MT_GUI")
-
 include(${CMAKE_SOURCE_DIR}/cmake/MT_BuildFunctions.cmake)
 MT_MAKE_MODULE_HEADER(. "${module_name}" "${module_srcs}")
 MT_COPY_MODULE_HEADERS("${module_srcs}" "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/include/MT/${module_name}")
