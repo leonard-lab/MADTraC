@@ -56,6 +56,11 @@ set(module_srcs ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${
 #   given sources
 if(BUILD_SHARED)
   add_library(${module_name} SHARED ${module_srcs})
+  if(OS_X)
+    add_custom_command(TARGET ${module_name}
+      POST_BUILD
+      COMMAND install_name_tool -id @executable_path/../Libraries/lib${module_name}.dylib ${CMAKE_BINARY_DIR}/lib/lib${module_name}.dylib)
+  endif(OS_X)
 else(BUILD_SHARED)
   add_library(${module_name} STATIC ${module_srcs})
 endif(BUILD_SHARED)
