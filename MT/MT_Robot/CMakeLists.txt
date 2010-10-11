@@ -54,7 +54,16 @@ endif(WITH_ARTK)
 
 # tell cmake this is a static library built from the
 #   given sources
-add_library(${module_name} STATIC ${module_srcs})
+if(BUILD_SHARED)
+  add_library(${module_name} SHARED ${module_srcs})
+  target_link_libraries(${module_name} MT_Core)
+  target_link_libraries(${module_name} MT_GUI)
+  target_link_libraries(${module_name} MT_Tracking)
+  target_link_libraries(${module_name} ${WX_EXTRA_LIBS})
+else(BUILD_SHARED)  
+  add_library(${module_name} STATIC ${module_srcs})
+endif(BUILD_SHARED)
+
 
 # copies the header files to the "include" directory
 # if(NOT MSVC)

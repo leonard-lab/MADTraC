@@ -60,27 +60,27 @@ using namespace std;
 
 /*********************************************************************************************/
 
-class BlobberFrameGroup : public MT_TrackerFrameGroup
+class GYBlobberFrameGroup : public MT_TrackerFrameGroup
 {
 
 public:
-    BlobberFrameGroup(IplImage** diff_frame,
+    GYBlobberFrameGroup(IplImage** diff_frame,
                       IplImage** thresh_frame);
 
 };
 
-class BlobberParameters : public MT_DataGroup
+class GYBlobberParameters : public MT_DataGroup
 {
 public: 
-    BlobberParameters(int* val_thresh_low, 
+    GYBlobberParameters(int* val_thresh_low, 
                       int* area_thresh_low, 
                       int* area_thresh_high);
 };
 
-class BlobInfoReport : public MT_DataReport
+class GYBlobInfoReport : public MT_DataReport
 {
 public:
-    BlobInfoReport(std::vector<int>* indexes, 
+    GYBlobInfoReport(std::vector<int>* indexes, 
                    std::vector<double>* Xs, 
                    std::vector<double>* Ys, 
                    std::vector<double>* Areas, 
@@ -88,10 +88,10 @@ public:
 
 };
 
-class BlobberDrawingParameters : public MT_DataGroup
+class GYBlobberDrawingParameters : public MT_DataGroup
 {
 public:
-    BlobberDrawingParameters(bool* draw_arrows, 
+    GYBlobberDrawingParameters(bool* draw_arrows, 
                              bool* draw_ellipses, 
                              bool* draw_search_rect,
                              double* arrow_length,
