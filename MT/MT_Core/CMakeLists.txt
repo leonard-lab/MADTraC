@@ -49,17 +49,20 @@ set(support_srcs
   ./support/OpenCVmath.cpp     ./support/OpenCVmath.h
   ./support/UKF.cpp            ./support/UKF.h)
 
+set(module_name "MT_Core")
+set(module_srcs ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
+
 # tell cmake this is a static library built from the
 #   given sources
 if(BUILD_SHARED)
-  add_library(MT_Core SHARED ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
+  add_library(${module_name} SHARED ${module_srcs})
 else(BUILD_SHARED)
-  add_library(MT_Core STATIC ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
+  add_library(${module_name} STATIC ${module_srcs})
 endif(BUILD_SHARED)
 
-target_link_libraries(MT_Core ${OPENGL_LIBRARIES})
+target_link_libraries(${module_name} ${OPENGL_LIBRARIES})
 if(WITH_CLF)
-  target_link_libraries(MT_Core ${CLF_LIB} ${HDF5_LIBRARIES})
+  target_link_libraries(${module_name} ${CLF_LIB} ${HDF5_LIBRARIES})
 endif(WITH_CLF)  
 
 # copies the header files to the "include" directory
@@ -79,11 +82,9 @@ endif(WITH_CLF)
 # endif(MSVC)    
 
 if(HAVE_OPENCV_FRAMEWORK)
-  target_link_libraries(MT_Core ${OPENCV_FRAMEWORK})
+  target_link_libraries(${module_name} ${OPENCV_FRAMEWORK})
 endif()
 
-set(MT_CORE_SOURCES ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
-
 include(${CMAKE_SOURCE_DIR}/cmake/MT_BuildFunctions.cmake)
-MT_MAKE_MODULE_HEADER(. "MT_Core" "${MT_CORE_SOURCES}")
-MT_COPY_MODULE_HEADERS("${MT_CORE_SOURCES}" "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/include/MT/MT_Core")
+MT_MAKE_MODULE_HEADER(. "${module_name}" "${module_srcs}")
+MT_COPY_MODULE_HEADERS("${module_srcs}" "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/include/MT/${module_name}")

@@ -67,7 +67,6 @@ endfunction(MT_MAKE_MODULE_HEADER)
 
 function(MT_TRANSPOSE_FILE_IN_TREE filename src_path dest_path)
   get_filename_component(tree_part "${filename}" PATH)
-  message(STATUS "Should be copying ${filename} from ${src_path} to ${dest_path}/${tree_part}, treepart is ${tree_part}")
   file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/${filename}" DESTINATION "${dest_path}/${tree_part}/")
 endfunction(MT_TRANSPOSE_FILE_IN_TREE)
 
