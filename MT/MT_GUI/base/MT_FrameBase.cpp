@@ -1245,8 +1245,8 @@ void MT_FrameBase::drawStatusBar(double frac)
         glColor4f(0,0,1,1);
         glBegin(GL_QUADS);
         glVertex2f(xmin, ymin);
-        glVertex2f(frac*xmax, ymin);
-        glVertex2f(frac*xmax, ymin + g_StatusBarFrac*(ymax - ymin));
+        glVertex2f(xmin + frac*(xmax - xmin), ymin);
+        glVertex2f(xmin + frac*(xmax - xmin), ymin + g_StatusBarFrac*(ymax - ymin));
         glVertex2f(xmin, ymin + g_StatusBarFrac*(ymax - ymin));
         glEnd();
 
