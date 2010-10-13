@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./cloc `find .. -name *.cpp -o -name *.h | grep -v ext_include | grep -v OpenCV.framework`
+./cloc `find ../../MT -name *.cpp -o -name *.h | grep -v 3rdparty | grep -v OpenCV.framework`
