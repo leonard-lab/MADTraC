@@ -8,10 +8,6 @@
 
 class MT_BufferAgent : public MT_agent {
 protected:
-    std::vector<double> xplaybackbuffer;
-    std::vector<double> yplaybackbuffer;
-    std::vector<double> zplaybackbuffer;
-    std::vector<double> thetaplaybackbuffer;
 
     void AppendBuffer(std::vector<double>& buffer, double value);
 
@@ -49,6 +45,10 @@ public:
     int GetBufferPosition();
   
     std::vector<double> speedplaybackbuffer;
+    std::vector<double> xplaybackbuffer;
+    std::vector<double> yplaybackbuffer;
+    std::vector<double> zplaybackbuffer;
+    std::vector<double> thetaplaybackbuffer;
 
 };
 
