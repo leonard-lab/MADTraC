@@ -53,6 +53,7 @@ set(trackers_srcs
   ./trackers/GY/GYBlobs.cpp       ./trackers/GY/GYBlobs.h
   ./trackers/GY/GYSegmenter.cpp   ./trackers/GY/GYSegmenter.h
   ./trackers/GY/MixGaussians.cpp  ./trackers/GY/MixGaussians.h
+  ./trackers/GY/GYBlobber.cpp     ./trackers/GY/GYBlobber.h
   ./trackers/YA/YABlobber.cpp     ./trackers/YA/YABlobber.h
   ./trackers/YA/YASegmenter.cpp     ./trackers/YA/YASegmenter.h)  
 
