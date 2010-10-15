@@ -188,7 +188,7 @@
  * }
  * @endcode
  * It's not strictly illegal or even necessarily wrong to do it the
- * first way, but the second way is a VERY good habit to get
+ * second way, but the first way is a VERY good habit to get
  * into. (end digression)
  *
  * Back to our App example.  Because we've moved command line argument
