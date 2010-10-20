@@ -312,10 +312,18 @@ else(NOT AUTO_FIND_WX)
   if(wxWidgets_FOUND)
     set(WX_INCLUDE ${wxWidgets_INCLUDE_DIRS})
     set(WX_LIB ${wxWidgets_LIBRARIES})
-    set(WX_DEFS_TMP ${wxWidgets_DEFINITIONS})
-    foreach(d IN LISTS WX_DEFS_TMP)
-      list(APPEND WX_DEFS -D${d})
-    endforeach()
+    if(WIN32)
+      # on WIN32, find_package doesn't give us the right preprocessor
+      #  definitions, so we need to define them manually - this list is
+      #  via the wxWiki:
+      #     http://wiki.wxwidgets.org/Microsoft_Visual_C%2B%2B_Guide
+      set(WX_DEFS -DWIN32 -DWINVER=0x0400 -D__WXMSW__ -D_WINDOWS -DwxUSE_GUI=1 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
+    else(WIN32)
+      set(WX_DEFS_TMP ${wxWidgets_DEFINITIONS})
+      foreach(d IN LISTS WX_DEFS_TMP)
+        list(APPEND WX_DEFS -D${d})
+      endforeach()
+    endif(WIN32)
   endif(wxWidgets_FOUND)
 endif(NOT AUTO_FIND_WX)
 
