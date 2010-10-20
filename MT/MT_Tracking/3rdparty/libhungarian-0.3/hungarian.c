@@ -27,6 +27,7 @@
  */
 
 #include <stdio.h>
+#undef NDEBUG
 #include <assert.h>
 #include <stdlib.h>
 
