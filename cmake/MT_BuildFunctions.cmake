@@ -45,7 +45,9 @@ function(MT_MAKE_MODULE_HEADER dir mod_name src_list)
 #pragma comment(lib, \"wininet.lib\")
 
 #pragma comment(lib, \"MT_Core.lib\")
-#endif /* _MSC_VER */")
+#endif /* _MSC_VER */
+
+")
   endif(MSVC)
 
   get_directory_property(DEFS DIRECTORY ${dir} COMPILE_DEFINITIONS)
