@@ -27,6 +27,16 @@
  */
 
 #include <stdio.h>
+
+/* On WIN32, when NDEBUG is defined (i.e. when building Release),
+ *  assert defines to (void)(0) and all of the memory allocation
+ *  here fails.  By undefining NDEBUG, we get assert back.
+ *    (DTS 10/20/10) */
+
+#ifdef _WIN32
+#undef NDEBUG
+#endif
+
 #include <assert.h>
 #include <stdlib.h>
 
