@@ -188,21 +188,22 @@ if(WITH_OPENCV)
       set(CV_NOT_FOUND OFF)
       set(OPENCV_INC ${OpenCV_INCLUDE_DIRS})
       set(OPENCV_LIBS_DIR ${OpenCV_LIB_DIR})
-      set(OPENCV_LIBS_TMP ${OpenCV_LIBS})
+	  set(OPENCV_LIBS ${OpenCV_LIBS})
+      #set(OPENCV_LIBS_TMP ${OpenCV_LIBS})
       # filter out extra information in the list, matches on e.g. cv210.lib,
       #   cv200.lib, cv.lib, but not cv210d.lib and not release, debug, etc.
-      foreach(l IN LISTS OPENCV_LIBS_TMP)
-        if(("${l}" MATCHES "^cv*") OR
-            ("${l}" MATCHES "^cvaux*") OR
-            ("${1}" MATCHES "^cxcore*") OR
-            ("${l}" MATCHES "^highgui*") OR
-            ("${l}" MATCHES "^ml*") OR
-            ("${l}" MATCHES "^opencv_ffmpeg*") )
-          if(NOT "${l}" MATCHES "d$")
-            list(APPEND OPENCV_LIBS ${OPENCV_LIBS_DIR}/Release/${l}.lib)
-          endif()
-        endif()
-      endforeach()
+      #foreach(l IN LISTS OPENCV_LIBS_TMP)
+      #  if(("${l}" MATCHES "^cv*") OR
+      #      ("${l}" MATCHES "^cvaux*") OR
+      #      ("${1}" MATCHES "^cxcore*") OR
+      #      ("${l}" MATCHES "^highgui*") OR
+      #      ("${l}" MATCHES "^ml*") OR
+      #      ("${l}" MATCHES "^opencv_ffmpeg*") )
+      #    if(NOT "${l}" MATCHES "d$")
+      #      list(APPEND OPENCV_LIBS ${OPENCV_LIBS_DIR}/Release/${l}.lib)
+      #    endif()
+      #  endif()
+      #endforeach()
     endif(OpenCV_FOUND)
 
     if(CV_NOT_FOUND)
