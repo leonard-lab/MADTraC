@@ -32,9 +32,12 @@ if (length(filename) < 4) || (~strcmp(filename(end-3 : end), '.xdf')),
 end
 
 XDInfo.XDFFile = filename;
-if(filename(1) == '/'),
-    XDInfo.PathRoot = pwd;
-else,
+if(filename(1) == '/' || strcmp(filename([2 3]), ':\')),
+    % absolute path
+    p = fileparts(filename);
+    XDInfo.PathRoot = p;
+else
+    % relative path
     p = fileparts(filename);
     the_cwd = pwd;
     cd(p);
@@ -63,8 +66,8 @@ for ix = 1 : length(XMLStruct.Children)
         DataNode = XMLStruct.Children(ix);
         for jx = 1 : length(DataNode.Children),
             if ~isjunknode(DataNode.Children(jx)),
-                df.Name = DataNode.Children(jx).Name;
-                df.Path = DataNode.Children(jx).Children(1).Data;
+                df.Name = strtrim(DataNode.Children(jx).Name);
+                df.Path = strtrim(DataNode.Children(jx).Children(1).Data);
                 DataFiles = [DataFiles df];
                 filecount = filecount + 1;
             end
@@ -77,8 +80,8 @@ for ix = 1 : length(XMLStruct.Children)
         ParamsNode = XMLStruct.Children(ix);
         for jx = 1 : length(ParamsNode.Children),
             if ~isjunknode(ParamsNode.Children(jx)),
-                pn.Name = ParamsNode.Children(jx).Name;
-                pn.Value = ParamsNode.Children(jx).Children(1).Data;
+                pn.Name = strtrim(ParamsNode.Children(jx).Name);
+                pn.Value = strtrim(ParamsNode.Children(jx).Children(1).Data);
                 if strcmp(pn.Name, 'Video_Source'),
                     XDInfo.VideoSource = pn.Value;
                 end
@@ -103,13 +106,26 @@ for ix = 1 : length(XMLStruct.Children)
         DGNode = XMLStruct.Children(ix);
         for jx = 1 : length(DGNode.Children),
             if ~isjunknode(DGNode.Children(jx)),
-                v.Name = DGNode.Children(jx).Name;
-                v.Value = DGNode.Children(jx).Children(1).Data;
+                v.Name = strtrim(DGNode.Children(jx).Name);
+                v.Value = strtrim(DGNode.Children(jx).Children(1).Data);
                 Values = [Values v];
             end
         end
         DataGroup.Values = Values;
         DataGroups = [DataGroups DataGroup];
+    end
+    
+    if strncmp(XMLStruct.Children(ix).Name, 'Reports', 7),
+        Reports = [];
+        ReportsNode = XMLStruct.Children(ix);
+        for jx = 1 : length(ReportsNode.Children)
+            if ~isjunknode(ReportsNode.Children(jx))
+                rn.Name = strtrim(ReportsNode.Children(jx).Name);
+                rn.Value = strtrim(ReportsNode.Children(jx).Children(1).Data);
+                Reports = [Reports rn];
+            end
+        end
+        XDInfo.Reports = Reports;
     end
         
 end
