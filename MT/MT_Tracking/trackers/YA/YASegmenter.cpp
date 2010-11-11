@@ -68,10 +68,10 @@ void Segmenter::Init(IplImage* ProtoFrame)
     /* frame group initialization */
     m_pTrackerFrameGroup = new BlobberFrameGroup(&diff_frame, &thresh_frame);
   
-    blob_val_thresh_low = RT_MIN_BLOB_VAL;
-    blob_val_thresh_high = RT_MAX_BLOB_VAL;
-    blob_area_thresh_low = RT_MIN_BLOB_SIZE;
-    blob_area_thresh_high = RT_MAX_BLOB_SIZE;
+    blob_val_thresh_low = YA_MIN_BLOB_VAL;
+    blob_val_thresh_high = YA_MAX_BLOB_VAL;
+    blob_area_thresh_low = YA_MIN_BLOB_SIZE;
+    blob_area_thresh_high = YA_MAX_BLOB_SIZE;
   
     test_bool = true;
     test_double = 3.1415926;
@@ -257,7 +257,7 @@ void Segmenter::doSegmentation()
     {
         blobs = CBlobResult(thresh_frame, ROI_frame, 0);
     } else {
-        blobs = CBlobResult(thresh_frame, RT_NOMASK, 0);
+        blobs = CBlobResult(thresh_frame, YA_NOMASK, 0);
     }
   
 #ifdef TRACKER_VERBOSE  
