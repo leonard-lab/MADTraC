@@ -96,9 +96,9 @@ public:
     virtual bool doMouseCallback(wxMouseEvent& event, double viewport_x, double viewport_y);
 
     /* menu callbacks */
-    void onMenuRobotsConnect(wxCommandEvent& event);
-    void onMenuRobotsJoystick(wxCommandEvent& event);
-    void onMenuRobotsCommand(wxCommandEvent& event);
+    virtual void onMenuRobotsConnect(wxCommandEvent& event);
+    virtual void onMenuRobotsJoystick(wxCommandEvent& event);
+    virtual void onMenuRobotsCommand(wxCommandEvent& event);
 
     virtual void readUserXML();
     virtual void writeUserXML();
