@@ -36,6 +36,7 @@ set(io_srcs
   ./io/gamepad.cpp  ./io/gamepad.h
   ./io/COMSequence.cpp  ./io/COMSequence.h) 
 set(robot_srcs
+  ./robot/RobotBase.cpp          ./robot/RobotBase.h
   ./robot/AllRobotContainer.cpp  ./robot/AllRobotContainer.h
   ./robot/GamePadController.cpp  ./robot/GamePadController.h
   ./robot/MiaBotPro.cpp          ./robot/MiaBotPro.h   
