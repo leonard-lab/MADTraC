@@ -17,7 +17,7 @@
 #include "MT/MT_Core/primitives/Matrix.h"
 #include "MT/MT_Core/gl/glSupport.h"  // for blob drawing
 
-BlobberParameters::BlobberParameters(int* val_thresh_low, 
+GYBlobberParameters::GYBlobberParameters(int* val_thresh_low, 
                                      int* area_thresh_low, 
                                      int* area_thresh_high)
   : MT_DataGroup("Blobber Parameters")
@@ -29,7 +29,7 @@ BlobberParameters::BlobberParameters(int* val_thresh_low,
 
 }
 
-BlobberFrameGroup::BlobberFrameGroup(IplImage** diff_frame, IplImage** thresh_frame)
+GYBlobberFrameGroup::GYBlobberFrameGroup(IplImage** diff_frame, IplImage** thresh_frame)
 {
 
     StandardFrameGroupInit(2);
@@ -42,7 +42,7 @@ BlobberFrameGroup::BlobberFrameGroup(IplImage** diff_frame, IplImage** thresh_fr
 
 }
 
-BlobInfoReport::BlobInfoReport(std::vector<int>* indexes, 
+GYBlobInfoReport::GYBlobInfoReport(std::vector<int>* indexes, 
                                std::vector<double>* Xs, 
                                std::vector<double>* Ys, 
                                std::vector<double>* Areas, 
@@ -59,7 +59,7 @@ BlobInfoReport::BlobInfoReport(std::vector<int>* indexes,
 }
 
 
-BlobberDrawingParameters::BlobberDrawingParameters(bool* draw_arrows, 
+GYBlobberDrawingParameters::GYBlobberDrawingParameters(bool* draw_arrows, 
                                                    bool* draw_ellipses, 
                                                    bool* draw_search_rect,
                                                    double* arrow_length,
@@ -99,7 +99,7 @@ void GYSegmenter::doInit(IplImage* ProtoFrame)
 {
     m_pTrackedObjects = NULL;
 
-    m_pTrackerFrameGroup = new BlobberFrameGroup(&m_pDiff_frame, &m_pThresh_frame);
+    m_pTrackerFrameGroup = new GYBlobberFrameGroup(&m_pDiff_frame, &m_pThresh_frame);
 
     m_pOrg_frame = 0;
     m_pBG_frame = 0;
@@ -125,12 +125,12 @@ void GYSegmenter::doInit(IplImage* ProtoFrame)
 
     m_vDataGroups.resize(0);
     m_vDataGroups.push_back(
-        new BlobberParameters(
+        new GYBlobberParameters(
             &m_iBlob_val_thresh, 
             &m_iBlob_area_thresh_low, 
             &m_iBlob_area_thresh_high));
     m_vDataGroups.push_back(
-        new BlobberDrawingParameters(
+        new GYBlobberDrawingParameters(
             &m_bDrawArrows, 
             &m_bDrawEllipses, 
             &m_bDrawSearchRect,
@@ -145,7 +145,7 @@ void GYSegmenter::doInit(IplImage* ProtoFrame)
     OBlobs.resize(0);
 
     m_vDataReports.resize(0);
-    m_vDataReports.push_back(new BlobInfoReport(&BlobIndexes, &XBlobs, &YBlobs, &ABlobs, &OBlobs));
+    m_vDataReports.push_back(new GYBlobInfoReport(&BlobIndexes, &XBlobs, &YBlobs, &ABlobs, &OBlobs));
 
     m_iFrame_counter = 0;
 

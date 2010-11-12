@@ -49,35 +49,47 @@ set(support_srcs
   ./support/OpenCVmath.cpp     ./support/OpenCVmath.h
   ./support/UKF.cpp            ./support/UKF.h)
 
+set(module_name "MT_Core")
+set(module_srcs ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
+
 # tell cmake this is a static library built from the
 #   given sources
 if(BUILD_SHARED)
-  add_library(MT_Core SHARED ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
+  add_library(${module_name} SHARED ${module_srcs})
+  if(OS_X)
+    add_custom_command(TARGET ${module_name}
+      POST_BUILD
+      COMMAND install_name_tool -id @executable_path/../Libraries/lib${module_name}.dylib ${CMAKE_BINARY_DIR}/lib/lib${module_name}.dylib)
+  endif(OS_X)
 else(BUILD_SHARED)
-  add_library(MT_Core STATIC ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
+  add_library(${module_name} STATIC ${module_srcs})
 endif(BUILD_SHARED)
 
-target_link_libraries(MT_Core ${OPENGL_LIBRARIES})
+target_link_libraries(${module_name} ${OPENGL_LIBRARIES})
 if(WITH_CLF)
-  target_link_libraries(MT_Core ${CLF_LIB} ${HDF5_LIBRARIES})
+  target_link_libraries(${module_name} ${CLF_LIB} ${HDF5_LIBRARIES})
 endif(WITH_CLF)  
 
 # copies the header files to the "include" directory
-if(NOT MSVC)
-  get_directory_property(defs DIRECTORY . COMPILE_DEFINITIONS)
-  add_custom_command(TARGET MT_Core POST_BUILD
-     COMMAND echo ARGS "\"${defs}\">defs.txt"
-     COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/posix_cmake_target_script.sh ARGS "MT_Core" ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
-  )
-endif(NOT MSVC)
+# if(NOT MSVC)
+#   get_directory_property(defs DIRECTORY . COMPILE_DEFINITIONS)
+#   add_custom_command(TARGET MT_Core POST_BUILD
+#      COMMAND echo ARGS "\"${defs}\">defs.txt"
+#      COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/posix_cmake_target_script.sh ARGS "MT_Core" ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
+#   )
+# endif(NOT MSVC)
 
-if(MSVC)
-  string(REPLACE "/" "\\" ARG2 ${CMAKE_SOURCE_DIR})
-  string(REPLACE "/" "\\" ARG3 ${CMAKE_BINARY_DIR})
-  add_custom_command(TARGET MT_Core POST_BUILD
-    COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/MSVC_cmake_post_build.bat ARGS "MT_Core" ${ARG2} ${ARG3})
-endif(MSVC)    
+# if(MSVC)
+#   string(REPLACE "/" "\\" ARG2 ${CMAKE_SOURCE_DIR})
+#   string(REPLACE "/" "\\" ARG3 ${CMAKE_BINARY_DIR})
+#   add_custom_command(TARGET MT_Core POST_BUILD
+#     COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/MSVC_cmake_post_build.bat ARGS "MT_Core" ${ARG2} ${ARG3})
+# endif(MSVC)    
 
 if(HAVE_OPENCV_FRAMEWORK)
-  target_link_libraries(MT_Core ${OPENCV_FRAMEWORK})
+  target_link_libraries(${module_name} ${OPENCV_FRAMEWORK})
 endif()
+
+include(${CMAKE_SOURCE_DIR}/cmake/MT_BuildFunctions.cmake)
+MT_MAKE_MODULE_HEADER(. "${module_name}" "${module_srcs}")
+MT_COPY_MODULE_HEADERS("${module_srcs}" "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/include/MT/${module_name}")

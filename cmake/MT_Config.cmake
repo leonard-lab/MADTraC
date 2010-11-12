@@ -75,6 +75,7 @@ endif(NOT MSVC)
 
 ##### MT_Core extra libraries
 if(MT_HAVE_OPENCV)
+  link_directories("${MT_OPENCV_LIBS_DIR}")
   set(MT_CORE_EXTRA_LIBS "${MT_CORE_EXTRA_LIBS};${MT_OPENCV_LIBS}")
 endif(MT_HAVE_OPENCV)
 set(MT_CORE_EXTRA_LIBS "${MT_CORE_EXTRA_LIBS};${MT_GL_LIBS}")

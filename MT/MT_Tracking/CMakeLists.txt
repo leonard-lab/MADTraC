@@ -60,6 +60,9 @@ set(trackers_srcs
 include_directories(${WX_INCLUDE})
 add_definitions(${WX_DEFS})
 
+set(module_name "MT_Tracking")
+set(module_srcs ${3rdparty_srcs} ${base_srcs} ${capture_srcs} ${cv_srcs} ${dialogs_srcs} ${trackers_srcs})
+
 if(WITH_ARTK)
   include_directories(${ARTK_INCLUDE})
   add_definitions(-DMT_HAVE_ARTOOLKIT)
@@ -67,31 +70,36 @@ endif(WITH_ARTK)
 
 # tell cmake this is a static library built from the
 #   given sources
-add_library(MT_Tracking STATIC
-  ${3rdparty_srcs}
-  ${base_srcs}
-  ${capture_srcs}
-  ${cv_srcs}
-  ${dialogs_srcs}
-  ${trackers_srcs})
-
-# copies the header files to the "include" directory
-if(NOT MSVC)
-  get_directory_property(defs DIRECTORY . COMPILE_DEFINITIONS)
-  add_custom_command(TARGET MT_Tracking POST_BUILD
-    COMMAND echo ARGS "\"${defs}\">defs.txt"
-    COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/posix_cmake_target_script.sh ARGS "MT_Tracking" ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
-    )
-endif(NOT MSVC)
+if(BUILD_SHARED)
+  add_library(${module_name} SHARED ${module_srcs})
+  target_link_libraries(${module_name} MT_Core)
+  target_link_libraries(${module_name} MT_GUI)
+  target_link_libraries(${module_name} ${WX_EXTRA_LIBS})
+else(BUILD_SHARED)  
+  add_library(${module_name} STATIC ${module_srcs})
+endif(BUILD_SHARED)
 
 if(HAVE_OPENCV_FRAMEWORK)
-  target_link_libraries(MT_Tracking ${OPENCV_FRAMEWORK})
+  target_link_libraries(${module_name} ${OPENCV_FRAMEWORK})
 endif()
 
-if(MSVC)
-  string(REPLACE "/" "\\" ARG2 ${CMAKE_SOURCE_DIR})
-  string(REPLACE "/" "\\" ARG3 ${CMAKE_BINARY_DIR})
-  add_custom_command(TARGET MT_Tracking POST_BUILD
-    COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/MSVC_cmake_post_build.bat ARGS "MT_Tracking" ${ARG2} ${ARG3})
-endif(MSVC)    
+# copies the header files to the "include" directory
+# if(NOT MSVC)
+#   get_directory_property(defs DIRECTORY . COMPILE_DEFINITIONS)
+#   add_custom_command(TARGET MT_Tracking POST_BUILD
+#     COMMAND echo ARGS "\"${defs}\">defs.txt"
+#     COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/posix_cmake_target_script.sh ARGS "MT_Tracking" ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR}
+#     )
+# endif(NOT MSVC)
+
+# if(MSVC)
+#   string(REPLACE "/" "\\" ARG2 ${CMAKE_SOURCE_DIR})
+#   string(REPLACE "/" "\\" ARG3 ${CMAKE_BINARY_DIR})
+#   add_custom_command(TARGET MT_Tracking POST_BUILD
+#     COMMAND ${CMAKE_SOURCE_DIR}/misc/build_scripts/MSVC_cmake_post_build.bat ARGS "MT_Tracking" ${ARG2} ${ARG3})
+# endif(MSVC)    
+
+include(${CMAKE_SOURCE_DIR}/cmake/MT_BuildFunctions.cmake)
+MT_MAKE_MODULE_HEADER(. "${module_name}" "${module_srcs}")
+MT_COPY_MODULE_HEADERS("${module_srcs}" "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/include/MT/${module_name}")
 
