@@ -476,6 +476,13 @@ bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool F
         return false;
     }
 
+    err_code = m_Camera.SetParameter(FGP_BURSTCOUNT, 1);
+    if(err_code != FCE_NOERROR)
+    {
+        fprintf(stderr, "Could not set camera to one-shot mode.  Error code: %ld\n", err_code);
+        return false;
+    }
+
     err_code = m_Camera.StartDevice();
     if(err_code != FCE_NOERROR)
     {
@@ -523,6 +530,7 @@ IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
     FGFRAME fg_frame;
     UINT32 err_code;
 
+    m_Camera.StartDevice();
     err_code = m_Camera.GetFrame(&fg_frame, 1000);
 
     if(err_code != FCE_NOERROR)
