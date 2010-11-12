@@ -49,13 +49,13 @@
 using namespace std;
 
 // no mask supplied to blob finder
-#define RT_NOMASK NULL
+#define YA_NOMASK NULL
 
 // default parameters
-#define RT_MIN_BLOB_VAL 40     // minimum bg diff value for blob
-#define RT_MAX_BLOB_VAL 255    // max "" (set to max of 255)
-#define RT_MIN_BLOB_SIZE 5     // minimum area of a blob
-#define RT_MAX_BLOB_SIZE 4000  // maximum area of a blob
+#define YA_MIN_BLOB_VAL 40     // minimum bg diff value for blob
+#define YA_MAX_BLOB_VAL 255    // max "" (set to max of 255)
+#define YA_MIN_BLOB_SIZE 5     // minimum area of a blob
+#define YA_MAX_BLOB_SIZE 4000  // maximum area of a blob
 
 // compile-time options
 // uncomment to get verbose reporting to stdout
