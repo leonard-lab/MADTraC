@@ -41,11 +41,14 @@ public:
     virtual void Update(){ Control(); };
     virtual void Control() {};
     virtual void SafeStop() {};
+    virtual void JoyStickControl(std::vector<double> js_axes,
+                                 unsigned int js_buttons){};
 
     /* tracking update functions */
     virtual void Update(double x, double y, double theta){};
     virtual void Update(std::vector<double> state){};
 
+    /* parameter access */
     virtual MT_DataGroup* GetParameters() { return m_pParameters; };
 
     friend class MT_AllRobotContainer;
