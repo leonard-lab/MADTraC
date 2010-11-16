@@ -118,6 +118,8 @@ public:
 
     virtual void updateRobotStatesFromTracker();
 
+    virtual MT_RobotBase* getNewRobot(const char* config, const char* name);    
+
 };
 
 class MT_RobotControlFrameBase: public MT_TrackerControlFrameBase

@@ -7,6 +7,8 @@
 
 #include "MT_RobotFrameBase.h"
 
+#include "MT/MT_Robot/robot/SteeredRobot.h"
+
 MT_RobotFrameBase::MT_RobotFrameBase(wxFrame* parent,
                                      wxWindowID id,
                                      const wxString& title,
@@ -53,7 +55,7 @@ bool MT_RobotFrameBase::doMouseCallback(wxMouseEvent& event, double viewport_x, 
 
 void MT_RobotFrameBase::onMenuRobotsConnect(wxCommandEvent& event)
 {
-    MT_RobotConnectDialog* dlg = new MT_RobotConnectDialog(&m_Robots, this);
+    MT_RobotConnectDialog* dlg = new MT_RobotConnectDialog(&m_Robots, NULL, this);
     registerDialogForXML(dlg);
     dlg->Show(true);
 }
@@ -229,7 +231,7 @@ void MT_RobotFrameBase::doAutoIdentify(bool DoAutoID)
     {
         if(RobotToID != MT_NONE_AVAILABLE)
         {
-            m_Robots.GetRobot(RobotToID)->SetSpeedOmega(0,0);
+            m_Robots.GetRobot(RobotToID)->SafeStop();
         }
         RobotToID = MT_NONE_AVAILABLE;
         return;
@@ -262,7 +264,7 @@ void MT_RobotFrameBase::doAutoIdentify(bool DoAutoID)
         /* remember which robot for next time */
         RobotToID = newRobotToID;
         /* start it moving */
-        m_Robots.GetRobot(RobotToID)->SetSpeedOmega(0.1,0);
+        m_Robots.GetRobot(RobotToID)->AutoIDResponse();
     }
 
     /* loop through tracked objects (until match is found) */
@@ -275,7 +277,7 @@ void MT_RobotFrameBase::doAutoIdentify(bool DoAutoID)
             (m_pTrackedObjects->getIsMoving(i)) )
         {
             /* stop the robot */
-            m_Robots.GetRobot(RobotToID)->SetSpeedOmega(0,0);
+            m_Robots.GetRobot(RobotToID)->SafeStop();
             /* attach the current robot */
             m_pTrackedObjects->setRobotIndex(i, RobotToID);
             /* assign the TO ID to the robot */
@@ -295,6 +297,12 @@ void MT_RobotFrameBase::doUserGLDrawing()
     MT_TrackerFrameBase::doUserGLDrawing();
 }
 
+MT_RobotBase* MT_RobotFrameBase::getNewRobot(const char* config, const char* name)
+{
+    MT_RobotBase* thebot = new MT_SteeredRobot(config, name);
+    ReadDataGroupFromXML(m_XMLSettingsFile, thebot->GetParameters());
+    return thebot;
+}
 
 MT_RobotControlFrameBase::MT_RobotControlFrameBase(MT_RobotFrameBase* parent, 
                                                    const int Buttons,
