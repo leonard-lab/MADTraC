@@ -78,19 +78,13 @@ void MT_RobotFrameBase::readUserXML()
 {
     MT_TrackerFrameBase::readUserXML();
 
-    float maxspeed = MT_DEFAULT_MAX_SPEED;
-    float maxturningrate = MT_DEFAULT_MAX_TURNING_RATE;
-    MT_ReadRobotXML(&m_Robots, &maxspeed, &maxturningrate, &m_XMLSettingsFile, false);
-    m_Robots.MaxGamePadSpeed = maxspeed;
-    m_Robots.MaxGamePadTurningRate = maxturningrate;
+    MT_ReadRobotXML(&m_Robots, &m_XMLSettingsFile, false);
 
 }
 
 void MT_RobotFrameBase::writeUserXML()
 {
     MT_WriteRobotXML(&m_Robots, 
-                  m_Robots.MaxGamePadSpeed,
-                  m_Robots.MaxGamePadTurningRate,
                   &m_XMLSettingsFile,
                   false);
     MT_TrackerFrameBase::writeUserXML();
