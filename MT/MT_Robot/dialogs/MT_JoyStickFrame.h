@@ -65,10 +65,9 @@ private:
     wxArrayString XYChoices;
     wxArrayString WZChoices;
 
+    wxButton* m_pButtonXYParameters;
+    wxButton* m_pButtonWZParameters;
     wxButton* ButtonToggleJoyStick;
-
-    float MaxTurningRate;
-    float MaxSpeed;
 
     MT_AllRobotContainer* TheRobots;
     MT_GamePadController myGamePadController;
@@ -79,9 +78,6 @@ private:
 
     void AttachRobotsToGamePad();
     void UpdateRobotChoices(bool FlaggedChanges = false);
-
-    void OnMaxTurningRateChange(wxCommandEvent& event);
-    void OnMaxSpeedChange(wxCommandEvent& event);
 
     MT_XMLFile m_RobotConfigXML;
     bool m_bOwnRobots;
@@ -121,19 +117,17 @@ public:
     void OnMenuRobotCommand(wxCommandEvent& event);
 
     void OnButtonToggleJoyStick(wxCommandEvent& event);
+    void OnButtonParameters(wxCommandEvent& event);
 
     void OnXYChoice(wxCommandEvent& event);
     void OnWZChoice(wxCommandEvent& event);
-
-    void CheckMaxSpeed(wxCommandEvent& event);
-    void CheckMaxTurningRate(wxCommandEvent& event);
 
     void DoTimedEvents();
     void DoQuit();
 
     void EnableEvents();
 
-	void onMaxSpeedCtrlTabKey(wxKeyEvent& event);
+    virtual MT_RobotBase* getNewRobot(const char* config, const char* name);
 
     DECLARE_EVENT_TABLE()
 
