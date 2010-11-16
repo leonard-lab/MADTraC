@@ -10,6 +10,7 @@
  */
 
 #include <vector>
+#include <string>
 
 const char MT_ROBOT_NOT_CONNECTED = 0;
 const char MT_ROBOT_CONNECTED = 1;
@@ -20,12 +21,12 @@ class MT_RobotBase
 {
 public:
     /* Default ctor */
-    MT_RobotBase() : m_pParameters(NULL) {};
+    MT_RobotBase(const char* name) : m_sName(name){};
     /* ctor with port name */
-    MT_RobotBase(const char* port) : m_pParameters(NULL) {};
+    MT_RobotBase(const char* port, const char* name) : m_sName(name){};
 
     /* dtor */
-    virtual ~MT_RobotBase(){};
+    virtual ~MT_RobotBase();
 
     /* Accessor Functions */
     virtual double GetX() const {return 0;}
@@ -40,9 +41,14 @@ public:
     /* control functions */
     virtual void Update(){ Control(); };
     virtual void Control() {};
+    virtual void Go() {};
     virtual void SafeStop() {};
     virtual void JoyStickControl(std::vector<double> js_axes,
                                  unsigned int js_buttons){};
+    virtual void SendCommand(const char* command) {};
+    virtual void SetAutonomousOn() {};
+    virtual void SetAutonomousOff() {};
+    virtual void AutoIDResponse() {};
 
     /* tracking update functions */
     virtual void Update(double x, double y, double theta){};
@@ -55,6 +61,7 @@ public:
     
 protected:
     MT_DataGroup* m_pParameters;
+    std::string m_sName;
 
     void SetParameters(MT_DataGroup* params, bool force = false);
     
