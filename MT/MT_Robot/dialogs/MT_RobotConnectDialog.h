@@ -25,11 +25,16 @@
 /* End standard WX include block */
 
 #include "MT/MT_Robot/robot/AllRobotContainer.h"
-#include "MT/MT_Robot/robot/MiaBotPro.h"
+
+class MT_JoyStickFrame;
+class MT_RobotFrameBase;
 
 class MT_RobotConnectDialog : public wxDialog
 {
 protected:
+    MT_JoyStickFrame* m_pParentJSFrame;
+    MT_RobotFrameBase* m_pParentRobotFrame;
+    
     // wxTextCtrls for the robot ports
     wxTextCtrl* RobotPortCtrl[7];
     
@@ -44,12 +49,16 @@ protected:
     
     // we need to point to this so that we can change it and have the effects last
     MT_AllRobotContainer* TheRobots;
+
+    MT_RobotBase* NewRobotFunction(const char* config, const char* name);    
     
     static bool m_bShown;
+
     
 public: 
     MT_RobotConnectDialog(MT_AllRobotContainer* inRobots,
-                          wxWindow* parent, 
+                          MT_JoyStickFrame* js_parent,
+                          MT_RobotFrameBase* rf_parent = NULL,
                           const wxPoint& pos = wxDefaultPosition, 
                           const wxSize& size = wxSize(500,275));
     ~MT_RobotConnectDialog();
