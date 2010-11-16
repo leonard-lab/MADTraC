@@ -36,6 +36,22 @@ MT_AllRobotContainer::~MT_AllRobotContainer()
 
 }
 
+void MT_AllRobotContainer::SetRobotNames(std::vector<std::string> newnames)
+{
+    for(unsigned int i = 0; i < MT_MIN(newnames.size(), MT_MAX_NROBOTS); i++)
+    {
+        RobotName[i] = newnames[i];
+    }
+}
+
+void MT_AllRobotContainer::DumpRobotNames()
+{
+    for(unsigned int i = 0; i < MT_MAX_NROBOTS; i++)
+    {
+        printf("Robot Name %d: %s\n", i, RobotName[i].c_str());
+    }
+}
+
 int MT_AllRobotContainer::GetNumAvailable() const
 {
 

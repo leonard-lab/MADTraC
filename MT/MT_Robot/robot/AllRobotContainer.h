@@ -141,7 +141,9 @@ public:
     float GetX(unsigned int i) const;          // access X position of i'th robot
     float GetY(unsigned int i) const;          // access Y position of i'th robot
     float GetHeading(unsigned int i) const;    // access heading (theta) of i'th robot
-    
+
+    void SetRobotNames(std::vector<std::string> newnames);
+    void DumpRobotNames();
     
 };
 
