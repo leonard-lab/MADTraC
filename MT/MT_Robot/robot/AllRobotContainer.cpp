@@ -7,14 +7,14 @@
 
 #include "AllRobotContainer.h"
 
-MT_AllRobotContainer::MT_AllRobotContainer()
+MT_AllRobotContainer::MT_AllRobotContainer(const std::string robot_names[])
 {    
 
     for(unsigned int i = 0; i < MT_MAX_NROBOTS; i++)
     {
         myRobots.push_back(NULL);
         PortName[i] = MT_DefaultPortName[i];
-        RobotName[i] = MT_DefaultRobotName[i];
+        RobotName[i] = robot_names[i];
         GamepadIndex[i] = MT_NO_GAMEPAD;
         StatusChange[i] = MT_ROBOT_NO_CHANGE;
         TrackingIndex[i] = MT_NOT_TRACKED;
@@ -106,7 +106,7 @@ void MT_AllRobotContainer::ClearTrackingIDs()
 
 }
 
-void MT_AllRobotContainer::SetBot(unsigned int i, MT_SteeredRobot* newBot)
+void MT_AllRobotContainer::SetBot(unsigned int i, MT_RobotBase* newBot)
 {
 
     // index too high, refuse to do anything
@@ -145,14 +145,14 @@ void MT_AllRobotContainer::ClearBot(unsigned int i)
 
 }
 
-MT_SteeredRobot*& MT_AllRobotContainer::operator[](unsigned int i)
+MT_RobotBase*& MT_AllRobotContainer::operator[](unsigned int i)
 {
 
     return myRobots[MT_SAFE_ROBOT_INDEX(i)];
 
 }
 
-MT_SteeredRobot*& MT_AllRobotContainer::GetRobot(unsigned int i)
+MT_RobotBase*& MT_AllRobotContainer::GetRobot(unsigned int i)
 {
 
     return myRobots[MT_SAFE_ROBOT_INDEX(i)];
@@ -176,7 +176,7 @@ bool MT_AllRobotContainer::IsConnected(unsigned int i) const
 void MT_AllRobotContainer::UpdateState(unsigned int i, float xpos, float ypos, float theta)
 {
 
-    // calls MT_SteeredRobot::Update(x, y, z = 0, theta)
+    // calls MT_RobotBase::Update(x, y, z = 0, theta)
     myRobots[MT_SAFE_ROBOT_INDEX(i)]->Update(xpos, ypos, theta);
 
 }
@@ -196,14 +196,11 @@ float MT_AllRobotContainer::GetHeading(unsigned int i) const
     return myRobots[MT_SAFE_ROBOT_INDEX(i)]->GetTheta();
 }
 
-void MT_AllRobotContainer::SetSpeedOmega(unsigned int i, float speed, float omega)
-{
-    myRobots[MT_SAFE_ROBOT_INDEX(i)]->SetSpeedOmega(speed,omega);
-}
-
 #ifdef MT_USE_XML
 
-bool MT_WriteRobotXML(MT_AllRobotContainer* robots, float maxspeed, float maxturningrate, MT_XMLFile* xmlfile, bool strict_root)
+bool MT_WriteRobotXML(MT_AllRobotContainer* robots,
+                      MT_XMLFile* xmlfile,
+                      bool strict_root)
 {
 
     if(strict_root)
@@ -221,10 +218,21 @@ bool MT_WriteRobotXML(MT_AllRobotContainer* robots, float maxspeed, float maxtur
         }
     }
 
+    MT_RobotBase* cbot;
+    for(unsigned int i = 0; i < MT_MAX_NROBOTS; i++)
+    {
+        cbot = robots->GetRobot(i);
+        if(cbot && cbot->GetParameters())
+        {
+            WriteDataGroupToXML(xmlfile, cbot->GetParameters());
+        }
+    }
+
     TiXmlElement* rootelem = xmlfile->RootAsElement();
+    TiXmlNode* tnode;
 
     // write joystick control parameters
-    TiXmlNode* tnode = rootelem->FirstChild("GamepadParameters");
+/*    TiXmlNode* tnode = rootelem->FirstChild("GamepadParameters");
     if(tnode)
     {
         rootelem->RemoveChild(tnode);
@@ -233,7 +241,7 @@ bool MT_WriteRobotXML(MT_AllRobotContainer* robots, float maxspeed, float maxtur
     TiXmlElement* gamepadparams = new TiXmlElement("GamepadParameters");
     gamepadparams->SetDoubleAttribute("MaxSpeed",maxspeed);
     gamepadparams->SetDoubleAttribute("MaxTurningRate",maxturningrate);
-    rootelem->LinkEndChild(gamepadparams);
+    rootelem->LinkEndChild(gamepadparams); */
 
     // write last command issued from "Send Command" dialog
     tnode = rootelem->FirstChild("LastCommand");
@@ -270,7 +278,9 @@ bool MT_WriteRobotXML(MT_AllRobotContainer* robots, float maxspeed, float maxtur
 
 }
 
-bool MT_ReadRobotXML(MT_AllRobotContainer* robots, float* maxspeed, float* maxturningrate, MT_XMLFile* xmlfile, bool strict_root)
+bool MT_ReadRobotXML(MT_AllRobotContainer* robots,
+                     MT_XMLFile* xmlfile,
+                     bool strict_root)
 {
 
     if(!xmlfile->ReadFile())
@@ -287,7 +297,17 @@ bool MT_ReadRobotXML(MT_AllRobotContainer* robots, float* maxspeed, float* maxtu
         }
     }
 
-    TiXmlElement* gamepadparams = xmlfile->FirstChild("GamepadParameters").ToElement();
+    MT_RobotBase* cbot;
+    for(unsigned int i = 0; i < MT_MAX_NROBOTS; i++)
+    {
+        cbot = robots->GetRobot(i);
+        if(cbot && cbot->GetParameters())
+        {
+            ReadDataGroupFromXML(*xmlfile, cbot->GetParameters());
+        }
+    }
+
+/*    TiXmlElement* gamepadparams = xmlfile->FirstChild("GamepadParameters").ToElement();
     if(gamepadparams)
     {
         float val = 0;
@@ -299,7 +319,7 @@ bool MT_ReadRobotXML(MT_AllRobotContainer* robots, float* maxspeed, float* maxtu
         {
             *maxturningrate = val;
         }
-    }
+        }*/
 
     TiXmlElement* lastcommand = xmlfile->FirstChild("LastCommand").ToElement();
     if(lastcommand)
