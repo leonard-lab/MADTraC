@@ -43,7 +43,7 @@
 const bool MT_JSF_AS_CHILD = true;
 const bool MT_JSF_STANDALONE = false;
 
-const unsigned int MT_JOYSTICK_REFRESH_PERIOD = 25;
+const unsigned int MT_JOYSTICK_REFRESH_PERIOD = 100;
 
 class MT_JoyStickFrameTimer; 
 
