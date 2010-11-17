@@ -98,8 +98,8 @@ void MT_ComIO::ComInit(bool handshaking)
         fd = open(PortString, O_RDWR | O_NOCTTY | O_NDELAY);
         if(fd < 0){ printf("Error opening port (will proceed anyways)\n"); connected = 0; }
         tcgetattr(fd,&options);
-        cfsetispeed(&options,B9600);
-        cfsetospeed(&options,B9600);
+        cfsetispeed(&options,B4800);
+        cfsetospeed(&options,B4800);
         options.c_cflag |= (CLOCAL | CREAD);
         options.c_cflag &= -PARENB;
         options.c_cflag &= -CSTOPB;
