@@ -460,9 +460,11 @@ hungarian_code_t hungarian_routine_two(hungarian_t* prob)
         continue;
       dtmp = prob->u[i] + prob->v[j] - prob->r[i][j];
       if(dtmp<0)
-      {
+	  {
+#ifdef HUNGARIAN_DEBUG
         printf("SUPERMOO: %d + %d < %d\n", 
                prob->u[i], prob->v[j], prob->r[i][j]);
+#endif
       }
       if(!d || ((dtmp>0) && dtmp < d))
         d = dtmp;
@@ -470,7 +472,11 @@ hungarian_code_t hungarian_routine_two(hungarian_t* prob)
   }
 
   if(d<0)
+  {
+#ifdef HUNGARIAN_DEBUG
     printf("MOO: %d < 0\n", d);
+#endif
+  }
 
   //if(d<=0)
   if(!d)
@@ -537,8 +543,10 @@ hungarian_code_t hungarian_routine_two(hungarian_t* prob)
     {
       if(prob->u[i]+prob->v[j]<prob->r[i][j])
       {
+#ifdef HUNGARIAN_DEBUG
         printf("SUPERMOO (%d,%d): %d + %d < %d\n", i,j,
                prob->u[i], prob->v[j], prob->r[i][j]);
+#endif
       }
     }
   }
