@@ -137,6 +137,9 @@ unsigned int MT_HIDGamePad::Init()
     (*ButtonQueue)->addElement(ButtonQueue, gpCookies->gButtoncCookie, 0);
   
     (*ButtonQueue)->start(ButtonQueue);
+
+    xcenter = PollXAxis();
+    ycenter = PollYAxis();
   
 #elif defined MT_GAMEPAD_USE_WX
     
