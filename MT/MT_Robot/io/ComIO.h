@@ -39,6 +39,52 @@
 /** Use to send output to the console instead of a port */
 const char MT_STDERR[] = "stderr";
 
+#ifdef _WIN32
+
+typedef enum
+{
+    MT_Baud110 = CSerial::EBaud110,
+    MT_Baud300 = CSerial::EBaud300,
+    MT_Baud600 = CSerial::EBaud600,
+    MT_Baud1200 = CSerial::EBaud1200,
+    MT_Baud2400 = CSerial::EBaud2400,
+    MT_Baud4800 = CSerial::EBaud4800,
+    MT_Baud6900 = CSerial::EBaud6900,
+    MT_Baud14400 = CSerial::EBaud14400,
+    MT_Baud19200 = CSerial::EBaud19200,
+    MT_Baud38400 = CSerial::EBaud38400,
+    MT_Baud56000 = CSerial::EBaud56000,
+    MT_Baud57600 = CSerial::EBaud57600,
+    MT_Baud115200 = CSerial::EBaud115200,
+    MT_Baud128000 = CSerial::EBaud128000,
+    MT_Baud256000 = CSerial::EBaud256000        
+} MT_Baudrate;
+
+#else  // not _WIN32
+
+#include <termios.h>
+typedef enum
+{
+    MT_Baud0    = B0,   
+    MT_Baud50   = B50,
+    MT_Baud75   = B75,
+    MT_Baud110  = B110,
+    MT_Baud134  = B134,     
+    MT_Baud150  = B150,     
+    MT_Baud200  = B200,     
+    MT_Baud300  = B300,     
+    MT_Baud600  = B600,     
+    MT_Baud1200 = B1200,    
+    MT_Baud1800 = B1800,    
+    MT_Baud2400 = B2400,    
+    MT_Baud4800 = B4800,    
+    MT_Baud9600 = B9600,    
+    MT_Baud19200= B19200,   
+    MT_Baud38400= B38400   
+} MT_Baudrate;
+
+#endif  // _WIN32
+
 /** @class MT_ComIO
  *
  * @brief Cross-platform Serial I/O class. 
@@ -90,7 +136,7 @@ const char MT_STDERR[] = "stderr";
 class MT_ComIO {
 private:    
     // Member functions
-    void ComInit(bool handshaking = true);
+    void ComInit(bool handshaking = true, MT_Baudrate = MT_Baud9600);
     
     // Variables
     // String descriptor of port device
@@ -125,6 +171,7 @@ public:
      */
     MT_ComIO(const char* inComPortString,
              bool handshaking = true,
+             MT_Baudrate baud_rate = MT_Baud9600,
              FILE* file = NULL);
 
     /** Destructor - closes the port. */

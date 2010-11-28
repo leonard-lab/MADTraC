@@ -18,7 +18,10 @@
 #include <string>
 
 
-#include "MT/MT_Robot/robot/SteeredRobot.h"    // base robot class used
+//#include "MT/MT_Robot/robot/SteeredRobot.h"    // base robot class
+//#used
+
+#include "MT/MT_Robot/robot/RobotBase.h"
 #include "MT/MT_Core/primitives/Color.h"  // for robot colors
 
 // safely define MT_USE_XML if you want to use XML (recommended)
@@ -33,6 +36,9 @@
 #ifndef MT_HAVE_ROBOT_MODULE
 #define MT_HAVE_ROBOT_MODULE
 #endif
+
+#include "MT/MT_Core/primitives/DataGroup.h"
+
 
 /************* Constants ****************************/
 
@@ -90,11 +96,11 @@ class MT_AllRobotContainer
 {
 protected:
     // vector containing actual robot pointers as they are added
-    std::vector<MT_SteeredRobot*> myRobots;
+    std::vector<MT_RobotBase*> myRobots;
     
 public:
     // constructor - initialized to no robots and default parameter values
-    MT_AllRobotContainer();
+    MT_AllRobotContainer(const std::string robot_names[] = MT_DefaultRobotName);
     // destructor - does nothing - NOTE robots not deleted here!
     //   they can be deleted by calling ClearBot() (one at a time)
     ~MT_AllRobotContainer();
@@ -120,12 +126,12 @@ public:
     MT_robot_status_change StatusChange[MT_MAX_NROBOTS];  // keep track of connection status changes
     void ClearStatusChanges();                      // set all status changes to MT_ROBOT_NO_CHANGE
     
-    void SetBot(unsigned int i, MT_SteeredRobot* newBot);  // if robot i is connected, delete it.
+    void SetBot(unsigned int i, MT_RobotBase* newBot);  // if robot i is connected, delete it.
                                                         //  newBot is then in the i'th position
     void ClearBot(unsigned int i);                      // safely disconnect i'th robot
     
-    MT_SteeredRobot*& operator[](unsigned int i);  // Get the i'th robot pointer
-    MT_SteeredRobot*& GetRobot(unsigned int i);    // Get the i'th robot pointer
+    MT_RobotBase*& operator[](unsigned int i);  // Get the i'th robot pointer
+    MT_RobotBase*& GetRobot(unsigned int i);    // Get the i'th robot pointer
     
     bool IsPhysical(unsigned int i) const;    // return true if i'th robot pointer != NULL
     bool IsConnected(unsigned int i) const;   // return true if i'th robot is connected
@@ -135,17 +141,21 @@ public:
     float GetX(unsigned int i) const;          // access X position of i'th robot
     float GetY(unsigned int i) const;          // access Y position of i'th robot
     float GetHeading(unsigned int i) const;    // access heading (theta) of i'th robot
-    
-    // set the speed (m/s) and turning rate (rad/s) of the i'th robot (e.g. for control)
-    void SetSpeedOmega(unsigned int i, float setspeed, float setomega);
+
+    void SetRobotNames(std::vector<std::string> newnames);
+    void DumpRobotNames();
     
 };
 
 
 /****************** XML Support Functions *********************/
 #ifdef MT_USE_XML
-bool MT_WriteRobotXML(MT_AllRobotContainer* robots, float maxspeed, float maxturningrate, MT_XMLFile* xmlfile, bool strict_root = true);
-bool MT_ReadRobotXML(MT_AllRobotContainer* robots, float* maxspeed, float* maxturningrate, MT_XMLFile* xmlfile, bool strict_root = true);
+bool MT_WriteRobotXML(MT_AllRobotContainer* robots,
+                      MT_XMLFile* xmlfile,
+                      bool strict_root = true);
+bool MT_ReadRobotXML(MT_AllRobotContainer* robots,
+                     MT_XMLFile* xmlfile,
+                     bool strict_root = true);
 #endif // MT_USE_XML
 
 #endif // ALLROBOTCONTAINER_H

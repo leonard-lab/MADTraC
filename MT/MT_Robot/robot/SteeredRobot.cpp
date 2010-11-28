@@ -1,38 +1,70 @@
 #include <stdio.h>
 
+#include "MT/MT_Core/support/mathsupport.h"
+#include "MT/MT_Core/primitives/DataGroup.h"
 
 #include "SteeredRobot.h"
 
 MT_SteeredRobot::MT_SteeredRobot()
-    : MT_MiaBotPro(), position()
+    : MT_MiaBotPro(),
+      MT_RobotBase("Anonymous"),
+      position()
 {
-
-    world_scale = 1.0;
-    Autonomous = 0;
-    init_buffers(MT_DEFAULT_TAIL_LENGTH_ROBOT);
-
+    init();
 }
 
 
-MT_SteeredRobot::MT_SteeredRobot(const char* onComPort)
-  : MT_MiaBotPro(onComPort), position()
+MT_SteeredRobot::MT_SteeredRobot(const char* onComPort, const char* name)
+        : MT_MiaBotPro(onComPort),
+        MT_RobotBase(onComPort, name),
+        position()
 {
-
-    world_scale = 1.0;
-    Autonomous = 0;
-    init_buffers(MT_DEFAULT_TAIL_LENGTH_ROBOT);
-
+    init();
 }
 
 
-MT_SteeredRobot::MT_SteeredRobot(const char* onComPort, double inscale)
-    : MT_MiaBotPro(onComPort), position()
+MT_SteeredRobot::MT_SteeredRobot(const char* onComPort,
+                                 double inscale,
+                                 const char* name)
+        : MT_MiaBotPro(onComPort),
+          MT_RobotBase(onComPort, name),
+          position()
 {
-
+    init();
     world_scale = inscale;
+}
+
+void MT_SteeredRobot::init()
+{
+    m_dMaxSpeed = SR_DEFAULT_MAX_SPEED;
+    m_dMaxTurningRate = SR_DEFAULT_MAX_TURNING_RATE;
+    m_dSpeedDeadBand = SR_DEFAULT_DEADBAND;
+    m_dTurningRateDeadBand = SR_DEFAULT_DEADBAND;    
+    world_scale = 1.0;
     Autonomous = 0;
     init_buffers(MT_DEFAULT_TAIL_LENGTH_ROBOT);
 
+    m_pParameters = new MT_DataGroup(std::string(m_sName));
+    m_pParameters->AddDouble("Max Speed",
+                             &m_dMaxSpeed,
+                             MT_DATA_READWRITE,
+                             0,
+                             SR_MAX_ALLOWED_SPEED);
+    m_pParameters->AddDouble("Max Turning Rate",
+                             &m_dMaxTurningRate,
+                             MT_DATA_READWRITE,
+                             0,
+                             SR_MAX_ALLOWED_TURNING_RATE);
+    m_pParameters->AddDouble("Speed Deadband",
+                             &m_dSpeedDeadBand,
+                             MT_DATA_READWRITE,
+                             0,
+                             1.0);
+    m_pParameters->AddDouble("Turning Deadband",
+                             &m_dTurningRateDeadBand,
+                             MT_DATA_READWRITE,
+                             0,
+                             1.0);
 }
 
 MT_SteeredRobot::~MT_SteeredRobot()
@@ -134,5 +166,18 @@ void MT_SteeredRobot::Control()
         SetSpeedOmega( cspeed, comega ); 
     }
         
-};
+}
 
+void MT_SteeredRobot::JoyStickControl(std::vector<double> js_axes,
+                                      unsigned int js_buttons)
+{
+
+    double X = js_axes[0];
+    double Y = js_axes[1];
+    double speed = MT_DeadBandAndScale(X, m_dSpeedDeadBand, m_dMaxSpeed);
+    double omega = MT_DeadBandAndScale(Y,
+                                       m_dTurningRateDeadBand,
+                                       m_dMaxTurningRate);
+    printf("X = %f, Y = %f -> Speed = %f, omega = %f\n", X, Y, speed, omega);
+    SetSpeedOmega(speed, omega);
+}

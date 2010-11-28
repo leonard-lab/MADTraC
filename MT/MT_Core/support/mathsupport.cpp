@@ -166,6 +166,24 @@ bool MT_IsEqual(double x, double y, double epsilon)
     return fabs(x - y) <= epsilon*fabs(x);
 }
 
+double MT_DeadBandAndScale(double input,
+                           double deadband,
+                           double scale)
+{
+    if(input < -deadband)
+    {
+        return scale*(input + deadband)/(1.0 - deadband);
+    }
+    else if(input > deadband)
+    {
+        return scale*(input - deadband)/(1.0 - deadband);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 //------------------------------------------------------------
 //    Time Functions
 //------------------------------------------------------------

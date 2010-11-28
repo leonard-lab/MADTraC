@@ -186,6 +186,15 @@ double MT_anglemod(double theta);
  * is within a fraction epsilon of x */
 bool MT_IsEqual(double x, double y, double epsilon = MT_EPSILON);
 
+/** Deadbanding and scaling function.  Calculates
+ * deadband = {0 if |input| < deadband,
+ *              (input - deadband)/n if input > deadband,
+ *              (input + deadband)/n if input < deadband}
+ *              where n = 1.0 - deadband
+ * output = deadband(input)*scale */
+double MT_DeadBandAndScale(double input, double deadband = 0.0, double scale = 1.0);
+
+
 // --------- Time functions --------------------------------
 /** Return the system time in seconds, with roughly
  * one millisecond accuracy */
