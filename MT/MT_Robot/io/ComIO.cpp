@@ -98,8 +98,8 @@ void MT_ComIO::ComInit(bool handshaking)
         fd = open(PortString, O_RDWR | O_NOCTTY | O_NDELAY);
         if(fd < 0){ printf("Error opening port (will proceed anyways)\n"); connected = 0; }
         tcgetattr(fd,&options);
-        cfsetispeed(&options,B9600);
-        cfsetospeed(&options,B9600);
+        cfsetispeed(&options,B4800);
+        cfsetospeed(&options,B4800);
         options.c_cflag |= (CLOCAL | CREAD);
         options.c_cflag &= -PARENB;
         options.c_cflag &= -CSTOPB;
@@ -143,7 +143,7 @@ void MT_ComIO::ComInit(bool handshaking)
         }
 
         // Setup the serial port (9600,N81) using hardware handshaking
-        lLastError = serial.Setup(CSerial::EBaud9600,CSerial::EData8,
+        lLastError = serial.Setup(CSerial::EBaud4800,CSerial::EData8,
                                   CSerial::EParNone,CSerial::EStop1);
         if (lLastError != ERROR_SUCCESS){
             printf("Unable to set COM-port setting\n");

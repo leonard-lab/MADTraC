@@ -141,15 +141,17 @@ bool MT_GSThresholder::setSharedBackground(IplImage* bgImage)
 
 MT_SparseBinaryImage MT_GSThresholder::threshToBinary(IplImage* curr_frame,
                                                  unsigned int thresh,
-                                                 IplImage* mask_frame)
+                                                 IplImage* mask_frame,
+												 int method)
 {
-    doThresholding(curr_frame, thresh, mask_frame);
+    doThresholding(curr_frame, thresh, mask_frame, method);
     return MT_SparseBinaryImage(m_pThreshFrame);
 }
 
 void MT_GSThresholder::doThresholding(IplImage* curr_frame,
                                    unsigned int thresh,
-                                   IplImage* mask_frame)
+                                   IplImage* mask_frame,
+								   int method)
 {
 
     /* Convert frame to grayscale, if necessary */
@@ -162,22 +164,37 @@ void MT_GSThresholder::doThresholding(IplImage* curr_frame,
         cvCopy(curr_frame, m_pGSFrame);
     }
     
-    /* perform sign-aware background subtraction */
-    cvCmp(m_pBGFrame, m_pGSFrame, m_pThreshFrame, CV_CMP_GT);
-    cvSub(m_pBGFrame, m_pGSFrame, m_pDiffFrame);
-    cvAnd(m_pDiffFrame, m_pThreshFrame, m_pDiffFrame);
+	if(method == MT_THRESH_DARKER)
+	{
+		/* perform sign-aware background subtraction */
+		cvCmp(m_pBGFrame, m_pGSFrame, m_pThreshFrame, CV_CMP_GT);
+		cvSub(m_pBGFrame, m_pGSFrame, m_pDiffFrame);
+		cvAnd(m_pDiffFrame, m_pThreshFrame, m_pDiffFrame);
+	}
+	else if(method == MT_THRESH_LIGHTER)
+	{
+		/* perform sign-aware background subtraction */
+		cvCmp(m_pBGFrame, m_pGSFrame, m_pThreshFrame, CV_CMP_LT);
+		cvSub(m_pGSFrame, m_pBGFrame, m_pDiffFrame);
+		cvAnd(m_pDiffFrame, m_pThreshFrame, m_pDiffFrame);
+	}
+	else
+	{
+		fprintf(stderr, "MT_GSThresholder error: Unknown method.\n");
+		return;
+	}
 
-    /* apply the ROI mask if available */
-    if(mask_frame)
-    {
-        cvAnd(m_pDiffFrame, mask_frame, m_pDiffFrame);
-    }
+	/* apply the ROI mask if available */
+	if(mask_frame)
+	{
+		cvAnd(m_pDiffFrame, mask_frame, m_pDiffFrame);
+	}
 
-    /* threshold */
-    cvThreshold(m_pDiffFrame,
-                m_pThreshFrame,
-                thresh,
-                255.0,
-                CV_THRESH_BINARY);
+	/* threshold */
+	cvThreshold(m_pDiffFrame,
+		m_pThreshFrame,
+		thresh,
+		255.0,
+		CV_THRESH_BINARY);
     
 }

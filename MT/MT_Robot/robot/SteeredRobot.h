@@ -16,6 +16,7 @@
 
 // Inherits from the (more basic) MT_MiaBotPro class.
 #include "MiaBotPro.h"
+#include "RobotBase.h"
 
 // Default length of the buffers
 static const int MT_DEFAULT_TAIL_LENGTH_ROBOT = 500; 
@@ -24,7 +25,13 @@ static const int MT_DEFAULT_TAIL_LENGTH_ROBOT = 500;
 // Header for the MT_ringbuffer class
 #include "MT/MT_Core/primitives/ringbuffer.h"
 
-class MT_SteeredRobot : public MT_MiaBotPro {   
+const double SR_DEFAULT_MAX_SPEED = 0.35;             // speeds in meters/sec
+const double SR_DEFAULT_MAX_TURNING_RATE = 8.0;       // turning rates in rad/sec (based on 7 cm wheelbase)
+const double SR_MAX_ALLOWED_SPEED = 4.0;              // max rates: see DTS notebook #2, 1/2-1/5 2009
+const double SR_MAX_ALLOWED_TURNING_RATE = 114.3;
+const double SR_DEFAULT_DEADBAND = 0.05;
+
+class MT_SteeredRobot : public MT_MiaBotPro, public MT_RobotBase {   
 protected:
   
     MT_R3 position;
@@ -44,6 +51,13 @@ protected:
     double cspeed;
         
     unsigned char Autonomous;
+
+    double m_dMaxTurningRate;
+    double m_dMaxSpeed;
+    double m_dSpeedDeadBand;
+    double m_dTurningRateDeadBand;
+
+    void init();
   
 public:
   
@@ -54,9 +68,9 @@ public:
     //! default constructor (use stdout)
     MT_SteeredRobot();
     //! constructor to specify com port
-    MT_SteeredRobot(const char* onComPort);
+    MT_SteeredRobot(const char* onComPort, const char* name);
     //! constructor to specify com port and scaling factor
-    MT_SteeredRobot(const char* onComPort, double inscale);
+    MT_SteeredRobot(const char* onComPort, double inscale, const char* name);
     // dtor
     virtual ~MT_SteeredRobot();
   
@@ -97,9 +111,15 @@ public:
     //! Calculation of Control
     virtual void Update(){ Control(); };
     virtual void Update(float inx, float iny, float intheta);
+    void Update(std::vector<double> state){Update(state[0], state[1], state[2]);};
         
     //! Apply Control
     virtual void Control();
+
+    void SafeStop(){SetSpeedOmega(0,0);};
+    void AutoIDResponse(){SetSpeedOmega(0.1, 0);};
+
+    void JoyStickControl(std::vector<double> js_axes, unsigned int js_buttons);
         
 };
 

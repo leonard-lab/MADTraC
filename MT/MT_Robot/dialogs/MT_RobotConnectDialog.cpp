@@ -7,6 +7,10 @@
 
 #include "MT_RobotConnectDialog.h"
 #include "MT/MT_GUI/support/wxSupport.h"
+#include "MT/MT_Robot/dialogs/MT_JoyStickFrame.h"
+#include "MT/MT_Robot/base/MT_RobotFrameBase.h"
+
+//#include "MT/MT_Robot/robot/SteeredRobot.h"  /* the default robot */
 
 /* sizes vary a little depending upon implementation:
  *  STATUS_WIDTH = width of the space to the left of the Connect / OK buttons,
@@ -32,10 +36,18 @@ EVT_BUTTON(ID_CONNECT_DLG_OKBTN, MT_RobotConnectDialog::OnOKButtonClicked)
 END_EVENT_TABLE()
 
 MT_RobotConnectDialog::MT_RobotConnectDialog(MT_AllRobotContainer* inRobots,
-                                             wxWindow* parent, 
+                                             MT_JoyStickFrame* js_parent,
+                                             MT_RobotFrameBase* rf_parent,
                                              const wxPoint& pos, 
                                              const wxSize& size)
-: wxDialog(parent, wxID_ANY, wxT("Choose Robot Connections"), pos, size, wxDEFAULT_DIALOG_STYLE)
+: wxDialog(rf_parent ? (wxFrame *) rf_parent : (wxFrame *) js_parent,
+           wxID_ANY,
+           wxT("Choose Robot Connections"),
+           pos,
+           size,
+           wxDEFAULT_DIALOG_STYLE),
+    m_pParentJSFrame(js_parent),
+    m_pParentRobotFrame(rf_parent)
 {
 
     TheRobots = inRobots;
@@ -147,6 +159,19 @@ void MT_RobotConnectDialog::OnOKButtonClicked(wxCommandEvent& WXUNUSED(event))
     }
 }
 
+MT_RobotBase* MT_RobotConnectDialog::NewRobotFunction(const char* config,
+                                                      const char* name)
+{
+    if(m_pParentRobotFrame)
+    {
+        return m_pParentRobotFrame->getNewRobot(config, name);
+    }
+    else
+    {
+        return m_pParentJSFrame->getNewRobot(config, name);
+    }
+}
+
 void MT_RobotConnectDialog::OnConnectButtonClicked(wxCommandEvent& WXUNUSED(event))
 {
   
@@ -165,7 +190,13 @@ void MT_RobotConnectDialog::OnConnectButtonClicked(wxCommandEvent& WXUNUSED(even
         
                 // Try to connect
                 wxString Port = RobotPortCtrl[i]->GetValue();
-                MT_SteeredRobot* newBot = new MT_SteeredRobot(Port.mb_str());
+                MT_RobotBase* newBot = NewRobotFunction(Port.mb_str(),
+                                                        TheRobots->RobotName[i].c_str());
+
+                if(!newBot)
+                {
+                    return;
+                }
         
                 // clear the status area
                 ConnectStatus->SetLabel(wxT(""));
@@ -175,7 +206,7 @@ void MT_RobotConnectDialog::OnConnectButtonClicked(wxCommandEvent& WXUNUSED(even
                 {
           
                     // make sure the robot is stopped, but ready
-                    newBot->SetSpeedOmega(0,0);
+                    newBot->SafeStop();
                     newBot->Go();
           
                     // label the status as OK

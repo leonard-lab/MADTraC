@@ -9,17 +9,20 @@
 #include "MT_JoyStickFrame.h"
 
 #include "MT/MT_Core/fileio/XMLSupport.h"
+#include "MT/MT_GUI/dialogs/MT_ParameterDialog.h"
+
+#include "MT/MT_Robot/robot/SteeredRobot.h"
 
 enum
 {
     ID_ROBOT_MENU_CONNECT = wxID_HIGHEST + 1,
     ID_MENU_ROBOTS_COMMAND,
-    ID_MAXTURNINGRATE,
-    ID_MAXSPEED,
     ID_XYROBOTCHC,
     ID_BUTTONTXT,
     ID_WZROBOTCHC,
-    ID_BUTTON_TOGGLE_JOYSTICK 
+    ID_BUTTON_TOGGLE_JOYSTICK,
+    ID_BUTTON_XY_PARAMETERS,
+    ID_BUTTON_WZ_PARAMETERS
 };
 
 class MT_JoyStickFrameTimer : public wxTimer
@@ -37,13 +40,11 @@ BEGIN_EVENT_TABLE(MT_JoyStickFrame, wxFrame)
 EVT_MENU(wxID_EXIT, MT_JoyStickFrame::OnMenuFileExit)
 EVT_MENU(ID_ROBOT_MENU_CONNECT, MT_JoyStickFrame::OnMenuRobotConnections)
 EVT_MENU(ID_MENU_ROBOTS_COMMAND, MT_JoyStickFrame::OnMenuRobotCommand)
-EVT_TEXT(ID_MAXSPEED, MT_JoyStickFrame::CheckMaxSpeed)
-EVT_TEXT(ID_MAXTURNINGRATE, MT_JoyStickFrame::CheckMaxTurningRate)
-EVT_TEXT_ENTER(ID_MAXTURNINGRATE, MT_JoyStickFrame::OnMaxTurningRateChange)
-EVT_TEXT_ENTER(ID_MAXSPEED, MT_JoyStickFrame::OnMaxSpeedChange)
 EVT_CHOICE(ID_XYROBOTCHC, MT_JoyStickFrame::OnXYChoice)
 EVT_CHOICE(ID_WZROBOTCHC, MT_JoyStickFrame::OnWZChoice)
 EVT_BUTTON(ID_BUTTON_TOGGLE_JOYSTICK, MT_JoyStickFrame::OnButtonToggleJoyStick)
+EVT_BUTTON(ID_BUTTON_XY_PARAMETERS, MT_JoyStickFrame::OnButtonParameters)
+EVT_BUTTON(ID_BUTTON_WZ_PARAMETERS, MT_JoyStickFrame::OnButtonParameters)
 EVT_CLOSE(MT_JoyStickFrame::OnWindowClosed)
 END_EVENT_TABLE()
 
@@ -72,9 +73,6 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
         TheRobots = inRobots;
     }
 
-    MaxSpeed = MT_DEFAULT_MAX_SPEED;
-    MaxTurningRate = MT_DEFAULT_MAX_TURNING_RATE;
-
     // This needs to be initialized false - e.g. MSW does not do this for us!
     DoEvents = false;
 
@@ -91,13 +89,8 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
      **************************************/
     if(asChild == MT_JSF_STANDALONE)
     {
-        float maxspeed = MT_DEFAULT_MAX_SPEED;
-        float maxturningrate = MT_DEFAULT_MAX_TURNING_RATE;
         m_RobotConfigXML.SetFilename(MT_GetXMLPath(wxT("robotconfig.xml")).mb_str());
-        MT_ReadRobotXML(TheRobots, &maxspeed, &maxturningrate, &m_RobotConfigXML);
-        TheRobots->MaxGamePadSpeed = maxspeed;
-        TheRobots->MaxGamePadTurningRate = maxturningrate;
-        myGamePadController.SetMaxRates(maxspeed, maxturningrate);
+        MT_ReadRobotXML(TheRobots, &m_RobotConfigXML);
 
         wxMenu *fileMenu = new wxMenu;
 #ifdef _WIN32
@@ -118,8 +111,6 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
     }
     else
     {
-        myGamePadController.SetMaxRates(TheRobots->MaxGamePadSpeed, 
-                                        TheRobots->MaxGamePadTurningRate);
         IsChild = true;
     }
 
@@ -156,40 +147,26 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
     hbox0->Add(wzbox, 0, wxALL, 10);
 
     vbox0->Add(hbox0);
-    ButtonText = new wxStaticText(this, ID_BUTTONTXT, wxT("Buttons: "));
-    vbox0->Add(ButtonText, 0, wxLEFT, 10);
+    ButtonText = new wxStaticText(this,
+                                  ID_BUTTONTXT,
+                                  wxT("Buttons: ") + MT_UIntToBitString(0,12));
+    vbox0->Add(ButtonText, 0, wxLEFT | wxBOTTOM, 10);
 
     wxBoxSizer* vbox1 = new wxBoxSizer(wxVERTICAL);
 
-    wxString MaxString;
+    m_pButtonXYParameters = new wxButton(this,
+                                         ID_BUTTON_XY_PARAMETERS,
+                                         wxT("XY Parameters"));
+    m_pButtonWZParameters = new wxButton(this,
+                                         ID_BUTTON_WZ_PARAMETERS,
+                                         wxT("WZ Parameters"));
 
-    wxString initMaxSpeed;
-    initMaxSpeed.Printf(wxT("%f"),MaxSpeed);
-    wxString initMaxTurningRate;
-    initMaxTurningRate.Printf(wxT("%f"), MaxTurningRate);
+    ButtonToggleJoyStick = new wxButton(this,
+                                        ID_BUTTON_TOGGLE_JOYSTICK,
+                                        wxT("Disable"));
 
-	myGamePadController.SetMaxSpeedMPS(MaxSpeed);
-	myGamePadController.SetMaxTurningRateRADPS(MaxTurningRate);
-
-    MaxString.Printf(wxT("%3.2f"), myGamePadController.GetMaxSpeedMPS());
-    vbox1->Add(new wxStaticText(this, -1, wxT("Max Speed")));
-    MaxSpeedCtrl = new wxTextCtrl(this,
-                                  ID_MAXSPEED,
-                                  initMaxSpeed,
-                                  wxDefaultPosition,
-                                  wxDefaultSize,
-                                  wxTE_PROCESS_ENTER);
-    vbox1->Add(MaxSpeedCtrl);
-	
-	MaxSpeedCtrl->Connect(wxID_ANY, wxEVT_KEY_UP, 
-		wxKeyEventHandler(MT_JoyStickFrame::onMaxSpeedCtrlTabKey), NULL, this);
-
-    MaxString.Printf(wxT("%4.2f"), myGamePadController.GetMaxTurningRateRADPS());
-    vbox1->Add(new wxStaticText(this, -1, wxT("Max Turning Rate")), 0, wxTOP, 10);
-    MaxTurningRateCtrl = new wxTextCtrl(this, ID_MAXTURNINGRATE, initMaxTurningRate, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
-    vbox1->Add(MaxTurningRateCtrl);
-
-    ButtonToggleJoyStick = new wxButton(this, ID_BUTTON_TOGGLE_JOYSTICK, wxT("Disable"));
+    vbox1->Add(m_pButtonXYParameters, 0, wxTOP | wxALIGN_CENTER, 10);
+    vbox1->Add(m_pButtonWZParameters, 0, wxTOP | wxALIGN_CENTER, 10);    
     vbox1->Add(ButtonToggleJoyStick, 0, wxTOP | wxALIGN_CENTER, 10);
 
     hbox->Add(vbox0);
@@ -201,20 +178,6 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
     SetOwnBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
     
     SetSizerAndFit(hbox);
-
-    /* for some reason EVT_KILL_FOCUS needs to be connected from the control itself
-     * (as opposed to from the form)... The last parameter (this) is very important,
-     * because it says which object should handle the event */
-    MaxSpeedCtrl->Connect(ID_MAXSPEED,
-        wxEVT_KILL_FOCUS,
-        wxCommandEventHandler(MT_JoyStickFrame::OnMaxSpeedChange),
-        NULL,
-        this);
-    MaxTurningRateCtrl->Connect(ID_MAXTURNINGRATE,
-        wxEVT_KILL_FOCUS,
-        wxCommandEventHandler(MT_JoyStickFrame::OnMaxTurningRateChange),
-        NULL,
-        this);
 
     UpdateRobotChoices(true);
 
@@ -374,6 +337,8 @@ void MT_JoyStickFrame::UpdateRobotChoices(bool FlaggedChanges)
     // update the controls
     XYRobotChoice->Clear();
     WZRobotChoice->Clear();
+    XYRobotChoice->Append(wxT("None"));
+    WZRobotChoice->Append(wxT("None"));
     for(unsigned int i = 0; i < XYChoices.Count(); i++)
     {
         XYRobotChoice->Append(XYChoices.Item(i));
@@ -392,56 +357,6 @@ void MT_JoyStickFrame::UpdateRobotChoices(bool FlaggedChanges)
     // set the selection in the control
     XYRobotChoice->SetSelection(xychoiceindex_inlist);
     WZRobotChoice->SetSelection(wzchoiceindex_inlist);
-
-}
-
-void MT_JoyStickFrame::OnMaxSpeedChange(wxCommandEvent& event)
-{
-
-    // if DoEvents is cancelled, we are exiting -> avoid memory access errors
-    if(!DoEvents)
-    {
-        return;
-    }
-
-    // force value into limits - automatically updates text if clamped
-    float value = MT_ClampTextCtrlFloat(MaxSpeedCtrl, 0, MT_MAX_ALLOWED_SPEED, "%3.2f");
-
-    if(GamePadValid)
-    {
-        myGamePadController.SetMaxSpeedMPS(value);
-    }
-
-    TheRobots->MaxGamePadSpeed = value;
-
-    /* We need to let the wx base classes process this event, especially if it
-     * was a EVT_KILL_FOCUS - this takes care of, e.g. moving the cursor */
-    event.Skip();
-
-}
-
-void MT_JoyStickFrame::OnMaxTurningRateChange(wxCommandEvent& event)
-{
-
-    // if DoEvents is cancelled, we are exiting -> avoid memory access errors
-    if(!DoEvents)
-    {
-        return;
-    }
-
-    // force value into limits - automatically updates text if clamped
-    float value = MT_ClampTextCtrlFloat(MaxTurningRateCtrl, 0, MT_MAX_ALLOWED_TURNING_RATE, "%4.2f");
-
-    if(GamePadValid)
-    {
-        myGamePadController.SetMaxTurningRateRADPS(value);
-    }
-
-    TheRobots->MaxGamePadTurningRate = value;
-
-    /* We need to let the wx base classes process this event, especially if it
-     * was a EVT_KILL_FOCUS - this takes care of, e.g. moving the cursor */
-    event.Skip();
 
 }
 
@@ -508,19 +423,6 @@ void MT_JoyStickFrame::OnButtonToggleJoyStick(wxCommandEvent& event)
 }
 
 
-void MT_JoyStickFrame::CheckMaxTurningRate(wxCommandEvent& WXUNUSED(event))
-{
-
-    // Avoid an infinite loop b/c validator can change text value
-    if(!DoEvents || !(MaxTurningRateCtrl->IsModified()))
-    {
-        return;
-    }
-
-    MT_ValidateTextCtrlNumeric(MaxTurningRateCtrl);
-
-}
-
 void MT_JoyStickFrame::OnXYChoice(wxCommandEvent& WXUNUSED(event))
 {
 
@@ -544,6 +446,10 @@ void MT_JoyStickFrame::OnXYChoice(wxCommandEvent& WXUNUSED(event))
         {
             // otherwise set
             myGamePadController.SetXYRobot(TheRobots->GetRobot(rchoice));
+        }
+        else
+        {
+            myGamePadController.SetXYRobot(NULL);
         }
     }
 
@@ -574,19 +480,6 @@ void MT_JoyStickFrame::OnWZChoice(wxCommandEvent& WXUNUSED(event))
             myGamePadController.SetWZRobot(TheRobots->GetRobot(rchoice));
         }
     }
-
-}
-
-void MT_JoyStickFrame::CheckMaxSpeed(wxCommandEvent& WXUNUSED(event))
-{
-
-    // Avoid an infinite loop b/c validator can change text value
-    if(!DoEvents || !(MaxSpeedCtrl->IsModified()))
-    {
-        return;
-    }
-
-    MT_ValidateTextCtrlNumeric(MaxSpeedCtrl);
 
 }
 
@@ -664,7 +557,7 @@ void MT_JoyStickFrame::DoQuit()
     }
     else
     {
-        MT_WriteRobotXML(TheRobots, myGamePadController.GetMaxSpeedMPS(), myGamePadController.GetMaxTurningRateRADPS(), &m_RobotConfigXML);
+        MT_WriteRobotXML(TheRobots, &m_RobotConfigXML);
         m_RobotConfigXML.SaveFile();
 
         Destroy();
@@ -712,13 +605,45 @@ void MT_JoyStickFrame::onChildMove(wxCommandEvent& event)
     MT_WriteWindowDataToXML(&m_RobotConfigXML, win->GetLabel(), win);
 }
 
-void MT_JoyStickFrame::onMaxSpeedCtrlTabKey(wxKeyEvent& event)
+MT_RobotBase* MT_JoyStickFrame::getNewRobot(const char* config, const char* name)
 {
-	char key = event.GetKeyCode();
-	if (key == '\t')
-	{
-		printf("Hello\n");
-		MaxTurningRateCtrl->SetFocus();
-	}
+    MT_RobotBase* thebot = new MT_SteeredRobot(config, name);
+    if(!IsChild)
+    {
+        /* note this function makes sure the dg is not NULL */
+        ReadDataGroupFromXML(m_RobotConfigXML, thebot->GetParameters());
+    }
+    return thebot;
 }
 
+void MT_JoyStickFrame::OnButtonParameters(wxCommandEvent& event)
+{
+    MT_RobotBase* robot = NULL;
+    MT_DataGroup* dg = NULL;
+    
+    if(event.GetId() == ID_BUTTON_XY_PARAMETERS)
+    {
+        robot = myGamePadController.getXYRobot();
+    }
+
+    if(event.GetId() == ID_BUTTON_WZ_PARAMETERS)
+    {
+        robot = myGamePadController.getWZRobot();
+    }
+
+    if(!robot)
+    {
+        return;
+    }
+
+    dg = robot->GetParameters();
+
+    if(!dg)
+    {
+        return;
+    }
+
+    MT_DataGroupDialog* dlg = new MT_DataGroupDialog(dg, this);
+    registerDialogForXML(dlg);
+    dlg->Show(true);
+}

@@ -137,6 +137,9 @@ unsigned int MT_HIDGamePad::Init()
     (*ButtonQueue)->addElement(ButtonQueue, gpCookies->gButtoncCookie, 0);
   
     (*ButtonQueue)->start(ButtonQueue);
+
+    xcenter = PollXAxis();
+    ycenter = PollYAxis();
   
 #elif defined MT_GAMEPAD_USE_WX
     
@@ -160,31 +163,58 @@ unsigned int MT_HIDGamePad::FindHIDDevices()
     CFMutableDictionaryRef hidMatchDictionary = NULL;
     IOReturn ioReturnValue = kIOReturnSuccess;
     Boolean noMatchingDevices = false;
-  
-    // Set up a matching dictionary to search the I/O Registry by class
-    // name for all HID class devices
-    hidMatchDictionary = IOServiceMatching(kIOHIDDeviceKey);
 
-    /* Code borrowed from SDL - https://stage.maemo.org/svn/maemo/projects/haf/branches/libsdl1.2/xic-never-released/src/joystick/darwin/SDL_sysjoystick.c
-       which is based on Apple's HID Manager Basics code - http://developer.apple.com/mac/library/samplecode/HID_Manager_Basics/listing3.html 
-       NOTE This will only search for GamePads, not Joysticks.  Not sure how to search for both.*/
-    /* Add key for device type (joystick, in this case) to refine the matching dictionary. */
-    UInt32 usagePage = kHIDPage_GenericDesktop;
-    UInt32 usage = kHIDUsage_GD_GamePad;
-    CFNumberRef refUsage = NULL, refUsagePage = NULL;
-   
-    refUsage = CFNumberCreate (kCFAllocatorDefault, kCFNumberIntType, &usage);
-    CFDictionarySetValue (hidMatchDictionary, CFSTR (kIOHIDPrimaryUsageKey), refUsage);
-    refUsagePage = CFNumberCreate (kCFAllocatorDefault, kCFNumberIntType, &usagePage);
-    CFDictionarySetValue (hidMatchDictionary, CFSTR (kIOHIDPrimaryUsagePageKey), refUsagePage);  
-    /* End of SDL/HID Manager Basics code */
+    UInt32 potential_usages[] = {kHIDUsage_GD_GamePad, kHIDUsage_GD_Joystick};
+    unsigned int n_usages = 2;  // # of elements in potential_usages
   
-    // Now search I/O Registry for matching devices.
-    ioReturnValue = IOServiceGetMatchingServices(kIOMasterPortDefault, 
-                                                 hidMatchDictionary, &hidObjectIterator);
-                                                  
-    noMatchingDevices = ((ioReturnValue != kIOReturnSuccess) 
-                         | !(hidObjectIterator));
+    /* Code borrowed from SDL -
+       https://stage.maemo.org/svn/maemo/projects/haf/branches/libsdl1.2/xic-never-released/src/joystick/darwin/SDL_sysjoystick.c
+       which is based on Apple's HID Manager Basics code -
+       http://developer.apple.com/mac/library/samplecode/HID_Manager_Basics/listing3.html
+       NOTE This will only search for GamePads, not Joysticks.  Not
+       sure how to search for both.*/
+    /* Add key for device type (joystick, in this case) to refine the
+     * matching dictionary. */
+    /* Modified DTS on 11/17/10 to look for GamePads OR JoySticks */
+    UInt32 usagePage = kHIDPage_GenericDesktop;
+    UInt32 usage = 0;
+    CFNumberRef refUsage = NULL, refUsagePage = NULL;
+
+    for(unsigned int i = 0; i < n_usages; i++)
+    {
+        usage = potential_usages[i];
+
+        // Set up a matching dictionary to search the I/O Registry by class
+        // name for all HID class devices
+        hidMatchDictionary = IOServiceMatching(kIOHIDDeviceKey);
+        
+        refUsage = CFNumberCreate (kCFAllocatorDefault,
+                                   kCFNumberIntType,
+                                   &usage);
+        CFDictionarySetValue(hidMatchDictionary,
+                             CFSTR (kIOHIDPrimaryUsageKey),
+                             refUsage);
+        refUsagePage = CFNumberCreate(kCFAllocatorDefault,
+                                      kCFNumberIntType,
+                                      &usagePage);
+        CFDictionarySetValue(hidMatchDictionary,
+                             CFSTR (kIOHIDPrimaryUsagePageKey),
+                             refUsagePage);  
+        /* End of SDL/HID Manager Basics code */
+  
+        // Now search I/O Registry for matching devices.
+        ioReturnValue = IOServiceGetMatchingServices(kIOMasterPortDefault, 
+                                                     hidMatchDictionary,
+                                                     &hidObjectIterator);
+
+        noMatchingDevices = ((ioReturnValue != kIOReturnSuccess) 
+                             | !(hidObjectIterator));
+        
+        if(noMatchingDevices == 0)
+        {
+            break;
+        }
+    }
 
     // IOServiceGetMatchingServices consumes a reference to the
     //   dictionary, so we don't need to release the dictionary ref.

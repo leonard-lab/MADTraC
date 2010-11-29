@@ -16,7 +16,8 @@ MT_GamePadController::MT_GamePadController()
     myWZRobot = NULL;
 }
   
-MT_GamePadController::MT_GamePadController(MT_SteeredRobot* setXYRobot)
+MT_GamePadController::MT_GamePadController(MT_RobotBase* setXYRobot)
+    : MT_HIDGamePad()
 {
     common_init();
     if(SetXYRobot(setXYRobot) == MT_ROBOT_ASSIGNMENT_ERROR)
@@ -24,7 +25,9 @@ MT_GamePadController::MT_GamePadController(MT_SteeredRobot* setXYRobot)
     myWZRobot = NULL;
 }
 
-MT_GamePadController::MT_GamePadController(MT_SteeredRobot* setXYRobot, MT_SteeredRobot* setWZRobot)
+MT_GamePadController::MT_GamePadController(MT_RobotBase* setXYRobot,
+                                           MT_RobotBase* setWZRobot)
+    : MT_HIDGamePad()
 {
     common_init();
   
@@ -46,51 +49,6 @@ void MT_GamePadController::common_init()
     // Initially we have no robots
     AvailableRobots.resize(0);
   
-    SetParameters(MT_DEFAULT_MAX_SPEED, MT_DEFAULT_MAX_TURNING_RATE, MT_DEFAULT_SPEED_DEADBAND, MT_DEFAULT_TURNING_DEADBAND);
-  
-}
-
-void MT_GamePadController::SetParameters(float setMaxSpeed, float setMaxTurning, 
-                                      unsigned int setSpeedDeadBand, unsigned int setTurningDeadBand)
-{
-    MaxForwardSpeed = setMaxSpeed;
-    MaxTurningRate = setMaxTurning;
-    SpeedDeadBand = setSpeedDeadBand;
-    TurningDeadBand = setTurningDeadBand;
-  
-    ForwardSpeedNormalization = fabs(MT_MAX_STICK_VAL_FLOAT - SpeedDeadBand);
-    TurningRateNormalization = fabs(MT_MAX_STICK_VAL_FLOAT - TurningDeadBand);
-  
-}
-
-void MT_GamePadController::SetDeadBands(unsigned int setSpeedDeadBand, unsigned int setTurningDeadBand)
-{
-    SetParameters(MaxForwardSpeed, MaxTurningRate, setSpeedDeadBand, setTurningDeadBand);
-}
-
-void MT_GamePadController::SetMaxRates(float setMaxSpeed, float setMaxTurning)
-{
-    SetParameters(setMaxSpeed, setMaxTurning, SpeedDeadBand, TurningDeadBand);
-}
-
-void MT_GamePadController::SetMaxSpeedMPS(float setMaxSpeed)
-{
-    SetParameters(setMaxSpeed, MaxTurningRate, SpeedDeadBand, TurningDeadBand);
-}
-
-void MT_GamePadController::SetMaxTurningRateRADPS(float setMaxTurningRate)
-{
-    SetParameters(MaxForwardSpeed, setMaxTurningRate, SpeedDeadBand, TurningDeadBand);
-}
-
-float MT_GamePadController::GetMaxSpeedMPS() const
-{
-    return MaxForwardSpeed;
-}
-
-float MT_GamePadController::GetMaxTurningRateRADPS() const
-{
-    return MaxTurningRate;
 }
 
 void MT_GamePadController::SeizeControl()
@@ -130,7 +88,7 @@ void MT_GamePadController::ReleaseControl()
   
 }
 
-unsigned int MT_GamePadController::AddRobot(MT_SteeredRobot* newRobot)
+unsigned int MT_GamePadController::AddRobot(MT_RobotBase* newRobot)
 {
     int bot_index = -1;
   
@@ -153,7 +111,7 @@ unsigned int MT_GamePadController::AddRobot(MT_SteeredRobot* newRobot)
   
 }
 
-unsigned int MT_GamePadController::RemoveRobot(MT_SteeredRobot* BotToRemove)
+unsigned int MT_GamePadController::RemoveRobot(MT_RobotBase* BotToRemove)
 {
     // if the robot is already assigned to an axis, don't give it up
     if( (BotToRemove == myXYRobot) || (BotToRemove == myWZRobot) )
@@ -195,7 +153,7 @@ unsigned int MT_GamePadController::RemoveRobot(unsigned int i)
   
 }
 
-unsigned int MT_GamePadController::robotID(MT_SteeredRobot* QueryBot)
+unsigned int MT_GamePadController::robotID(MT_RobotBase* QueryBot)
 {
     for(unsigned int i = 0; i < AvailableRobots.size(); i++){
         if(QueryBot == AvailableRobots[i])
@@ -204,26 +162,29 @@ unsigned int MT_GamePadController::robotID(MT_SteeredRobot* QueryBot)
     return AvailableRobots.size();
 }
 
-unsigned char MT_GamePadController::SetXYRobot(MT_SteeredRobot* setXYRobot)
+unsigned char MT_GamePadController::SetXYRobot(MT_RobotBase* setXYRobot)
 {
   
     // make the robot non-autonomous
-    setXYRobot->SetAutonomousOff();
     return AssignRobot(myXYRobot,setXYRobot);
 
 }
 
-unsigned char MT_GamePadController::SetWZRobot(MT_SteeredRobot* setWZRobot)
+unsigned char MT_GamePadController::SetWZRobot(MT_RobotBase* setWZRobot)
 {
-  
+
     // make the robot non-autonomous
-    setWZRobot->SetAutonomousOff();
     return AssignRobot(myWZRobot,setWZRobot); 
   
 }
 
-unsigned char MT_GamePadController::AssignRobot(MT_SteeredRobot*& RobotToChange, MT_SteeredRobot* NewBot) 
+unsigned char MT_GamePadController::AssignRobot(MT_RobotBase*& RobotToChange, MT_RobotBase* NewBot) 
 {
+    if(!NewBot)
+    {
+        RobotToChange = NULL;
+    }
+    
     // This is the same robot, treat as an error
     if(NewBot == RobotToChange){
         //printf("C1\n");
@@ -238,10 +199,11 @@ unsigned char MT_GamePadController::AssignRobot(MT_SteeredRobot*& RobotToChange,
   
     // This robot is not connected, so tell the user and bail
     if( !(NewBot->IsConnected()) ){
-        printf("Robot on %s is not connected.\n", NewBot->getComPort());
+        printf("Robot on %s is not connected.\n", NewBot->getInfo());
         return MT_ROBOT_ASSIGNMENT_ERROR;
     }  
-  
+
+    NewBot->SetAutonomousOff();
     RobotToChange = NewBot;
     // Add it to the list if it's not already there
     AddRobot(NewBot);
@@ -274,13 +236,31 @@ void MT_GamePadController::PollAndUpdate(bool DoControl)
         //MT_SETBIT(ButtonStates,MT_BUTTON7,0);
         NextWZRobot(1);
     }
-      
-    if(DoControl && myXYRobot){
-        myXYRobot->SetSpeedOmega( CalculateSpeed(Y), CalculateTurningRate(X) );
+
+    if(!DoControl)
+    {
+        return;
     }
-  
-    if(DoControl && myWZRobot){
-        myWZRobot->SetSpeedOmega( CalculateSpeed(Z), CalculateTurningRate(W) );
+
+    std::vector<double> js_axes;
+    unsigned int js_buttons = ButtonStates;
+    js_axes.resize(4);
+    js_axes[0] = Xf;
+    js_axes[1] = Yf;
+    js_axes[2] = Wf;
+    js_axes[3] = Zf;
+    
+    if(myXYRobot){
+        myXYRobot->JoyStickControl(js_axes, js_buttons);
+    }
+
+    /* the WZ robot has XY/WZ swapped */
+    js_axes[0] = Wf;
+    js_axes[1] = Zf;
+    js_axes[2] = Xf;
+    js_axes[3] = Yf;
+    if(myWZRobot){
+        myWZRobot->JoyStickControl(js_axes, js_buttons);
     }
   
 }
@@ -297,19 +277,19 @@ void MT_GamePadController::NextWZRobot(char direction)
     cycle_robot(myWZRobot,direction);
 }
 
-void MT_GamePadController::cycle_robot(MT_SteeredRobot*& botToChange, char direction)
+void MT_GamePadController::cycle_robot(MT_RobotBase*& botToChange, char direction)
 {
   
-    MT_SteeredRobot* original_bot = botToChange;
+    MT_RobotBase* original_bot = botToChange;
     unsigned int myID = robotID(botToChange);
     direction = MT_SGN(direction);
   
     for(unsigned int i = myID; i < AvailableRobots.size() && i >= 0; i = i + direction){
         if( (i != myID) && (AssignRobot(botToChange,AvailableRobots[i]) == MT_ROBOT_ASSIGNMENT_OK) ){
       
-            DisplayAssignedRobots();
+            //DisplayAssignedRobots();
       
-            original_bot->SetSpeedOmega(0,0);
+            original_bot->SafeStop();
       
             return;
         }
