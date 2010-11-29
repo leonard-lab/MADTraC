@@ -34,6 +34,9 @@ private:
     unsigned int m_uiHeight;
 };
 
+const int MT_THRESH_DARKER = 0;
+const int MT_THRESH_LIGHTER = 1;
+
 class MT_GSThresholder
 {
 public:
@@ -44,11 +47,13 @@ public:
     
     MT_SparseBinaryImage threshToBinary(IplImage* curr_frame,
                                      unsigned int thresh,
-                                     IplImage* mask_frame = NULL);
+                                     IplImage* mask_frame = NULL,
+									 int method = MT_THRESH_DARKER);
 
     void doThresholding(IplImage* curr_frame,
                         unsigned int thresh,
-                        IplImage* mask_frame = NULL);
+                        IplImage* mask_frame = NULL,
+						int method = MT_THRESH_DARKER);
 
     IplImage* getGSFrame(){return m_pGSFrame;};
     IplImage* getDiffFrame(){return m_pDiffFrame;};
