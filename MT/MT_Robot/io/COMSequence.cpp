@@ -83,7 +83,7 @@ bool MT_COMSequence::forceReconnect(const char* port)
 
     delete m_pComPort;
 
-    m_pComPort = new MT_ComIO(port, false, m_pFile);
+    m_pComPort = new MT_ComIO(port, false, MT_Baud9600, m_pFile);
 
     return m_pComPort->IsConnected();
 }

@@ -57,7 +57,10 @@ MT_ComIO::MT_ComIO()
 // Constructor to initialize on a specific port
 /* Constructor to set up on a specific port by supplying
     a string descriptor of the resource. */
-MT_ComIO::MT_ComIO(const char* inComPortString, bool handshaking, FILE* file)
+MT_ComIO::MT_ComIO(const char* inComPortString,
+                   bool handshaking,
+                   MT_Baudrate baud_rate,
+                   FILE* file)
     : m_pFile(file),
       m_dT0(MT_getTimeSec())
 {
@@ -65,14 +68,14 @@ MT_ComIO::MT_ComIO(const char* inComPortString, bool handshaking, FILE* file)
     // Set the port
     strcpy(PortString,inComPortString);
     // Common initializations of the port
-    ComInit(handshaking);
+    ComInit(handshaking, baud_rate);
 
 }
 
 // Common initialization of the com port
 /* Function to initialize the communications port.  Called by
     each of the constructors. */
-void MT_ComIO::ComInit(bool handshaking)
+void MT_ComIO::ComInit(bool handshaking, MT_Baudrate baud_rate)
 {
 
     // Assume that we are connected, set to zero if an error occurs
@@ -98,8 +101,8 @@ void MT_ComIO::ComInit(bool handshaking)
         fd = open(PortString, O_RDWR | O_NOCTTY | O_NDELAY);
         if(fd < 0){ printf("Error opening port (will proceed anyways)\n"); connected = 0; }
         tcgetattr(fd,&options);
-        cfsetispeed(&options,B4800);
-        cfsetospeed(&options,B4800);
+        cfsetispeed(&options, baud_rate);
+		cfsetospeed(&options, baud_rate);
         options.c_cflag |= (CLOCAL | CREAD);
         options.c_cflag &= -PARENB;
         options.c_cflag &= -CSTOPB;
@@ -143,8 +146,8 @@ void MT_ComIO::ComInit(bool handshaking)
         }
 
         // Setup the serial port (9600,N81) using hardware handshaking
-        lLastError = serial.Setup(CSerial::EBaud4800,CSerial::EData8,
-                                  CSerial::EParNone,CSerial::EStop1);
+        lLastError = serial.Setup(MT_Baudrate, CSerial::EData8,
+                                  CSerial::EParNone, CSerial::EStop1);
         if (lLastError != ERROR_SUCCESS){
             printf("Unable to set COM-port setting\n");
             connected = 0;
