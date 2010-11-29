@@ -146,7 +146,7 @@ void MT_ComIO::ComInit(bool handshaking, MT_Baudrate baud_rate)
         }
 
         // Setup the serial port (9600,N81) using hardware handshaking
-        lLastError = serial.Setup(MT_Baudrate, CSerial::EData8,
+		lLastError = serial.Setup((CSerial::EBaudrate) baud_rate, CSerial::EData8,
                                   CSerial::EParNone, CSerial::EStop1);
         if (lLastError != ERROR_SUCCESS){
             printf("Unable to set COM-port setting\n");

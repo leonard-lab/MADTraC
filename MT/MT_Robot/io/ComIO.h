@@ -49,7 +49,7 @@ typedef enum
     MT_Baud1200 = CSerial::EBaud1200,
     MT_Baud2400 = CSerial::EBaud2400,
     MT_Baud4800 = CSerial::EBaud4800,
-    MT_Baud6900 = CSerial::EBaud6900,
+    MT_Baud9600 = CSerial::EBaud9600,
     MT_Baud14400 = CSerial::EBaud14400,
     MT_Baud19200 = CSerial::EBaud19200,
     MT_Baud38400 = CSerial::EBaud38400,
