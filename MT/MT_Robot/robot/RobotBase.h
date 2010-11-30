@@ -33,6 +33,12 @@ public:
     virtual double GetY() const {return 0;}
     virtual double GetTheta() const {return 0;}
 
+	virtual void SetState(std::vector<double> state){};
+	virtual std::vector<double> GetState(){std::vector<double> r; r.resize(0); return r;};
+
+	virtual void SetControl(std::vector<double> control){};
+	virtual std::vector<double> GetControl(){std::vector<double> u; u.resize(0); return u;};
+
     virtual const char* getInfo() const {return "MT_RobotBase...";};
 
     virtual unsigned char IsConnected() const
