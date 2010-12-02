@@ -174,10 +174,9 @@ void MT_SteeredRobot::JoyStickControl(std::vector<double> js_axes,
 
     double X = js_axes[0];
     double Y = js_axes[1];
-    double speed = MT_DeadBandAndScale(X, m_dSpeedDeadBand, m_dMaxSpeed);
-    double omega = MT_DeadBandAndScale(Y,
+    double speed = MT_DeadBandAndScale(Y, m_dSpeedDeadBand, m_dMaxSpeed);
+    double omega = MT_DeadBandAndScale(X,
                                        m_dTurningRateDeadBand,
                                        m_dMaxTurningRate);
-    printf("X = %f, Y = %f -> Speed = %f, omega = %f\n", X, Y, speed, omega);
     SetSpeedOmega(speed, omega);
 }
