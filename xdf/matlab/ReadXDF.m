@@ -206,10 +206,16 @@ nodeStruct = struct(                        ...
    'Data', '',                              ...
    'Children', parseChildNodes(theNode));
 
-if any(strcmp(methods(theNode), 'getData'))
-   nodeStruct.Data = char(theNode.getData); 
-else
-   nodeStruct.Data = '';
+% if any(strcmp(methods(theNode), 'getData'))
+%    nodeStruct.Data = char(theNode.getData); 
+% else
+%    nodeStruct.Data = '';
+% end
+
+try
+    nodeStruct.Data = char(theNode.getData);
+catch
+    nodeStruct.Data = '';
 end
 
 % ----- Subfunction PARSEATTRIBUTES -----
