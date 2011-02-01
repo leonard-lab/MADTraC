@@ -40,6 +40,17 @@ else(NOT WIN32)
 endif(NOT WIN32)
 
 ##################################################
+#  Snow Leopard 64-bit support
+if(APPLE AND CMAKE_SYSTEM_VERSION MATCHES "10.6")
+  set(SNOW_LEOPARD 1)
+  set(OSX_ARCHITECTURES "x86_64")
+  set(CMAKE_OSX_ARCHITECTURES "x86_64")  
+else()
+  set(SNOW_LEOPARD 0)
+  message("Snow Leopard is no.")  
+endif()
+
+##################################################
 #  OpenGL Support
 find_package(OpenGL REQUIRED)
 if(OPENGL_FOUND)
@@ -136,7 +147,7 @@ unset(OPENCV_LIBS_TMP CACHE)
 unset(OPENCV_LIBS CACHE)
 
 if(WITH_OPENCV)
-  if(OS_X)
+  if(OS_X AND NOT SNOW_LEOPARD)
     set(OPENCV_FRAMEWORK "${CMAKE_SOURCE_DIR}/OpenCV.framework" CACHE PATH "Path to OpenCV framework")
     if(IS_DIRECTORY ${OPENCV_FRAMEWORK})
       set(HAVE_OPENCV_FRAMEWORK ON)
@@ -144,8 +155,10 @@ if(WITH_OPENCV)
       set(OPENCV_LIBS_DIR "")
       set(OPENCV_LIBS ${OPENCV_FRAMEWORK})
       add_definitions(-DMT_HAVE_OPENCV_FRAMEWORK)
+    else(IS_DIRECTORY ${OPENCV_FRAMEWORK})
+      unset(OPENCV_FRAMEWORK CACHE)
     endif(IS_DIRECTORY ${OPENCV_FRAMEWORK})
-  endif(OS_X)
+  endif(OS_X AND NOT SNOW_LEOPARD)
   
   if(NOT MSVC)
     if(NOT HAVE_OPENCV_FRAMEWORK)
@@ -285,6 +298,9 @@ else(NOT AUTO_FIND_WX)
     set(wxWidgets_USE_STATIC ON)
     set(wxWidgets_USE_DEBUG OFF)
     set(wxWidgets_USE_UNICODE OFF)
+    if(SNOW_LEOPARD)
+      set(wxWidgets_ROOT_DIR "/opt/local/lib/wx-devel")
+    endif(SNOW_LEOPARD)
   endif(NOT MSVC)
 
   if(MSVC)

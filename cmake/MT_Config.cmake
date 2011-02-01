@@ -17,6 +17,13 @@ if(NOT IS_DIRECTORY ${MT_INCLUDE})
 endif(NOT IS_DIRECTORY ${MT_INCLUDE})
 
 ######################################################################
+# Snow Leopard 64-bit build
+if(MT_SNOW_LEOPARD_BUILD)
+  set(OSX_ARCHITECTURES "x86_64")
+  set(CMAKE_OSX_ARCHITECTURES "x86_64")  
+endif(MT_SNOW_LEOPARD_BUILD)
+
+######################################################################
 # Include directories
 include_directories(${MT_INCLUDE})
 include_directories(${MT_WX_INCLUDE})
