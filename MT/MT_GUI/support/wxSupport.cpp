@@ -15,7 +15,7 @@
 
 void MT_ValidateTextCtrlNumeric(wxTextCtrl* TextBox)
 {
-  
+
     unsigned int InsPoint = TextBox->GetInsertionPoint();
     wxString Text = TextBox->GetValue();
     wxString ValidatedText = MT_validate_number(Text);
@@ -24,8 +24,8 @@ void MT_ValidateTextCtrlNumeric(wxTextCtrl* TextBox)
     {
         InsPoint--;
     }
-  
-    TextBox->SetValue(ValidatedText);
+    
+    TextBox->ChangeValue(ValidatedText);
     TextBox->SetInsertionPoint(InsPoint);
 }
 
@@ -40,8 +40,8 @@ void MT_ValidateTextCtrlInteger(wxTextCtrl* TextBox)
     {
         InsPoint--;
     }
-  
-    TextBox->SetValue(ValidatedText);
+    
+    TextBox->ChangeValue(ValidatedText);
     TextBox->SetInsertionPoint(InsPoint);
 }
 
@@ -128,14 +128,14 @@ double MT_ClampTextCtrlFloat(wxTextCtrl* TextBox, double min_val, double max_val
     if(value > max_val)
     {
         ctrlstring.Printf(MT_StringToWxString(std::string(format)),max_val);
-        TextBox->SetValue(ctrlstring);
+        TextBox->ChangeValue(ctrlstring);
         return max_val;
     }
   
     if(value < min_val)
     {
         ctrlstring.Printf(MT_StringToWxString(std::string(format)),min_val);
-        TextBox->SetValue(ctrlstring);
+        TextBox->ChangeValue(ctrlstring);
         return min_val;
     }
   
@@ -161,20 +161,20 @@ int MT_ClampTextCtrlInt(wxTextCtrl* TextBox, int min_val, int max_val, const cha
     if(value > max_val)
     {
         ctrlstring.Printf(MT_StringToWxString(std::string(format)),max_val);
-        TextBox->SetValue(ctrlstring);
+        TextBox->ChangeValue(ctrlstring);
         return max_val;
     }
   
     if(value < min_val)
     {
         ctrlstring.Printf(MT_StringToWxString(std::string(format)),min_val);
-        TextBox->SetValue(ctrlstring);
+        TextBox->ChangeValue(ctrlstring);
         return min_val;
     }
   
     // if not clamped, make sure we get an int
     ctrlstring.Printf(MT_StringToWxString(std::string(format)), value_int);
-    TextBox->SetValue(ctrlstring);  
+    TextBox->ChangeValue(ctrlstring);  
     return (float) value;
 }
 
