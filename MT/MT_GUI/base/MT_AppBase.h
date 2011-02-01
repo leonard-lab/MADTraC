@@ -45,7 +45,12 @@
 /* The size of window elements is not always consistent and we sometimes
  * calculate window sizes based upon them.  Here are a few specific ones. */
 #ifdef __APPLE__
+#ifndef __LP64__ /* not snow leopard */
 const int MT_BUTTON_HEIGHT = 20;  /* works on OS X 10.5 at least */
+#else /* snow leopard */
+const int MT_BUTTON_HEIGHT = 30;  /* Not 100% sure if this is a snow
+                                   * leopard or wx 2.9.1 thing */
+#endif
 #else
 const int MT_BUTTON_HEIGHT = 26;  /* tested on windows 7 so far... */
 #endif
