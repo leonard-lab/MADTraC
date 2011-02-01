@@ -595,7 +595,7 @@ bool MT_TrackerFrameBase::setupAVICapture(const char* filename)
     // Tell the CoreControlFrame to do whatever it needs to do when loading an avi
     m_pTrackerControlFrame->enableButtons();
 
-    m_sAVIPath = wxString((wxChar *) filename);
+    m_sAVIPath = MT_StringToWxString(filename);
     m_sAVIDirectory = wxPathOnly(m_sAVIPath);
 
     onNewCapture();
