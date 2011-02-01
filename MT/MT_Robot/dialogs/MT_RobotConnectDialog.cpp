@@ -144,7 +144,7 @@ void MT_RobotConnectDialog::OnOKButtonClicked(wxCommandEvent& WXUNUSED(event))
     // Store the port names
     for(unsigned int i = 0; i < MT_MAX_NROBOTS; i++)
     {
-        TheRobots->PortName[i] = RobotPortCtrl[i]->GetValue().mb_str();
+        TheRobots->PortName[i] = (const char*) RobotPortCtrl[i]->GetValue().mb_str();
     }
   
     /* handle destruction properly */
@@ -190,7 +190,7 @@ void MT_RobotConnectDialog::OnConnectButtonClicked(wxCommandEvent& WXUNUSED(even
         
                 // Try to connect
                 wxString Port = RobotPortCtrl[i]->GetValue();
-                MT_RobotBase* newBot = NewRobotFunction(Port.mb_str(),
+                MT_RobotBase* newBot = NewRobotFunction((const char*) Port.mb_str(),
                                                         TheRobots->RobotName[i].c_str());
 
                 if(!newBot)

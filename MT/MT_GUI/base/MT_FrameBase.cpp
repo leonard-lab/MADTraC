@@ -699,7 +699,7 @@ MT_FrameBase::MT_FrameBase(wxFrame* parent,
     m_pTimer(NULL),
     m_pCanvas(NULL),
     m_CmdLineParser(),    
-    m_XMLSettingsFile(MT_GetXMLPathForApp().mb_str()),
+    m_XMLSettingsFile((const char*) MT_GetXMLPathForApp().mb_str()),
     m_PathGroup(wxT("Directories"))
 {
     m_sDescriptionText = wxString(wxT("Application description needs to be set")) +
@@ -912,7 +912,7 @@ void MT_FrameBase::writeXML()
     if(m_XMLSettingsFile.HasRoot())
     {
         // if it does, make sure this is the right kind of file
-        if(!m_XMLSettingsFile.HasRootname(MT_GetXMLRootName().mb_str()))
+        if(!m_XMLSettingsFile.HasRootname((const char*) MT_GetXMLRootName().mb_str()))
         {
             return;
         }
@@ -920,7 +920,7 @@ void MT_FrameBase::writeXML()
     else
     {
         /* file doesn't have a root - it's probably a new xml file, so initialize it */
-        m_XMLSettingsFile.InitNew(MT_GetXMLRootName().mb_str());
+        m_XMLSettingsFile.InitNew((const char*) MT_GetXMLRootName().mb_str());
     }
 
     m_PathGroup.WriteToXML(&m_XMLSettingsFile);
@@ -955,7 +955,7 @@ void MT_FrameBase::readXML()
     }
 
     /* make sure this is the right kind of file */
-    if(!m_XMLSettingsFile.HasRootname(MT_GetXMLRootName().mb_str()))
+    if(!m_XMLSettingsFile.HasRootname((const char*) MT_GetXMLRootName().mb_str()))
     {
         return;
     }
@@ -1111,7 +1111,7 @@ void MT_FrameBase::saveScreen(char* filename)
         {
             return;
         }
-        MT_SaveGLBuffer(w, h, m_sScreenSavePath.mb_str());
+        MT_SaveGLBuffer(w, h, (const char*) m_sScreenSavePath.mb_str());
     }
     else
     {
@@ -1295,7 +1295,7 @@ void MT_FrameBase::setupMovie(const wxString& filename)
         }
         else
         {
-            m_MovieExporter.initForCvVideoWriter(filename.mb_str(), 
+            m_MovieExporter.initForCvVideoWriter((const char*) filename.mb_str(), 
                                                  25, 
                                                  GetClientSize().x,
                                                  GetClientSize().y,

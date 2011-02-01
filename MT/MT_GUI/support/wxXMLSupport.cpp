@@ -271,7 +271,7 @@ void MT_PathGroup::WriteToXML(MT_XMLFile* xmlfile)
     TiXmlElement* msgs = xmlfile->FirstChild((const char*) NodeName.mb_str()).Element();
     if(!msgs)
     {
-        msgs = new TiXmlElement(NodeName.mb_str());
+        msgs = new TiXmlElement((const char*) NodeName.mb_str());
         xmlfile->RootAsElement()->LinkEndChild(msgs);
     }
     TiXmlNode* msg;

@@ -89,7 +89,7 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
      **************************************/
     if(asChild == MT_JSF_STANDALONE)
     {
-        m_RobotConfigXML.SetFilename(MT_GetXMLPath(wxT("robotconfig.xml")).mb_str());
+        m_RobotConfigXML.SetFilename((const char*) MT_GetXMLPath(wxT("robotconfig.xml")).mb_str());
         MT_ReadRobotXML(TheRobots, &m_RobotConfigXML);
 
         wxMenu *fileMenu = new wxMenu;

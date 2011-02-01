@@ -92,10 +92,10 @@ void MT_RobotCommandDialog::OnSendButtonClicked(wxCommandEvent& WXUNUSED(event))
     {
         if(m_pRobotConnectCheckBox[i]->GetValue() && m_pRobots->IsPhysical(i) && m_pRobots->IsConnected(i))
         {
-            m_pRobots->GetRobot(i)->SendCommand(TheCommand.mb_str());
+            m_pRobots->GetRobot(i)->SendCommand((const char*) TheCommand.mb_str());
         }
     }
-    m_pRobots->LastCommand = TheCommand.mb_str();
+    m_pRobots->LastCommand = (const char*) TheCommand.mb_str();
 }
 
 void MT_RobotCommandDialog::OnDoneButtonClicked(wxCommandEvent& WXUNUSED(event))

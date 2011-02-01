@@ -247,7 +247,7 @@ void MT_DataGroupDialog::WriteValues()
         }
         default:
         {
-            val = (string) (m_pParamTextCtrls[m_viIndexMap[i]]->GetValue()).mb_str();
+            val = std::string((const char*) (m_pParamTextCtrls[m_viIndexMap[i]]->GetValue()).mb_str());
             m_pDataGroup->SetStringValue(i, val);
             break;
         }
@@ -271,7 +271,7 @@ void MT_DataGroupDialog::OnTextCheck(wxCommandEvent& event)
     {  /* change was programmatic - does not call for validation */
         return;
     }
-  
+
     if(m_pDataGroup->GetDataType(id) != MT_TYPE_STRING)
     {
         MT_ValidateTextCtrlNumeric(textbox);
@@ -305,7 +305,7 @@ void MT_DataGroupDialog::OnColorButtonClicked(wxCommandEvent& event)
     ch = current.GetAsString(wxC2S_HTML_SYNTAX);
     ch = ch.AfterFirst('#');
     
-    c->SetHexValue(ch.mb_str());
+    c->SetHexValue((const char*) ch.mb_str());
   
 }
 

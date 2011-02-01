@@ -206,7 +206,7 @@ void MT_MovieExporterDialog::getInfo(MT_MovieExporter* exporter, wxString* direc
     switch(method)
     {
     case MT_ME_CV_VIDEO_WRITER:
-        exporter->initForCvVideoWriter(filename.mb_str(),
+        exporter->initForCvVideoWriter((const char*) filename.mb_str(),
                                        fps,
                                        m_iFrameWidth,
                                        m_iFrameHeight,
@@ -214,8 +214,8 @@ void MT_MovieExporterDialog::getInfo(MT_MovieExporter* exporter, wxString* direc
         break;
     case MT_ME_IMAGE_SEQUENCE:
         filename = name + wxT(".") + ext;
-        exporter->initForImageSequence(dir.mb_str(),
-                                       filename.mb_str(),
+        exporter->initForImageSequence((const char*) dir.mb_str(),
+                                       (const char*) filename.mb_str(),
                                        num_to_skip);
         break;
     default:
