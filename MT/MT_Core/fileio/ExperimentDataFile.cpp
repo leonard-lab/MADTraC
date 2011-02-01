@@ -145,8 +145,9 @@ bool MT_ExperimentDataFile::initForReading(const char* filename)
 
 MT_ExperimentDataFile::~MT_ExperimentDataFile()
 {
+
     /* close all the files */
-    for(unsigned int i = 0; i < m_vpDataFiles.size(); i++)
+    for(unsigned int i = 0; i < MT_MIN(m_vpDataFiles.size(), m_viCheckedOut.size()); i++)
     {
         if(!m_viCheckedOut[i])
         {
