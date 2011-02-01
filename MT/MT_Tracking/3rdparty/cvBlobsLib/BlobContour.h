@@ -14,11 +14,9 @@
 
 #if defined(__APPLE__) || defined(MACOSX)
 	#include <OpenCV/cv.h>
-	#include <OpenCV/cxtypes.h>
 	#include <OpenCV/cxcore.h>
 #else
 	#include <cv.h>
-	#include <cxtypes.h>
 	#include <cxcore.h>
 #endif
 

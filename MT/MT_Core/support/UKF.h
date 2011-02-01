@@ -103,7 +103,6 @@
 #if defined(MT_HAVE_OPENCV_FRAMEWORK)
 #include <OpenCV/OpenCV.h>
 #else
-#include <cxtypes.h>
 #include <cv.h>
 #endif
 
