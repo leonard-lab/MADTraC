@@ -156,9 +156,9 @@ void MT_LoadXDFDialog::onTSChanged(wxCommandEvent& event)
 void MT_LoadXDFDialog::onOKClicked(wxCommandEvent& event)
 {
 
-    std::string X_sel(m_pXChoice->GetStringSelection().mb_str());
-    std::string Y_sel(m_pYChoice->GetStringSelection().mb_str());
-    std::string FR(m_pTimeStepCtrl->GetValue().mb_str());
+    std::string X_sel((const char*) m_pXChoice->GetStringSelection().mb_str());
+    std::string Y_sel((const char*) m_pYChoice->GetStringSelection().mb_str());
+    std::string FR((const char*) m_pTimeStepCtrl->GetValue().mb_str());
 
     m_pDG->SetStringValueByName(MT_XDFSettingsGroup::XPlaybackName,
                                 X_sel);
@@ -181,8 +181,8 @@ void MT_LoadXDFDialog::getInfo(std::string* x_name,
                                std::string* y_name,
                                unsigned int* frame_period_msec)
 {
-    *x_name = std::string(m_pXChoice->GetStringSelection().mb_str());
-    *y_name = std::string(m_pYChoice->GetStringSelection().mb_str());
+    *x_name = std::string((const char*) m_pXChoice->GetStringSelection().mb_str());
+    *y_name = std::string((const char*) m_pYChoice->GetStringSelection().mb_str());
     *frame_period_msec = MT_ClampTextCtrlInt(m_pTimeStepCtrl,
                                              0,
                                              MT_max_int);

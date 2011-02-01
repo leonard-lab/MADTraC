@@ -52,7 +52,7 @@ wxString MT_GetXMLPath(const wxString& filename)
     path = sp.GetUserDataDir();
     if(!wxFileName::IsDirWritable(path))
     {
-        printf("XML Path %s does not exist, creating it.\n", path.c_str());
+        printf("XML Path %s does not exist, creating it.\n", (const char*) path.c_str());
         if(!wxFileName::Mkdir(path, 0755))
         {
             return filename;
@@ -81,15 +81,15 @@ void MT_ReadWindowDataFromXML(const MT_XMLFile& xmlfile, const wxString& Key, wx
     wxSize rSize = window->GetSize();
     wxPoint rPosition = window->GetPosition();
     long tmp;
-    TiXmlElement* pElem = xmlfile.FirstChild(NodeName.mb_str()).FirstChild().Element();
+    TiXmlElement* pElem = xmlfile.FirstChild((const char*) NodeName.mb_str()).FirstChild().Element();
     for(/* pElem already initialized */; pElem; pElem = pElem->NextSiblingElement())
     {
         const char* pKey = pElem->Value();
         const char* pText = pElem->GetText();
         if(pKey && pText)
         {
-            rKey = (wxChar *) pKey;
-            rText = (wxChar *) pText;
+            rKey = MT_StringToWxString(std::string(pKey));;
+            rText = MT_StringToWxString(std::string(pText));
             if(!rText.ToLong(&tmp))
             {
                 continue;
@@ -140,10 +140,10 @@ void MT_WriteWindowDataToXML(MT_XMLFile* xmlfile, const wxString& Key, wxWindow*
     }
     
     wxString NodeName = wxT("Window_") + MT_ReplaceSpaces(Key,"_");
-    TiXmlElement* msgs = xmlfile->FirstChild(NodeName.mb_str()).Element();
+    TiXmlElement* msgs = xmlfile->FirstChild((const char*) NodeName.mb_str()).Element();
     if(!msgs)
     {
-        msgs = new TiXmlElement(NodeName.mb_str());
+        msgs = new TiXmlElement((const char*) NodeName.mb_str());
         TiXmlElement* root = xmlfile->RootAsElement();
         if(!root)
         {
@@ -156,17 +156,17 @@ void MT_WriteWindowDataToXML(MT_XMLFile* xmlfile, const wxString& Key, wxWindow*
   
     wxPoint cPosition = window->GetPosition();
     val.Printf(wxT("%d"), cPosition.x);
-    MT_AddOrReplaceNodeValue(msgs, "XPos", val.mb_str());
+    MT_AddOrReplaceNodeValue(msgs, "XPos", (const char*) val.mb_str());
     val.Printf(wxT("%d"), cPosition.y);
-    MT_AddOrReplaceNodeValue(msgs, "YPos", val.mb_str());
+    MT_AddOrReplaceNodeValue(msgs, "YPos", (const char*) val.mb_str());
 
     if(window->GetWindowStyle() & wxRESIZE_BORDER)
     {
         wxSize cSize = window->GetSize();
         val.Printf(wxT("%d"), cSize.x);
-        MT_AddOrReplaceNodeValue(msgs, "Width", val.mb_str());
+        MT_AddOrReplaceNodeValue(msgs, "Width", (const char*) val.mb_str());
         val.Printf(wxT("%d"), cSize.y);
-        MT_AddOrReplaceNodeValue(msgs, "Height", val.mb_str());
+        MT_AddOrReplaceNodeValue(msgs, "Height", (const char*) val.mb_str());
     }
   
 }
@@ -250,14 +250,15 @@ void MT_PathGroup::ReadFromXML(const MT_XMLFile& xmlfile)
   
     /* found -> extract paths */
     wxString NodeName = wxT("Path_Group_") + MT_ReplaceSpaces(m_sGroupName,"_");
-    TiXmlElement* pElem = xmlfile.FirstChild(NodeName.mb_str()).FirstChild().Element();
+    TiXmlElement* pElem = xmlfile.FirstChild((const char*) NodeName.mb_str()).FirstChild().Element();
     for(/* pElem already initialized */; pElem; pElem=pElem->NextSiblingElement())
     {
         const char *pKey=pElem->Value();
         const char *pText=pElem->GetText();
         if (pKey && pText) 
         {
-            SetPathByName((wxChar *) pKey, (wxChar *) pText);
+            SetPathByName(MT_StringToWxString(std::string(pKey)),
+                          MT_StringToWxString(std::string(pText)));
         }
     }
   
@@ -267,7 +268,7 @@ void MT_PathGroup::WriteToXML(MT_XMLFile* xmlfile)
 {
   
     wxString NodeName = wxT("Path_Group_") + MT_ReplaceSpaces(m_sGroupName,"_");
-    TiXmlElement* msgs = xmlfile->FirstChild(NodeName.mb_str()).Element();
+    TiXmlElement* msgs = xmlfile->FirstChild((const char*) NodeName.mb_str()).Element();
     if(!msgs)
     {
         msgs = new TiXmlElement(NodeName.mb_str());
@@ -278,9 +279,9 @@ void MT_PathGroup::WriteToXML(MT_XMLFile* xmlfile)
     for(unsigned int i = 0; i < m_vsNames.size(); i++)
     {
         wxString curr_name = MT_ReplaceSpaces(m_vsNames[i],"_");
-        old_msg = msgs->FirstChild(curr_name.mb_str());
-        msg = new TiXmlElement(curr_name.mb_str());
-        msg->LinkEndChild(new TiXmlText((*(m_vpsPaths[i])).mb_str()));
+        old_msg = msgs->FirstChild((const char*) curr_name.mb_str());
+        msg = new TiXmlElement((const char*) curr_name.mb_str());
+        msg->LinkEndChild(new TiXmlText((const char*) (*(m_vpsPaths[i])).mb_str()));
         if(old_msg)
         {
             msgs->ReplaceChild(old_msg, *msg);

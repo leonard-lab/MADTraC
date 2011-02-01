@@ -127,14 +127,14 @@ double MT_ClampTextCtrlFloat(wxTextCtrl* TextBox, double min_val, double max_val
   
     if(value > max_val)
     {
-        ctrlstring.Printf((wxChar *)format,max_val);
+        ctrlstring.Printf(MT_StringToWxString(std::string(format)),max_val);
         TextBox->SetValue(ctrlstring);
         return max_val;
     }
   
     if(value < min_val)
     {
-        ctrlstring.Printf((wxChar *)format,min_val);
+        ctrlstring.Printf(MT_StringToWxString(std::string(format)),min_val);
         TextBox->SetValue(ctrlstring);
         return min_val;
     }
@@ -160,20 +160,20 @@ int MT_ClampTextCtrlInt(wxTextCtrl* TextBox, int min_val, int max_val, const cha
   
     if(value > max_val)
     {
-        ctrlstring.Printf((wxChar *)format,max_val);
+        ctrlstring.Printf(MT_StringToWxString(std::string(format)),max_val);
         TextBox->SetValue(ctrlstring);
         return max_val;
     }
   
     if(value < min_val)
     {
-        ctrlstring.Printf((wxChar *)format,min_val);
+        ctrlstring.Printf(MT_StringToWxString(std::string(format)),min_val);
         TextBox->SetValue(ctrlstring);
         return min_val;
     }
   
     // if not clamped, make sure we get an int
-    ctrlstring.Printf((wxChar *)format, value_int);
+    ctrlstring.Printf(MT_StringToWxString(std::string(format)), value_int);
     TextBox->SetValue(ctrlstring);  
     return (float) value;
 }
@@ -321,9 +321,9 @@ wxString MT_GetApplicationResourcePath(wxString filename, wxString subdir)
     ui_path[0] = '\0';
   
     CFURLRef ref = CFBundleCopyResourceURL(CFBundleGetMainBundle(),
-                                           CFStringCreateWithCString(NULL, root.mb_str(), kCFStringEncodingMacRoman),
-                                           CFStringCreateWithCString(NULL, extension.mb_str(), kCFStringEncodingMacRoman),
-                                           CFStringCreateWithCString(NULL, subdir.mb_str(), kCFStringEncodingMacRoman) );
+                                           CFStringCreateWithCString(NULL, (const char*) root.mb_str(), kCFStringEncodingMacRoman),
+                                           CFStringCreateWithCString(NULL, (const char*) extension.mb_str(), kCFStringEncodingMacRoman),
+                                           CFStringCreateWithCString(NULL, (const char*) subdir.mb_str(), kCFStringEncodingMacRoman) );
     if(CFURLGetFileSystemRepresentation (ref,
                                          true,
                                          ui_path,
@@ -352,7 +352,7 @@ wxString MT_GetApplicationResourcePath(wxString filename, wxString subdir)
 
 wxString MT_wxStringFromTextFile(wxString filename)
 {
-    FILE* fp = fopen(filename.mb_str(),"r");
+    FILE* fp = fopen((const char*) filename.mb_str(),"r");
     if(!fp)
     {
         return wxT("Error opening or reading from ") + filename + wxT("\n");
