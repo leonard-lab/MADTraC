@@ -15,41 +15,143 @@
  * See @ref cmake_config for a list of CMake build options for MADTraC.
  *
  * @ref bi_quick
- *   - @ref bi_quick_OSX
+ *   - @ref bi_quick_OSX_SnowLeopard  
+ *   - @ref bi_quick_OSX_Leopard
  *   - @ref bi_quick_WIN
  *   - @ref bi_quick_linux
  *
  * @section bi_quick Build Instructions
  *
- * @subsection bi_quick_OSX Mac OS X
- * 
- * @par Supported Systems
+ * @subsection bi_quick_OSX_SnowLeopard Mac OS X 10.6 Snow Leopard
  *
- * These instructions are tested on Mac OS X 10.5 and should work on
- * 10.6, but are not yet tested.  You of course need the <a
- * href="http://developer.apple.com/technologies/tools/">Apple
- * Developer Tools</a> (i.e. XCode) installed.
+ * @par Introduction
+ *
+ * These instructions should work on Mac OS X 10.6 to build 64-bit
+ * libraries and binaries.  They assume a "normal" set up - i.e. you
+ * have not changed any default paths, etc.
+ *
+ * It's also possible to build 32-bit libraries and binaries on Snow
+ * Leopard.  In the future, this may be a simple option in the CMake
+ * configuration.  For now, however, it's suggested to stick with the
+ * 64-bit build unless you have the know-how to hack the build
+ * configurations.  
  * 
  * @par Prerequisites
  * 
  * The main prerequisites can be installed most easily with <a
- * href="http://www.macports.org">MacPorts</a>.
+ * href="http://www.macports.org">MacPorts</a>.  Note that you will
+ * need the <a
+ * href="http://developer.apple.com/technologies/tools/">Apple
+ * Developer Tools</a> (i.e. XCode) installed.
  *
- * If you have previously installed MacPorts on your system, you may
- * want to make sure that it is up-to-date by running <tt>sudo port
- * selfupdate</tt>.  Similarly, if the version of cmake you have is
- * not at least 2.8.1 (run <tt>cmake --version</tt>), update macports
- * and then run <tt>sudo port upgrade cmake</tt>.
+ * CMake 2.8.3 is also required.  It is available via MacPorts, but
+ * the <a
+ * href="http://www.cmake.org/cmake/resources/software.html">cmake
+ * binary package</a> for OS X is recommended.
+ *
+ * If you have previously installed MacPorts, make sure it is updated
+ * by running <tt>sudo port selfupdate</tt> and <tt>sudo port upgrade
+ * outdated</tt>.  This could take a while, but it's the best way to
+ * avoid problems later.
  * 
- * To install cmake, OpenCV, and wxWidgets using MacPorts, simply
- * execute the following commands from a terminal.
+ * To install cmake (if necessary), OpenCV, and wxWidgets using
+ * MacPorts, simply execute the following commands from a terminal.
+ * 
  * @code
- * sudo port install cmake
+ * sudo port install cmake  #(if not already installed)
+ * sudo port install opencv
+ * sudo port install wxWidgets-devel
+ * @endcode
+ *
+ * @note Note that we have installed the wxWidgets-devel port instead of
+ * wxWidgets.  Currently the wxWidgets port is not a 64-bit build.
+ * It's OK if you've previously installed wxWidgets - the patches
+ * below will make sure that the right version gets used.
+ *
+ * The following patches are important to make sure that the right
+ * version of wx is used.  First, we need to set the system up to use
+ * the correct wx-config binary.
+ *
+ * @code
+ * sudo mv /usr/bin/wx-config /usr/bin/old-wx-config
+ * sudo ln -s /opt/local/lib/wx-devel/bin/wx-config /usr/bin/wx-config
+ * @endcode
+ *
+ * Finally, we need to fix a bug in the current libraries so that they
+ * have the correct embedded paths.
+ *
+ * @note This applies to the wxWidgets-devel @@2.9.1, Revision 1 port.
+ * To check which version you have installed, you can use <tt>port
+ * info wxWidgets-devel</tt>.  This is a known bug, so future versions
+ * should have this problem fixed and hence this step might not be
+ * necessary.  Similarly, this bug may not be present in older ports.
+ *
+ * @code
+ * sudo /usr/bin/install_name_tool -id /opt/local/lib/wx-devel/libwx_osx_cocoau-2.9.1.0.0.dylib /opt/local/lib/wx-devel/libwx_osx_cocoau-2.9.1.0.0.dylib
+ * sudo /usr/bin/install_name_tool -id /opt/local/lib/wx-devel/libwx_osx_cocoau_gl-2.9.1.0.0.dylib /opt/local/lib/wx-devel/libwx_osx_cocoau_gl-2.9.1.0.0.dylib
+ * sudo install_name_tool -change /opt/local/var/macports/build/_opt_local_var_macports_sources_rsync.macports.org_release_ports_graphics_wxWidgets-devel/work/wxWidgets-2.9.1/build/lib/libwx_osx_cocoau-2.9.1.0.0.dylib /opt/local/lib/wx-devel/libwx_osx_cocoau-2.9.1.0.0.dylib /opt/local/lib/wx-devel/libwx_osx_cocoau_gl-2.9.1.0.0.dylib
+ * @endcode
+ *
+ * As with Leopard (see below and @ref cmake_config), it is possible
+ * to build MADTraC using OpenCV and wxWidgets built from source as
+ * well as with support from other optional libraries.  However, this
+ * is not well tested on Snow Leopard and should be undertaken with a
+ * large dose of patience.
+ *
+ * @par Build
+ *
+ * With cmake, OpenCV, and wxWidgets-devel installed, go to the directory
+ * where you unzipped or checked out (e.g. "~/src/MADTraC/") the
+ * MADTraC source and 
+ * @code
+ * mkdir build
+ * cd build
+ * ccmake ..
+ * @endcode
+ * Use the cmake "GUI" (text-based) to configure MADTraC how you
+ * want it.  The defaults should be OK.  Hit 'c' to configure until
+ * there are no more entries with an asterisk, then hit 'g' to
+ * generate makefiles.  Then 'q' to quit and at the terminal do
+ * @code
+ * make
+ * @endcode
+ * 
+ *
+ * @subsection bi_quick_OSX_Leopard Mac OS X 10.5 Leopard
+ * 
+ * @par Introduction
+ *
+ * These instructions are tested on Mac OS X 10.5 to build 32-bit
+ * libraries and binaries.  
+ * 
+ * @par Prerequisites
+ * 
+ * The main prerequisites can be installed most easily with <a
+ * href="http://www.macports.org">MacPorts</a>.  Note that you will
+ * need the <a
+ * href="http://developer.apple.com/technologies/tools/">Apple
+ * Developer Tools</a> (i.e. XCode) installed.
+ * 
+ * CMake 2.8.3 is also required.  It is available via MacPorts, but
+ * the <a
+ * href="http://www.cmake.org/cmake/resources/software.html">cmake
+ * binary package</a> for OS X is recommended.
+ *
+ * If you have previously installed MacPorts, make sure it is updated
+ * by running <tt>sudo port selfupdate</tt> and <tt>sudo port upgrade
+ * outdated</tt>.  This could take a while, but it's the best way to
+ * avoid problems later.
+ * 
+ * To install cmake (if necessary), OpenCV, and wxWidgets using
+ * MacPorts, simply execute the following commands from a terminal.
+ * 
+ * @code
+ * sudo port install cmake  (if not already installed)
  * sudo port install opencv
  * sudo port install wxWidgets
  * @endcode
  *
- * It's also possible to build MADTraC if you've installed MacPorts
+ * It's also possible to build MADTraC if you've installed OpenCV
  * and wxWidgets from source, you will just need to make sure that the
  * build configuration has the proper definitions, include
  * directories, and libraries.  See @ref cmake_config.

@@ -53,6 +53,10 @@
  * included that can be used to configure target applications to use
  * MADTraC.
  *
+ * <b>NOTE - Snow Leopard</b>:  Building on Snow Leopard with 64-bit
+ * support requires special steps, but is quite doable.  See
+ * @ref bi_quick_OSX_SnowLeopard
+ *
  * For more detailed information, see
  *   - @ref build_info
  *   - @ref cmake_config
