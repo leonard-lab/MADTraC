@@ -75,7 +75,7 @@ void BGC_frame::doTest(int argc, wxChar** argv)
     clp.SetCmdLine(wxTheApp->argc, wxTheApp->argv);
     if(clp.Parse() != 0)
     {
-        Close();
+        Close(); wxExit();
         return;  /* avoids the rest of the function from executing
                     before close can be successful. */
     }
@@ -99,7 +99,7 @@ void BGC_frame::doTest(int argc, wxChar** argv)
         {
             clp.Usage();
         }
-        Close();
+        Close(); wxExit();
         return;        
     }
     
@@ -140,7 +140,7 @@ void BGC_frame::doTest(int argc, wxChar** argv)
             fprintf(stderr,
                     "BackgroundCreator Error:  Range error.\n");
             clp.Usage();
-            Close();
+            Close(); wxExit();
             return;
         }
         first_frame = s1;
@@ -157,8 +157,8 @@ void BGC_frame::doTest(int argc, wxChar** argv)
         fprintf(stderr,
                 "BackgroundCreator Error:  Failed to initialize capture "
                 "from file %s\n.",
-                infile.mb_str());
-        Close();
+                (const char*) infile.mb_str());
+        Close(); wxExit();
         return;
     }
 
@@ -169,27 +169,27 @@ void BGC_frame::doTest(int argc, wxChar** argv)
         fprintf(stderr,
                 "BackgroundCreator Error:  Could not acquire frame "
                 "from file %s\n.",
-                infile.mb_str());
-        Close();
+                (const char*) infile.mb_str());
+        Close(); wxExit();
         return;
     }
 
-    if(!force_overwrite && MT_FileIsAvailable(output_file_name.mb_str(), "r"))
+    if(!force_overwrite && MT_FileIsAvailable((const char*) output_file_name.mb_str(), "r"))
     {
         fprintf(stderr,
                 "BackgroundCreator Error:  File %s exists.  "
                 "Use -F to force overwrite.\n",
-                output_file_name.mb_str());
-        Close();
+                (const char*) output_file_name.mb_str());
+        Close(); wxExit();
         return;
     }
-    if(!MT_FileIsAvailable(output_file_name.mb_str(), "a"))
+    if(!MT_FileIsAvailable((const char*) output_file_name.mb_str(), "a"))
     {
         fprintf(stderr,
                 "BackgroundCreator Error:  Cannot write to output "
                 "file %s\n",
-                output_file_name.mb_str());
-        Close();
+                (const char*) output_file_name.mb_str());
+        Close(); wxExit();
         return;
     }
 
@@ -212,7 +212,7 @@ void BGC_frame::doTest(int argc, wxChar** argv)
         fprintf(stderr,
                 "BackgroundCreator Error:  Failure creating "
                 "MT_BackgroundFrameCreator.\n");
-        Close();
+        Close(); wxExit();
         return;
     }
 
@@ -233,17 +233,17 @@ void BGC_frame::doTest(int argc, wxChar** argv)
         fprintf(stderr,
                 "BackgroundCreator Error:  Failure creating "
                 "MT_BackgroundFrameCreator.\n");
-        Close();
+        Close(); wxExit();
         return;
     }
 
     BGFC.Finish();
 
-    cvSaveImage(output_file_name.mb_str(), bg);
+    cvSaveImage((const char*) output_file_name.mb_str(), bg);
 
     cvReleaseImage(&bg);
 
-    Close();
+    Close(); wxExit();
 }
 
 void BGC_frame::installSymlink(const wxString& to_path, const wxString& exe_path)
@@ -258,14 +258,14 @@ void BGC_frame::installSymlink(const wxString& to_path, const wxString& exe_path
     {
         fprintf(stderr,
                 "BackgroundCreator Error:  Symlink path %s has an"
-                "error.\n", path.GetFullPath().mb_str());
+                "error.\n", (const char*) path.GetFullPath().mb_str());
         return;
     }
     else
     {
         fprintf(stderr,
                 "Attempting to install symlink to path %s\n",
-                path.GetFullPath().mb_str());
+                (const char*) path.GetFullPath().mb_str());
     }
 
     wxString inst_cmd = wxT("osascript -e 'do shell script \"ln -s ")
@@ -280,7 +280,7 @@ void BGC_frame::installSymlink(const wxString& to_path, const wxString& exe_path
     }
     inst_cmd += wxT("'");
 
-    system(inst_cmd.mb_str());
+    system((const char*) inst_cmd.mb_str());
 
 #endif // __APPLE__    
 }

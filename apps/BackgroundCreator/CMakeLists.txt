@@ -18,19 +18,20 @@ cmake_minimum_required(VERSION 2.8)
 
 project(BackgroundCreator)
 
-include_directories(src)
+set(MT_ROOT "../../build" CACHE PATH "MADTraC root directory")
+include(${MT_ROOT}/cmake/MT_Config.cmake)
 
-set(MT_ROOT ../../build CACHE PATH "MADTraC root directory")
+set(APP_NAME BackgroundCreator)
+set(APP_SRC src/BackgroundCreator.cpp)
 
 # for MT_wxTest.h
 include_directories(${MT_ROOT}/../test/src/)
+include_directories(src)
 
-add_executable(BackgroundCreator MACOSX_BUNDLE WIN32
-  src/BackgroundCreator.cpp)
-
-include(${MT_ROOT}/cmake/MT_Config.cmake)
+add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE ${APP_SRC})
 
 add_definitions(${MT_WX_DEFS})
-target_link_libraries(BackgroundCreator
-  ${MT_TRACKING_LIBS} ${MT_TRACKING_EXTRA_LIBS})
-MT_osx_app_copy_step(BackgroundCreator)
+# target_link_libraries(BackgroundCreator
+#   ${MT_TRACKING_LIBS} ${MT_TRACKING_EXTRA_LIBS})
+# MT_osx_app_copy_step(BackgroundCreator)
+MT_tracking_app(${APP_NAME})
