@@ -166,16 +166,19 @@ endfunction(MT_link_robot_app)
 
 #### Blanket functions
 function(MT_GUI_app APP_NAME)
+  add_definitions(${MT_WX_DEFS})
   MT_link_GUI_app(${APP_NAME})
   MT_osx_app_copy_step(${APP_NAME})
 endfunction(MT_GUI_app)  
 
 function(MT_tracking_app APP_NAME)
+  add_definitions(${MT_WX_DEFS})
   MT_link_tracking_app(${APP_NAME})
   MT_osx_app_copy_step(${APP_NAME})
 endfunction(MT_tracking_app)  
 
 function(MT_robot_app APP_NAME)
+  add_definitions(${MT_WX_DEFS})  
   MT_link_robot_app(${APP_NAME})
   MT_osx_app_copy_step(${APP_NAME})
 endfunction(MT_robot_app)  
