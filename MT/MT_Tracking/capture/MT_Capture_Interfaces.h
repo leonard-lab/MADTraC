@@ -162,6 +162,8 @@ class MT_Cap_Iface_OpenCV_Camera : public MT_Cap_Iface_Base
 
         bool initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV);
         IplImage* getFrame(int frame_index = MT_FC_NEXT_FRAME);
+
+    static const std::vector<std::string> listOfAvailableCameras(int maxCameras);
 };
 
 
@@ -184,6 +186,8 @@ class MT_Cap_Iface_ARToolKit_Camera : public MT_Cap_Iface_Base
 
         bool initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV);
         IplImage* getFrame(int frame_index = MT_FC_NEXT_FRAME);
+
+    static const std::vector<std::string> listOfAvailableCameras(int maxCameras);
 };
 
 
@@ -211,6 +215,8 @@ class MT_Cap_Iface_AVT_Camera : public MT_Cap_Iface_Base
 
         bool initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV);
         IplImage* getFrame(int frame_index = MT_FC_NEXT_FRAME);
+
+    static const std::vector<std::string> listOfAvailableCameras(int maxCameras);
 };
 
 /* @} */

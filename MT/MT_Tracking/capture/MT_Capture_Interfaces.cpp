@@ -1,5 +1,7 @@
 #include "MT_Capture_Interfaces.h"
 
+#include "MT/MT_Core/support/filesupport.h"
+
 
 /*********************************************************************
  *
@@ -118,6 +120,23 @@ IplImage* MT_Cap_Iface_CV_File::getFrame(int frame_index)
  *
  *********************************************************************/
 
+const std::vector<std::string>MT_Cap_Iface_OpenCV_Camera::
+listOfAvailableCameras(int maxCameras)
+{
+    std::vector<std::string> result;
+    result.resize(0);
+
+    for(int i = 0; i < maxCameras; i++)
+    {
+        std::stringstream ss;
+        ss << "OpenCV Camera " << i;
+        
+        result.push_back(std::string(ss.str()));
+    }
+
+    return result;
+}
+
 void MT_Cap_Iface_OpenCV_Camera::doSafeInit()
 {
     MT_Cap_Iface_Base::doSafeInit();
@@ -195,6 +214,17 @@ IplImage* MT_Cap_Iface_OpenCV_Camera::getFrame(int frame_index) /* arg is ignore
 #include <AR/param.h>
 #include <AR/ar.h>
 #endif
+
+const std::vector<std::string>MT_Cap_Iface_ARToolKit_Camera::
+listOfAvailableCameras(int maxCameras)
+{
+    std::vector<std::string> result;
+    result.resize(0);
+
+    /* not yet implemented */
+
+    return result;
+}
 
 void MT_Cap_Iface_ARToolKit_Camera::doSafeInit()
 {
@@ -394,6 +424,47 @@ IplImage* MT_Cap_Iface_ARToolKit_Camera::getFrame(int frame_index) /* arg is ign
  * AVT Camera Iface
  *
  *********************************************************************/
+
+const std::vector<std::string>MT_Cap_Iface_AVT_Camera::
+listOfAvailableCameras(int maxCameras)
+{
+    std::vector<std::string> result;
+    result.resize(0);
+
+#ifdef MT_HAVE_AVT    
+    UINT32 err_code = FGInitModule(NULL);
+	//If returns FCE_ALREADYOPENED, means that FireGrab has already been initialized
+    if(err_code != FCE_NOERROR && err_code != FCE_ALREADYOPENED)
+    {
+        fprintf(stderr, "Could not open AVT Camera interface.  Error code: %ld\n", err_code);
+        return false;
+    }
+
+    FGNODEINFO node_info[maxCameras];
+    UINT32 node_count;
+
+    err_code = FGGetNodeList(node_info, maxCameras, &node_count);
+    if(err_code != FCE_NOERROR)
+    {
+        fprintf(stderr, "Could not get AVT node list.  Error code: %ld\n", err_code);
+        return result;
+    }
+    if(!node_count)
+    {
+        fprintf(stderr, "Failed to find any AVT nodes.\n");
+        return result;
+    }
+
+    for (UINT32 i = 0; i < node_count; i++)
+    {
+        std::stringstream ss;
+        ss << "AVT Camera " << node_info[i].Guid;
+        result.push_back(std::string(ss.str()));
+    }
+#endif
+    
+    return result;
+}
 
 void MT_Cap_Iface_AVT_Camera::doSafeInit()
 {

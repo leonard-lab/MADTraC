@@ -87,10 +87,18 @@ void MT_Capture::buildInterfaceTable()
     typedef MT_Cap_Iface_Table_Entry TE_;
 
     /* strategy: build up table as default, then disable what won't work */
-    s_IfaceTable[MT_CAP_CV_FILE] = TE_(MT_CAP_CV_FILE, true, "OpenCV File Capture (e.g. AVI)");
-    s_IfaceTable[MT_CAP_CV_CAMERA] = TE_(MT_CAP_CV_CAMERA, true, "OpenCV Camera Capture");
-    s_IfaceTable[MT_CAP_ARTK_CAMERA] = TE_(MT_CAP_ARTK_CAMERA, true, "ARToolKit Camera Capture");
-    s_IfaceTable[MT_CAP_AVT_CAMERA] = TE_(MT_CAP_AVT_CAMERA, true, "AVT Camera Capture");
+    s_IfaceTable[MT_CAP_CV_FILE] = TE_(MT_CAP_CV_FILE,
+                                       true,
+                                       "OpenCV File Capture (e.g. AVI)");
+    s_IfaceTable[MT_CAP_CV_CAMERA] = TE_(MT_CAP_CV_CAMERA,
+                                         true,
+                                         "OpenCV Camera Capture");
+    s_IfaceTable[MT_CAP_ARTK_CAMERA] = TE_(MT_CAP_ARTK_CAMERA,
+                                           true,
+                                           "ARToolKit Camera Capture");
+    s_IfaceTable[MT_CAP_AVT_CAMERA] = TE_(MT_CAP_AVT_CAMERA,
+                                          true,
+                                          "AVT Camera Capture");
 
     /* the sentinel entry is special - it should be unavailable */
     s_IfaceTable[MT_CAP_sentinel] = TE_(MT_CAP_sentinel, false, "END OF TABLE");
@@ -172,6 +180,46 @@ const MT_Cap_Iface_Vector MT_Capture::getAvailableInterfaces() const
             result.push_back(s_IfaceTable[i]);
         }
     }
+    return result;
+}
+
+const std::vector<std::string> MT_Capture::listOfAvailableCameras(int maxCameras) const
+{
+    MT_Cap_Iface_Type t = MT_CAP_CV_CAMERA;
+
+#ifdef MT_HAVE_ARTOOLKIT
+    t = MT_CAP_ARTK_CAMERA;
+#endif    
+    
+#ifdef MT_HAVE_AVT
+    t = MT_CAP_AVT_CAMERA;
+#endif
+
+    return listOfAvailableCamerasForInterface(t, maxCameras);
+}
+
+const std::vector<std::string> MT_Capture::listOfAvailableCamerasForInterface(
+    MT_Cap_Iface_Type t,
+    int maxCameras) const
+{
+    std::vector<std::string> result;
+    result.resize(0);
+    
+    switch(t)
+    {
+    case MT_CAP_CV_CAMERA:
+        result = MT_Cap_Iface_OpenCV_Camera::listOfAvailableCameras(maxCameras);
+        break;
+    case MT_CAP_ARTK_CAMERA:
+        result = MT_Cap_Iface_ARToolKit_Camera::listOfAvailableCameras(maxCameras);
+        break;
+    case MT_CAP_AVT_CAMERA:
+        result = MT_Cap_Iface_AVT_Camera::listOfAvailableCameras(maxCameras);        
+        break;
+    default:
+        break;
+    }
+
     return result;
 }
 

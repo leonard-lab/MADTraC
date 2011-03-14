@@ -250,6 +250,10 @@ public:
     const char* getDefaultInterfaceName() const;
 
     const MT_Cap_Iface_Vector getAvailableInterfaces() const;
+    const std::vector<std::string> listOfAvailableCameras(int maxCameras) const;
+    const std::vector<std::string> listOfAvailableCamerasForInterface(
+        MT_Cap_Iface_Type t, int maxCameras) const;
+    
   
     /* initialize a capture using a file on the next availabe interface */
     bool initCaptureFromFile(const char* filename);
