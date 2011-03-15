@@ -27,3 +27,23 @@ void MT_CameraSlaveFrame::doMasterInitialization()
     m_pCanvas->setMTParent((MT_FrameBase *)this);
 
 }
+
+void MT_CameraSlaveFrame::prepareToClose()
+{
+	m_pTimer->Stop();
+	stopTimedEvents();
+    doPause();
+}
+
+void MT_CameraSlaveFrame::doUserQuit()
+{
+}
+
+void MT_CameraSlaveFrame::setTimer(int period_msec)
+{
+	MT_FrameBase::setTimer(period_msec);
+}
+
+void MT_CameraSlaveFrame::doUserGLDrawing()
+{
+}

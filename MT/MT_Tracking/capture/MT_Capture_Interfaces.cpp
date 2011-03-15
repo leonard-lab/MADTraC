@@ -160,9 +160,13 @@ MT_Cap_Iface_OpenCV_Camera::~MT_Cap_Iface_OpenCV_Camera()
     }
 }
 
-bool MT_Cap_Iface_OpenCV_Camera::initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
+bool MT_Cap_Iface_OpenCV_Camera::initCamera(int camNumber, int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
 {
-    m_pCapture = cvCaptureFromCAM(CV_CAP_ANY);
+	if(camNumber == MT_FC_NEXT_CAMERA)
+	{
+		camNumber = CV_CAP_ANY;
+	}
+    m_pCapture = cvCaptureFromCAM(camNumber);
     if(!m_pCapture)
     {
         fprintf(stderr, "Could not initialize OpenCV camera capture.\n");
@@ -258,7 +262,7 @@ MT_Cap_Iface_ARToolKit_Camera::~MT_Cap_Iface_ARToolKit_Camera()
 #endif
 }
 
-bool MT_Cap_Iface_ARToolKit_Camera::initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
+bool MT_Cap_Iface_ARToolKit_Camera::initCamera(int camNumber, int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
 {
 #ifdef MT_HAVE_ARTOOLKIT
         // String to pass the grabber, contains various configuration options
@@ -425,6 +429,9 @@ IplImage* MT_Cap_Iface_ARToolKit_Camera::getFrame(int frame_index) /* arg is ign
  *
  *********************************************************************/
 
+/* define to see extra information when initializing an AVT camera */
+#define MT_AVT_VERBOSE
+
 const std::vector<std::string>MT_Cap_Iface_AVT_Camera::
 listOfAvailableCameras(int maxCameras)
 {
@@ -437,30 +444,33 @@ listOfAvailableCameras(int maxCameras)
     if(err_code != FCE_NOERROR && err_code != FCE_ALREADYOPENED)
     {
         fprintf(stderr, "Could not open AVT Camera interface.  Error code: %ld\n", err_code);
-        return false;
+        return result;
     }
 
-    FGNODEINFO node_info[maxCameras];
+    FGNODEINFO* node_info = new FGNODEINFO[maxCameras];
     UINT32 node_count;
 
     err_code = FGGetNodeList(node_info, maxCameras, &node_count);
     if(err_code != FCE_NOERROR)
     {
         fprintf(stderr, "Could not get AVT node list.  Error code: %ld\n", err_code);
+		delete [] node_info;
         return result;
     }
     if(!node_count)
     {
         fprintf(stderr, "Failed to find any AVT nodes.\n");
+		delete [] node_info;
         return result;
     }
 
     for (UINT32 i = 0; i < node_count; i++)
     {
         std::stringstream ss;
-        ss << "AVT Camera " << node_info[i].Guid;
+        ss << "AVT Camera " << node_info[i].Guid.High << node_info[i].Guid.Low;
         result.push_back(std::string(ss.str()));
     }
+	delete [] node_info;
 #endif
     
     return result;
@@ -492,9 +502,16 @@ MT_Cap_Iface_AVT_Camera::~MT_Cap_Iface_AVT_Camera()
 #endif
 }
 
-bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
+bool MT_Cap_Iface_AVT_Camera::initCamera(int camNumber, int FW, int FH, bool ShowDialog, bool FlipH, bool FlipV)
 {
 #ifdef MT_HAVE_AVT
+
+	if(camNumber <= MT_FC_NEXT_CAMERA)
+	{
+		// this is a hack - it should know which is the next camera!
+		camNumber = 0;
+	}
+
     UINT32 err_code = FGInitModule(NULL);
 	//If returns FCE_ALREADYOPENED, means that FireGrab has already been initialized
     if(err_code != FCE_NOERROR && err_code != FCE_ALREADYOPENED)
@@ -503,10 +520,10 @@ bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool F
         return false;
     }
 
-    FGNODEINFO node_info[3];
+    FGNODEINFO node_info[6];
     UINT32 node_count;
 
-    err_code = FGGetNodeList(node_info, 3, &node_count);
+    err_code = FGGetNodeList(node_info, 6, &node_count);
     if(err_code != FCE_NOERROR)
     {
         fprintf(stderr, "Could not get AVT node list.  Error code: %ld\n", err_code);
@@ -518,7 +535,13 @@ bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool F
         return false;
     }
 
-    wxString cameras[16];
+	if(camNumber >= (int) node_count)
+	{
+		fprintf(stderr, "Camera %d is not present, there are only %d available.", camNumber, node_count);
+		return false;
+	}
+
+    /*wxString cameras[16];
     for (UINT32 i = 0; i < node_count; i++)
     {
         char tmp[128];
@@ -531,14 +554,42 @@ bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool F
     if (!success)
     {
         return false;
-    }
+    }*/
 
-    err_code = m_Camera.Connect(&node_info[cameraNum].Guid);
+	fprintf(stdout, "Trying to connect to camera with GUID %ld%ld\n",
+		node_info[camNumber].Guid.High, node_info[camNumber].Guid.Low);
+
+    err_code = m_Camera.Connect(&node_info[camNumber].Guid);
     if(err_code != FCE_NOERROR)
     {
-        fprintf(stderr, "Could not connect to camera.  Error code: %ld\n", err_code);
+		fprintf(stderr, "Could not connect to camera.  Error code: %ld\n", err_code);
         return false;
     }
+
+#ifdef MT_AVT_VERBOSE
+	UINT32 Result;
+	FGPINFO PacketSize;
+	Result=m_Camera.GetParameterInfo(FGP_PACKETSIZE,&PacketSize);
+	printf("PacketSize is %i (%i...%i [%i]):\n ",PacketSize.IsValue, PacketSize.MinValue, PacketSize.MaxValue, PacketSize.Unit);
+#endif
+
+    UINT32 param_value;
+
+	/* We need slow down the camera's frame rate so that the packet 
+	   size is manageable for multiple cameras on the same bus.  Most
+	   of our operations will run just fine at 30 FPS anyways. */
+    m_Camera.GetParameter(FGP_IMAGEFORMAT, &param_value);
+#ifdef MT_AVT_VERBOSE
+	printf("ImageFormat is %d %d %d\n", IMGRES(param_value), IMGCOL(param_value), IMGRATE(param_value));
+#endif
+	m_Camera.SetParameter(FGP_IMAGEFORMAT, MAKEIMAGEFORMAT(IMGRES(param_value), IMGCOL(param_value), FR_30));
+
+#ifdef MT_AVT_VERBOSE
+    m_Camera.GetParameter(FGP_IMAGEFORMAT, &param_value);
+	printf("ImageFormat is %d %d %d\n", IMGRES(param_value), IMGCOL(param_value), IMGRATE(param_value));
+	Result=m_Camera.GetParameterInfo(FGP_PACKETSIZE,&PacketSize);
+	printf("PacketSize is %i (%i...%i [%i]):\n ",PacketSize.IsValue, PacketSize.MinValue, PacketSize.MaxValue, PacketSize.Unit);
+#endif
 
     err_code = m_Camera.OpenCapture();
     if(err_code != FCE_NOERROR)
@@ -560,8 +611,6 @@ bool MT_Cap_Iface_AVT_Camera::initCamera(int FW, int FH, bool ShowDialog, bool F
         fprintf(stderr, "Could not start camera device.  Error code: %ld\n", err_code);
         return false;
     }
-
-    UINT32 param_value;
 
     m_Camera.GetParameter(FGP_XSIZE, &param_value);
     m_iFrameWidth = param_value;
@@ -633,7 +682,7 @@ IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
 	 *     in the potentially volatile camera buffer) */
 	if (IMGCOL(param_value) == CM_Y8 || IMGCOL(param_value) == CM_RGB8 || IMGCOL(param_value) == CM_RGB16 || IMGCOL(param_value) == CM_SRGB16)
 	{
-		for(unsigned int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
+		for(int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
 		{
 			//((uchar*)(m_pCurrentFrame->imageData))[i] = fg_frame.pData[i];
 			((uchar*)(m_tmpGrayFrame->imageData))[i] = fg_frame.pData[i];
@@ -642,7 +691,7 @@ IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
 	} 
 	else
 	{
-		for(unsigned int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
+		for(int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
 		{
 			((uchar*)(m_pCurrentFrame->imageData))[i] = fg_frame.pData[i];
 		}

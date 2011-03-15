@@ -98,6 +98,9 @@ const char* const MT_FC_NO_INIT = NULL;
 // get the next frame (default argument to getFrame)
 const int MT_FC_NEXT_FRAME = -1;
 
+// get the next available camera
+const int MT_FC_NEXT_CAMERA = -1;
+
 /** work-in-progress below *********************************/
 
 /* define MT_HAVE_ARTOOLKIT if ARToolKit is available
@@ -260,6 +263,13 @@ public:
 
     /* initialize a capture using a camera on the next availabe interface */
     bool initCaptureFromCamera(int FW = MT_FC_DEFAULT_FW, 
+                               int FH = MT_FC_DEFAULT_FH, 
+                               bool ShowDialog = MT_FC_SHOWDIALOG,
+                               bool FlipH = MT_FC_NOFLIP,
+                               bool FlipV = MT_FC_NOFLIP,
+                               MT_Cap_Iface_Type type = MT_CAP_DEFAULT);
+	bool initCaptureFromCameraNumber(int camNumber,
+		int FW = MT_FC_DEFAULT_FW, 
                                int FH = MT_FC_DEFAULT_FH, 
                                bool ShowDialog = MT_FC_SHOWDIALOG,
                                bool FlipH = MT_FC_NOFLIP,
