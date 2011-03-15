@@ -437,30 +437,33 @@ listOfAvailableCameras(int maxCameras)
     if(err_code != FCE_NOERROR && err_code != FCE_ALREADYOPENED)
     {
         fprintf(stderr, "Could not open AVT Camera interface.  Error code: %ld\n", err_code);
-        return false;
+        return result;
     }
 
-    FGNODEINFO node_info[maxCameras];
+    FGNODEINFO* node_info = new FGNODEINFO[maxCameras];
     UINT32 node_count;
 
     err_code = FGGetNodeList(node_info, maxCameras, &node_count);
     if(err_code != FCE_NOERROR)
     {
         fprintf(stderr, "Could not get AVT node list.  Error code: %ld\n", err_code);
+		delete [] node_info;
         return result;
     }
     if(!node_count)
     {
         fprintf(stderr, "Failed to find any AVT nodes.\n");
+		delete [] node_info;
         return result;
     }
 
     for (UINT32 i = 0; i < node_count; i++)
     {
         std::stringstream ss;
-        ss << "AVT Camera " << node_info[i].Guid;
+        ss << "AVT Camera " << node_info[i].Guid.High << node_info[i].Guid.Low;
         result.push_back(std::string(ss.str()));
     }
+	delete [] node_info;
 #endif
     
     return result;
@@ -633,7 +636,7 @@ IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
 	 *     in the potentially volatile camera buffer) */
 	if (IMGCOL(param_value) == CM_Y8 || IMGCOL(param_value) == CM_RGB8 || IMGCOL(param_value) == CM_RGB16 || IMGCOL(param_value) == CM_SRGB16)
 	{
-		for(unsigned int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
+		for(int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
 		{
 			//((uchar*)(m_pCurrentFrame->imageData))[i] = fg_frame.pData[i];
 			((uchar*)(m_tmpGrayFrame->imageData))[i] = fg_frame.pData[i];
@@ -642,7 +645,7 @@ IplImage* MT_Cap_Iface_AVT_Camera::getFrame(int frame_index)
 	} 
 	else
 	{
-		for(unsigned int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
+		for(int i = 0; i < m_iFrameWidth*m_iFrameHeight; i++)
 		{
 			((uchar*)(m_pCurrentFrame->imageData))[i] = fg_frame.pData[i];
 		}
