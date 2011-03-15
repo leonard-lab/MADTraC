@@ -33,4 +33,10 @@ public:
         MT_FrameBase::setImage(image);
     }
 
+	virtual void prepareToClose();
+	virtual void setTimer(int period_msec);
+	virtual void doUserGLDrawing();
+
+	virtual void doUserQuit();
+
 };
