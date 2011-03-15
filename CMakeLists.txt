@@ -48,7 +48,10 @@ if(APPLE AND CMAKE_SYSTEM_VERSION MATCHES "10.6")
   message("Detected Snow Leopard, setting 64-bit build")
 else()
   set(SNOW_LEOPARD 0)
-  message("Snow Leopard is no.")  
+  if(APPLE)
+    # if this isn't a Mac, no one will care to confirm that this is not Snow Leopard
+    message("Snow Leopard is no.")
+  endif(APPLE)
 endif()
 
 ##################################################
