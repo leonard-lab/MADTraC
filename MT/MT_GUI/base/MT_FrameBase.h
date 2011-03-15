@@ -806,6 +806,8 @@ protected:
      * @see MT_FrameBase::togglePause */
     void doPause(){m_bPaused = true;};
 
+	void stopTimedEvents(){m_bDoTimedEvents = false;};
+
     void ensureDraw(){if(m_pCanvas){m_pCanvas->doDraw();}};
 
     void drawStatusBar(double frac);
