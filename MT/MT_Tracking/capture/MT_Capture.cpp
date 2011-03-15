@@ -248,6 +248,17 @@ bool MT_Capture::initCaptureFromCamera(int FW,
                                        bool FlipV,
                                        MT_Cap_Iface_Type iface_type)
 {
+	return this->initCaptureFromCameraNumber(MT_FC_NEXT_CAMERA, FW, FH, ShowDialog, FlipH, FlipV, iface_type);
+}
+
+bool MT_Capture::initCaptureFromCameraNumber(int camNumber,
+									   int FW, 
+                                       int FH, 
+                                       bool ShowDialog,
+                                       bool FlipH, 
+                                       bool FlipV,
+                                       MT_Cap_Iface_Type iface_type)
+{
     
     /* see MT_Cap_Iface_Type definition - all camera interfaces
        need to be MT_CAP_CV_CAMERA or higher */
@@ -298,7 +309,7 @@ bool MT_Capture::initCaptureFromCamera(int FW,
         return false;
     }
 
-    if(!new_iface->initCamera(FW, FH, ShowDialog, FlipH, FlipV))
+    if(!new_iface->initCamera(camNumber, FW, FH, ShowDialog, FlipH, FlipV))
     {
         delete new_iface;
         return false;
