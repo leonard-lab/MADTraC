@@ -26,6 +26,8 @@ void MT_CameraSlaveFrame::doMasterInitialization()
     SetSizerAndFit(hbox);
     m_pCanvas->setMTParent((MT_FrameBase *)this);
 
+    m_pPreferences = NULL;
+
 }
 
 void MT_CameraSlaveFrame::prepareToClose()

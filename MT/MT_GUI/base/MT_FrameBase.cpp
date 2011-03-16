@@ -726,9 +726,15 @@ MT_FrameBase::MT_FrameBase(wxFrame* parent,
 MT_FrameBase::~MT_FrameBase()
 {
 
-    delete m_pTimer;
+    if(m_pTimer)
+    {
+        delete m_pTimer;
+    }
 
-    delete m_pPreferences;
+    if(m_pPreferences)
+    {
+        delete m_pPreferences;
+    }
 
 #ifdef MT_USE_IMAGES
     if(m_pCurrentScreen)
