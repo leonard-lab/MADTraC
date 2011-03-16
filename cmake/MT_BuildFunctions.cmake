@@ -69,15 +69,19 @@ function(MT_MAKE_MODULE_HEADER dir mod_name src_list)
 endfunction(MT_MAKE_MODULE_HEADER)
 
 
-function(MT_TRANSPOSE_FILE_IN_TREE filename src_path dest_path)
+function(MT_TRANSPOSE_FILE_IN_TREE module_name filename src_path dest_path)
   get_filename_component(tree_part "${filename}" PATH)
-  file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/${filename}" DESTINATION "${dest_path}/${tree_part}/")
+  # using a custom command here makes sure the headers get copied whenever they change
+  add_custom_command(TARGET "${module_name}"
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${filename}" "${dest_path}/${tree_part}/"
+    )
 endfunction(MT_TRANSPOSE_FILE_IN_TREE)
 
-function(MT_COPY_MODULE_HEADERS src_list src_path dest_path)
+function(MT_COPY_MODULE_HEADERS module_name src_list src_path dest_path)
   foreach(sfile ${src_list})
     if(${sfile} MATCHES ".*\\.h")
-      MT_TRANSPOSE_FILE_IN_TREE(${sfile} ${src_path} ${dest_path})
+      MT_TRANSPOSE_FILE_IN_TREE(${module_name} ${sfile} ${src_path} ${dest_path})
     endif()
   endforeach()
 endfunction(MT_COPY_MODULE_HEADERS)

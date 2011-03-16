@@ -92,4 +92,4 @@ endif()
 
 include(${CMAKE_SOURCE_DIR}/cmake/MT_BuildFunctions.cmake)
 MT_MAKE_MODULE_HEADER(. "${module_name}" "${module_srcs}")
-MT_COPY_MODULE_HEADERS("${module_srcs}" "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/include/MT/${module_name}")
+MT_COPY_MODULE_HEADERS("${module_name}" "${module_srcs}" "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}/include/MT/${module_name}")
