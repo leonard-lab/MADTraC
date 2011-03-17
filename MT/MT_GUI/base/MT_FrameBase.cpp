@@ -375,7 +375,7 @@ void MT_GLCanvasBase::tellObjectLimits(const MT_Rectangle& object_limits, double
 /********************************************************************/
 /*           MT_GLCanvasBase public member functions                */
 /********************************************************************/
-void MT_GLCanvasBase::setViewport(const MT_Rectangle& requested)
+void MT_GLCanvasBase::setViewport(const MT_Rectangle& requested, bool force)
 {
 
     wxSize client_size = wxGLCanvas::GetClientSize();
@@ -415,11 +415,22 @@ void MT_GLCanvasBase::setViewport(const MT_Rectangle& requested)
     /* if the new viewport is the same as the current one (with some
      * leeway - the MT_Rectangle == operator uses MT_IsEqual from mathsupport.h) 
      * we don't need to do anything */
-    if(r == m_CurrentViewport)
+    if(!force && (r == m_CurrentViewport))
     {
         return;
     }
 
+    /* none of this will work if the window is not shown - note that
+     * you will have to call setViewport again once the window is
+     * shown */
+    if(!wxGLCanvas::IsShownOnScreen())
+    {
+        return;
+    }
+    
+    /* Need to make sure that we are operating on this canvas */
+    wxGLCanvas::SetCurrent();
+    
     /* sets the OpenGL viewport (the area OpenGL will draw on) equal
      * to the entirety of the client area */
     glViewport(0, 0, client_size.x, client_size.y);

@@ -393,7 +393,7 @@ public:
 
     void setImage(IplImage* image){m_pCurrentImage = image; doDraw();};
 
-    void setViewport(const MT_Rectangle& requested = MT_BlankRectangle);
+    void setViewport(const MT_Rectangle& requested = MT_BlankRectangle, bool force = false);
 
     virtual ~MT_GLCanvasBase();
 
@@ -585,7 +585,8 @@ protected:
      *
      * @see MT_GLCanvasBase 
      * @see MT_Rectangle */
-    void setViewport(const MT_Rectangle& new_viewport){m_pCanvas->setViewport(new_viewport);};
+    void setViewport(const MT_Rectangle& new_viewport, bool force = false)
+    {m_pCanvas->setViewport(new_viewport, force);};
     /** Enables mouse-zooming mode.  Changes the mouse cursor to a 
      * magnifying glass; subsequently drawing a rectangle will cause 
      * the drawing to zoom to that rectangle. 
