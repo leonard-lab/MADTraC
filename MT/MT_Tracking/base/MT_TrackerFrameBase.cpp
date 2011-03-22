@@ -663,13 +663,12 @@ void MT_TrackerFrameBase::writeTrackerXML()
 
 void MT_TrackerFrameBase::doTrackerStep()
 {
-    // get the frame from the capture object
-    m_pCurrentFrame = m_pCapture->getFrame();
+    acquireFrames();
 
     // do tracking if we've started that
     if(m_bTracking)
     {
-        m_pTracker->doTracking(m_pCurrentFrame);
+		runTracker();
         MT_BoundingBox b = m_pTracker->getObjectBoundingBox();
         tellObjectLimits(MT_RectangleFromBoundingBox(b), 0.05);
     }
@@ -688,6 +687,17 @@ void MT_TrackerFrameBase::doTrackerStep()
         doReset();
     }
 
+}
+
+void MT_TrackerFrameBase::acquireFrames()
+{
+   // get the frame from the capture object
+    m_pCurrentFrame = m_pCapture->getFrame();
+}
+
+void MT_TrackerFrameBase::runTracker()
+{
+	m_pTracker->doTracking(m_pCurrentFrame);
 }
 
 bool MT_TrackerFrameBase::startTracking()

@@ -249,6 +249,9 @@ protected:
     void writeTrackerXML();
     void doTrackerStep();
 
+	virtual void acquireFrames();
+	virtual void runTracker();
+
     /* virtual because the robot frame needs to interject here */
     virtual bool startTracking();
 
