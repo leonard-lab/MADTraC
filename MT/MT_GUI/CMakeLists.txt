@@ -19,8 +19,7 @@ cmake_minimum_required (VERSION 2.8)
 set(base_srcs
   ./base/MT_AppBase.cpp            ./base/MT_AppBase.h
   ./base/MT_ControlFrameBase.cpp   ./base/MT_ControlFrameBase.h
-  ./base/MT_FrameBase.cpp          ./base/MT_FrameBase.h
-  ./base/MT_CameraSlaveFrame.cpp   ./base/MT_CameraSlaveFrame.h)      
+  ./base/MT_FrameBase.cpp          ./base/MT_FrameBase.h)   
 set(dialogs_srcs
   ./dialogs/MT_DataDialogs.cpp          ./dialogs/MT_DataDialogs.h
   ./dialogs/MT_DialogManagement.cpp     ./dialogs/MT_DialogManagement.h

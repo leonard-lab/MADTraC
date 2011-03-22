@@ -48,7 +48,9 @@ set(cv_srcs
   ./cv/GSThresholder.cpp             ./cv/GSThresholder.h) 
 set(dialogs_srcs
   ./dialogs/MT_CreateBackgroundDialog.cpp
-  ./dialogs/MT_CreateBackgroundDialog.h)
+  ./dialogs/MT_CreateBackgroundDialog.h
+  ./dialogs/MT_CameraSlaveFrame.cpp
+  ./dialogs/MT_CameraSlaveFrame.h)
 set(trackers_srcs
   ./trackers/GY/GYBlobs.cpp       ./trackers/GY/GYBlobs.h
   ./trackers/GY/GYSegmenter.cpp   ./trackers/GY/GYSegmenter.h
