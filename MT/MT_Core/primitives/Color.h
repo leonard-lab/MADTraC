@@ -112,13 +112,13 @@ public:
     float B() const { return data[2]; };          /**< Blue component accessor  */
     float A() const { return data[3]; };          /**< Alpha component accessor */
     /** Set red component. Automatically clamped between 0 and 1.      */
-    void setR(double in){ data[0] = MT_CLAMP(in,0,1.0); }; 
+    void setR(double in){ data[0] = MT_CLAMP((float)in,0.0f,1.0f); }; 
     /** Set green component. Automatically clamped between 0 and 1.    */
-    void setG(double in){ data[1] = MT_CLAMP(in,0,1.0); }; 
+    void setG(double in){ data[1] = MT_CLAMP((float)in,0.0f,1.0f); }; 
     /** Set blue component. Automatically clamped between 0 and 1.     */
-    void setB(double in){ data[2] = MT_CLAMP(in,0,1.0); }; 
+    void setB(double in){ data[2] = MT_CLAMP((float)in,0.0f,1.0f); }; 
     /** Set alpha component. Automatically clamped between 0 and 1.    */
-    void setA(double in){ data[3] = MT_CLAMP(in,0,1.0); }; 
+    void setA(double in){ data[3] = MT_CLAMP((float)in,0.0f,1.0f); }; 
     
     /** Function to set each color component to zero and alpha to 1.0. */
     void zero();
@@ -133,46 +133,46 @@ public:
 
 /** @var const MT_Color MT_LightBlue
     A light-blue color (219, 224, 255) */
-const MT_Color MT_LightBlue = MT_Color(219.0/255.0,224.0/255.0,1.0);
+const MT_Color MT_LightBlue = MT_Color(219.0f/255.0f,224.0f/255.0f,1.0f);
 /** @var const MT_Color MT_White
     White color (255, 255, 255) */
-const MT_Color MT_White = MT_Color(1.0,1.0,1.0);
+const MT_Color MT_White = MT_Color(1.0f,1.0f,1.0f);
 /** @var const MT_Color MT_Black
     Black color (0, 0, 0) */
-const MT_Color MT_Black = MT_Color(0,0,0);
+const MT_Color MT_Black = MT_Color(0.0f,0.0f,0.0f);
 /** @var const MT_Color MT_Red
     Red color (255, 0, 0) */
-const MT_Color MT_Red = MT_Color(1.0,0,0);
+const MT_Color MT_Red = MT_Color(1.0f,0.0f,0.0f);
 /** @var const MT_Color MT_Green
     Green color (0, 255, 0) */
-const MT_Color MT_Green = MT_Color(0,1.0,0);
+const MT_Color MT_Green = MT_Color(0.0f,1.0f,0.0f);
 /** @var const MT_Color MT_Blue
     Blue color (0, 0, 255) */
-const MT_Color MT_Blue = MT_Color(0,0,1.0);
+const MT_Color MT_Blue = MT_Color(0.0f,0.0f,1.0f);
 /** @var const MT_Color MT_Brown
     Brown color (153, 102, 255) */
-const MT_Color MT_Brown = MT_Color(153.0/255.0,102.0/255.0,51.0/255.0);
+const MT_Color MT_Brown = MT_Color(153.0f/255.0f,102.0f/255.0f,51.0f/255.0f);
 /** @var const MT_Color MT_Magenta
     Magenta color (255, 0, 255) */
-const MT_Color MT_Magenta = MT_Color(1.0,0,1.0);
+const MT_Color MT_Magenta = MT_Color(1.0f,0.0f,1.0f);
 /** @var const MT_Color MT_Orange
     Orange color (255, 128, 0) */
-const MT_Color MT_Orange = MT_Color(1.0,0.5,0);
+const MT_Color MT_Orange = MT_Color(1.0f,0.5f,0.0f);
 /** @var const MT_Color MT_Purple
     Purple color (128, 0, 128) */
-const MT_Color MT_Purple = MT_Color(0.5,0,0.5);
+const MT_Color MT_Purple = MT_Color(0.5f,0.0f,0.5f);
 /** @var const MT_Color MT_Yellow
     Yellow color (255, 255, 0) */
-const MT_Color MT_Yellow = MT_Color(1.0,1.0,0);
+const MT_Color MT_Yellow = MT_Color(1.0f,1.0f,0.0f);
 /** @var const MT_Color MT_Cyan
     Cyan color (0, 255, 255) */
-const MT_Color MT_Cyan = MT_Color(0,1.0,1.0);
+const MT_Color MT_Cyan = MT_Color(0.0f,1.0f,1.0f);
 /** @var const MT_Color MT_LightGray
     Light gray color (204, 204, 204) */
-const MT_Color MT_LightGray = MT_Color(0.8, 0.8, 0.8);
+const MT_Color MT_LightGray = MT_Color(0.8f, 0.8f, 0.8f);
 /** @var const MT_Color MT_Gray
     Gray color (128, 128, 128) */
-const MT_Color MT_Gray = MT_Color(0.5, 0.5, 0.5);
+const MT_Color MT_Gray = MT_Color(0.5f, 0.5f, 0.5f);
 
 /** @var const unsigned int MT_NPrimaries
  * Number of primary colors in MT_Primaries array. */

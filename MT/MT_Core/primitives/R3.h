@@ -78,8 +78,8 @@ public:
      * Would print "x = 1.0, y = -1.0, z = 0.0".
      *
      * Useful for e.g. glTranslate3fv. */
-    operator float*() const { fdata[0] = x; fdata[1] = y; 
-        fdata[2] = z; return &fdata[0]; };
+    operator float*() const { fdata[0] = (float)x; fdata[1] = (float)y; 
+        fdata[2] = (float)z; return &fdata[0]; };
 
     // Access functions (deprecated - x,y,z now public)
     double getx() const { return x; };          /**< x coordinate accessor */
