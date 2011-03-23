@@ -38,6 +38,7 @@ public:
 	virtual bool doMouseCallback(wxMouseEvent& event, 
 		double viewport_x,
 		double viewport_y);
+	virtual bool doKeyboardCallback(wxKeyEvent& event);
 
     void setImage(IplImage* image)
     {

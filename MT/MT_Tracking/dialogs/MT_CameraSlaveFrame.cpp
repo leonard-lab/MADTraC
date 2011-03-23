@@ -15,8 +15,8 @@ MT_CameraSlaveFrame::MT_CameraSlaveFrame(wxFrame* parent,
                                          const wxSize& size,
                                          long style)
     : MT_FrameBase(parent, id, title, pos, size, style),
+	m_pTrackerFrameGroup(NULL),      
 	m_pTracker(NULL),
-	m_pTrackerFrameGroup(NULL),
 	m_pCurrentFrame(NULL),
 	m_iIndex(0)
 {
@@ -101,6 +101,28 @@ bool MT_CameraSlaveFrame::doMouseCallback(wxMouseEvent& event,
 	return tresult && result;
 
 }
+
+bool MT_CameraSlaveFrame::doKeyboardCallback(wxKeyEvent& event)
+{
+    bool result = MT_DO_BASE_KEY;
+
+    switch(event.GetKeyCode())
+    {
+    case 'q':
+        /* DO NOT allow quit to be called */
+        result = MT_SKIP_BASE_KEY;
+        break;
+    }
+
+    bool tresult = result;
+    if(result == MT_DO_BASE_KEY)
+    {
+        tresult = MT_FrameBase::doKeyboardCallback(event);
+    }
+    
+    return tresult && result;
+}
+
 
 void MT_CameraSlaveFrame::fillPopupMenu(wxMenu* pmenu)
 {
