@@ -18,7 +18,9 @@ MT_CameraSlaveFrame::MT_CameraSlaveFrame(wxFrame* parent,
 	m_pTrackerFrameGroup(NULL),      
 	m_pTracker(NULL),
 	m_pCurrentFrame(NULL),
-	m_iIndex(0)
+      m_iIndex(0),
+      m_iView(0),
+      m_bHaveFrame(false)
 {
 }
 
@@ -123,6 +125,16 @@ bool MT_CameraSlaveFrame::doKeyboardCallback(wxKeyEvent& event)
     return tresult && result;
 }
 
+void MT_CameraSlaveFrame::setFrame(IplImage* frame)
+{
+    m_pCurrentFrame = frame;
+    if(!m_bHaveFrame)
+    {
+        m_bHaveFrame = true;
+        MT_FrameBase::setImage(m_pCurrentFrame);
+    }
+}
+
 
 void MT_CameraSlaveFrame::fillPopupMenu(wxMenu* pmenu)
 {
@@ -140,15 +152,21 @@ void MT_CameraSlaveFrame::addTrackerFrameGroupToPopupMenu(wxMenu* pmenu)
 		wxCommandEventHandler(MT_CameraSlaveFrame::onPopupFrameSelect));
 
 	std::vector<string> frameNames = m_pTrackerFrameGroup->getFrameNames();
-	unsigned int n = MT_MIN(frameNames.size(), MAX_NUM_FRAMES);
-	for(unsigned int i = 0; i < n; i++)
+	int n = MT_MIN(frameNames.size(), MAX_NUM_FRAMES);
+	for(int i = 0; i < n; i++)
 	{
 		pmenu->AppendRadioItem(ID_PMENU_FRAME01+i, 
 			MT_StringToWxString(frameNames[i]));
 		Connect(ID_PMENU_FRAME01+i,
 			wxEVT_COMMAND_MENU_SELECTED,
 			wxCommandEventHandler(MT_CameraSlaveFrame::onPopupFrameSelect));
+        if(i == (m_iView - 1))
+        {
+            pmenu->Check(ID_PMENU_FRAME01+i, true);
+        }
 	}
+
+    
 }
 
 void MT_CameraSlaveFrame::onPopupFrameSelect(wxCommandEvent& event)
@@ -160,6 +178,7 @@ void MT_CameraSlaveFrame::onPopupFrameSelect(wxCommandEvent& event)
 
 void MT_CameraSlaveFrame::setView(unsigned int i)
 {
+    m_iView = i;
 	if(i > 0)
 	{
 		setImage(m_pTrackerFrameGroup->getFrame(i - 1));

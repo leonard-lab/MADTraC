@@ -24,6 +24,8 @@ protected:
 	MT_TrackerBase* m_pTracker;
 	IplImage* m_pCurrentFrame;
 	int m_iIndex;
+    int m_iView;
+    bool m_bHaveFrame;
 
 public:
     MT_CameraSlaveFrame(wxFrame* parent,
@@ -44,11 +46,7 @@ public:
     {
         MT_FrameBase::setImage(image);
     }
-	void setFrame(IplImage* frame)
-	{
-		m_pCurrentFrame = frame;
-		MT_FrameBase::setImage(m_pCurrentFrame);
-	}
+	void setFrame(IplImage* frame);
 
 	virtual void fillPopupMenu(wxMenu* pmenu);
 
