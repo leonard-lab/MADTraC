@@ -35,10 +35,15 @@ void MT_CameraSlaveFrame::doMasterInitialization()
                                     MT_ID_CANVAS,
                                     wxDefaultPosition, 
                                     wxSize(640, 480));
+
     m_pCanvas->Show();
     hbox->Add(m_pCanvas);
     SetSizerAndFit(hbox);
     m_pCanvas->setMTParent((MT_FrameBase *)this);
+
+	setSizeByClient(640, 480);
+	setViewport(MT_BlankRectangle, true);
+	lockCurrentViewportAsOriginal();
 
     m_pPreferences = NULL;
 

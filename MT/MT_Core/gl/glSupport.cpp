@@ -4,83 +4,74 @@
 
 void MT_InitGLLists()
 {
-  
-    static bool done_init = false;
-  
-    if(!done_init)
-    {
     
-        float i;
-        double yy;
-    
-        glNewList(MT_DISK, GL_COMPILE);
-        glBegin(GL_POLYGON);
-        for(i = 0;  i <= 360;  i += 20)
-            glVertex2f(cos(i*MT_PI/180.0),sin(i*MT_PI/180.0));
-        glEnd();
-        glEndList();
-    
-        /* note: circle gets more resolution since it is usually drawn larger */
-        glNewList(MT_CIRCLE, GL_COMPILE);
-        glBegin(GL_LINE_STRIP);
-        for (i = 0;  i <= 360;  i += 5)
-            glVertex2f(cos(i*MT_PI/180.0),sin(i*MT_PI/180.0));
-        glEnd();
-        glEndList();
+	float i;
+	double yy;
 
-        /* higher resolution version of the disk, used by
-           MT_DrawCircle when fill = true */
-        glNewList(MT_DISK_HIGH_RES, GL_COMPILE);
-        glBegin(GL_POLYGON);
-        for (i = 0;  i <= 360;  i += 5)
-            glVertex2f(cos(i*MT_PI/180.0),sin(i*MT_PI/180.0));
-        glEnd();
-        glEndList();
-    
-        glNewList(MT_ELLIPSE, GL_COMPILE);
-        glBegin(GL_POLYGON);
-        for (i = 0; i < 360; i += 30)
-            glVertex2f(cos(i*MT_PI/180.0),0.5*sin(i*MT_PI/180.0));
-        glEnd();
-        glEndList();
-    
-        glNewList(MT_FISH, GL_COMPILE);
-        glBegin(GL_POLYGON);
-        for(i = 0; i < 360; i += 10){
-            yy = sin(MT_PI*i/180.0);
-            yy = 0.5*yy*yy*MT_SGN(yy);
-            glVertex2f(0.35 + 0.65*cos(MT_PI*i/180.0),yy);
-        } 
-        glEnd();
-        glBegin(GL_POLYGON);
-        glVertex2f(-0.35,0);
-        glVertex2f(-1.0,0.5);
-        glVertex2f(-1.0,-0.5);
-        glVertex2f(-0.35,0);
-        glEnd();  
-        glEndList();
-    
-        glNewList(MT_ARROW_NECK, GL_COMPILE);
-        glBegin(GL_POLYGON);
-        glVertex2f(0,0.0125);
-        glVertex2f(0.8,0.0125);
-        glVertex2f(0.8,-0.0125);
-        glVertex2f(0,-0.0125);
-        glEnd();
-        glEndList();
-    
-        glNewList(MT_ARROW_HEAD, GL_COMPILE);
-        glBegin(GL_POLYGON);
-        glVertex2f(-0.2, -0.05);
-        glVertex2f(0, 0.0);
-        glVertex2f(-0.2, 0.05);
-        glEnd();
-        glEndList();
-      
-    }
-  
-    done_init = true;
-  
+	glNewList(MT_DISK, GL_COMPILE);
+	glBegin(GL_POLYGON);
+	for(i = 0;  i <= 360;  i += 20)
+		glVertex2f(cos(i*MT_PI/180.0),sin(i*MT_PI/180.0));
+	glEnd();
+	glEndList();
+
+	/* note: circle gets more resolution since it is usually drawn larger */
+	glNewList(MT_CIRCLE, GL_COMPILE);
+	glBegin(GL_LINE_STRIP);
+	for (i = 0;  i <= 360;  i += 5)
+		glVertex2f(cos(i*MT_PI/180.0),sin(i*MT_PI/180.0));
+	glEnd();
+	glEndList();
+
+	/* higher resolution version of the disk, used by
+	MT_DrawCircle when fill = true */
+	glNewList(MT_DISK_HIGH_RES, GL_COMPILE);
+	glBegin(GL_POLYGON);
+	for (i = 0;  i <= 360;  i += 5)
+		glVertex2f(cos(i*MT_PI/180.0),sin(i*MT_PI/180.0));
+	glEnd();
+	glEndList();
+
+	glNewList(MT_ELLIPSE, GL_COMPILE);
+	glBegin(GL_POLYGON);
+	for (i = 0; i < 360; i += 30)
+		glVertex2f(cos(i*MT_PI/180.0),0.5*sin(i*MT_PI/180.0));
+	glEnd();
+	glEndList();
+
+	glNewList(MT_FISH, GL_COMPILE);
+	glBegin(GL_POLYGON);
+	for(i = 0; i < 360; i += 10){
+		yy = sin(MT_PI*i/180.0);
+		yy = 0.5*yy*yy*MT_SGN(yy);
+		glVertex2f(0.35 + 0.65*cos(MT_PI*i/180.0),yy);
+	} 
+	glEnd();
+	glBegin(GL_POLYGON);
+	glVertex2f(-0.35,0);
+	glVertex2f(-1.0,0.5);
+	glVertex2f(-1.0,-0.5);
+	glVertex2f(-0.35,0);
+	glEnd();  
+	glEndList();
+
+	glNewList(MT_ARROW_NECK, GL_COMPILE);
+	glBegin(GL_POLYGON);
+	glVertex2f(0,0.0125);
+	glVertex2f(0.8,0.0125);
+	glVertex2f(0.8,-0.0125);
+	glVertex2f(0,-0.0125);
+	glEnd();
+	glEndList();
+
+	glNewList(MT_ARROW_HEAD, GL_COMPILE);
+	glBegin(GL_POLYGON);
+	glVertex2f(-0.2, -0.05);
+	glVertex2f(0, 0.0);
+	glVertex2f(-0.2, 0.05);
+	glEnd();
+	glEndList();
+
 }  
 
 void MT_GLTranslatefv(float* v)

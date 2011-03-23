@@ -463,12 +463,13 @@ void MT_GLCanvasBase::setViewport(const MT_Rectangle& requested, bool force)
 
 void MT_GLCanvasBase::doGLInitialization()
 {
+    wxGLCanvas::SetCurrent();
+
     /* Initializes our OpenGL lists - precompiled
      * chunks of instruction useful for efficiently drawing
      * primitive objects such as circles, arrows, fish...*/
     MT_InitGLLists();  /* declared in MT/MT_Core/gl/glSupport.h */
 
-    wxGLCanvas::SetCurrent();
     glEnable(GL_DEPTH_TEST);
 
     /* Set the viewport to the default, i.e. equivalent to
