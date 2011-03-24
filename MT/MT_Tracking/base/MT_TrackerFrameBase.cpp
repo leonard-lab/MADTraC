@@ -902,12 +902,12 @@ void MT_TrackerFrameBase::onMenuViewSelect(wxCommandEvent& event)
 	long base_id = 0;
 
 	if(id >= MT_TFB_ID_MENU_VIEW_FRAME00 && 
-		id <= (MT_TFB_ID_MENU_VIEW_FRAME00+MT_TFB_MAX_NUM_VIEWS))
+		id < (MT_TFB_ID_MENU_VIEW_FRAME00+MT_TFB_MAX_NUM_VIEWS))
 	{
 		base_id = MT_TFB_ID_MENU_VIEW_FRAME00;
 	}
 	else if(id >= MT_TFB_ID_POPUP_VIEW_FRAME00 && 
-		id <= (MT_TFB_ID_POPUP_VIEW_FRAME00+MT_TFB_MAX_NUM_VIEWS))
+		id < (MT_TFB_ID_POPUP_VIEW_FRAME00+MT_TFB_MAX_NUM_VIEWS))
 	{
 		base_id = MT_TFB_ID_POPUP_VIEW_FRAME00;
 	}
@@ -1140,6 +1140,11 @@ void MT_TrackerFrameBase::setTrackerFrameGroup(MT_TrackerFrameGroup* frameGroup)
 	{
 		m_pTrackerFrameGroup = frameGroup;
 	}
+}
+
+void MT_TrackerFrameBase::setCurrentFrame(IplImage* frame)
+{
+	m_pCurrentFrame = frame;
 }
 
 MT_XDFNoteDialog::MT_XDFNoteDialog(wxFrame* parent, wxString* note)

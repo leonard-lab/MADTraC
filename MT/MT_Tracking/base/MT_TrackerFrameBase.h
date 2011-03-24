@@ -353,6 +353,7 @@ public:
 
 	void setTracker(MT_TrackerBase* tracker);
 	void setTrackerFrameGroup(MT_TrackerFrameGroup* frameGroup);
+	void setCurrentFrame(IplImage* frame);
 
 };
 

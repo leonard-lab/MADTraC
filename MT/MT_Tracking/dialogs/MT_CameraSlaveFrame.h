@@ -20,9 +20,7 @@
 class MT_CameraSlaveFrame : public MT_TrackerFrameBase
 {
 protected:
-	IplImage* m_pCurrentFrame;
 	int m_iIndex;
-    bool m_bHaveFrame;
 
 public:
     MT_CameraSlaveFrame(wxFrame* parent,
@@ -37,12 +35,6 @@ public:
 	virtual bool doKeyboardCallback(wxKeyEvent& event);
 
 	virtual void doUserStep();
-
-    void setImage(IplImage* image)
-    {
-        MT_FrameBase::setImage(image);
-    }
-	void setFrame(IplImage* frame);
 
 	void setIndex(int index){m_iIndex = index;};
 

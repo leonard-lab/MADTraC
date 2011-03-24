@@ -15,9 +15,7 @@ MT_CameraSlaveFrame::MT_CameraSlaveFrame(wxFrame* parent,
                                          const wxSize& size,
                                          long style)
     : MT_TrackerFrameBase(parent, id, title, pos, size, style),
-	m_pCurrentFrame(NULL),
-      m_iIndex(0),
-      m_bHaveFrame(false)
+      m_iIndex(0)
 {
 }
 
@@ -92,16 +90,6 @@ bool MT_CameraSlaveFrame::doKeyboardCallback(wxKeyEvent& event)
     }
     
     return tresult && result;
-}
-
-void MT_CameraSlaveFrame::setFrame(IplImage* frame)
-{
-    m_pCurrentFrame = frame;
-    if(!m_bHaveFrame)
-    {
-        m_bHaveFrame = true;
-        MT_FrameBase::setImage(m_pCurrentFrame);
-    }
 }
 
 void MT_CameraSlaveFrame::doUserStep()
