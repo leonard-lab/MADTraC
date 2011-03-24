@@ -832,6 +832,14 @@ void MT_TrackerFrameBase::handleOpenWithFile(const wxString& filename)
 
 bool MT_TrackerFrameBase::doKeyboardCallback(wxKeyEvent& event)
 {
+	switch(event.GetKeyCode())
+	{
+	case 't':
+		startTracking();
+		setPause(false);
+		break;
+	}
+
     return MT_FrameBase::doKeyboardCallback(event);
 }
 
