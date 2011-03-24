@@ -1364,6 +1364,8 @@ bool MT_FrameBase::doMouseCallback(wxMouseEvent& event,
 
 	if(event.RightUp())
 	{
+		m_dLastMouseRightX = viewport_x;
+		m_dLastMouseRightY = viewport_y;
 		wxMenu pmenu;
 		fillPopupMenu(&pmenu);
 		if(pmenu.GetMenuItemCount())

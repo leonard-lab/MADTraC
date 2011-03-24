@@ -192,7 +192,22 @@ void MT_TrackerFrameBase::fillPopupMenu(wxMenu* menu)
 		{
 			delete subMenu;
 		}
+
 	}
+
+	if(m_pCanvas->getImage())
+	{
+		menu->AppendSeparator();
+
+		menu->Append(MT_TFB_ID_POPUP_PIXEL_VALUES,
+			wxT("Pixel Values..."));
+
+		Connect(MT_TFB_ID_POPUP_PIXEL_VALUES,
+			wxEVT_COMMAND_MENU_SELECTED,
+			wxCommandEventHandler(MT_TrackerFrameBase::onMenuPixelValues));
+
+	}
+
 }
 
 void MT_TrackerFrameBase::addFrameGroupToMenu(wxMenu* menu, long base_id)
@@ -984,6 +999,36 @@ void MT_TrackerFrameBase::onMenuTrackerNote(wxCommandEvent& event)
         }
         dlg->Destroy();
     }
+}
+
+void MT_TrackerFrameBase::onMenuPixelValues(wxCommandEvent& event)
+{
+	showPixelValuesAtLocation(m_dLastMouseRightX, m_dLastMouseRightY);
+}
+
+void MT_TrackerFrameBase::showPixelValuesAtLocation(double viewport_x,
+													double viewport_y)
+{
+	const IplImage* I = m_pCanvas->getImage();
+	if(I)
+	{
+		int x = floor(viewport_x);
+		int y = I->height - ceil(viewport_y);
+
+		CvScalar v = cvGet2D(I, y, x);
+		wxString msg = wxT("Unhandled number of channels!");
+		if(I->nChannels == 1)
+		{
+			msg.Printf(wxT("Pixel value at (%d, %d): %f"),
+				x, y, v.val[0]);
+		}
+		else if(I->nChannels == 3)
+		{
+			msg.Printf(wxT("Pixel values at (%d, %d): %f, %f, %f"),
+				x, y, v.val[0], v.val[1], v.val[2]);
+		}
+		MT_ShowMessageDialog(this, msg);
+	}
 }
 
 void MT_TrackerFrameBase::writeUserXML()

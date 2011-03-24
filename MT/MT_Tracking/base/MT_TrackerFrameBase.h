@@ -114,6 +114,7 @@ enum
     MT_TFB_ID_POPUP_VIEW_FRAME07,
     MT_TFB_ID_POPUP_VIEW_FRAME08,
     MT_TFB_ID_POPUP_VIEW_FRAME09,
+	MT_TFB_ID_POPUP_PIXEL_VALUES,
     MT_TFB_ID_MENU_TRACKER_TRAIN,
     MT_TFB_ID_MENU_TRACKER_PARAMS00,
     MT_TFB_ID_MENU_TRACKER_PARAMS01,
@@ -315,6 +316,9 @@ public:
     virtual void onMenuTrackerParams(wxCommandEvent& event);
     virtual void onMenuTrackerReports(wxCommandEvent& event);
     virtual void onMenuTrackerNote(wxCommandEvent& event);
+
+	virtual void onMenuPixelValues(wxCommandEvent& event);
+	void showPixelValuesAtLocation(double viewport_x, double viewport_y);
 
     virtual wxString getCheatSheetText()
     { return MT_FrameBase::getCheatSheetText(); };

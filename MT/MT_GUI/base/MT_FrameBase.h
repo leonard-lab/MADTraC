@@ -392,6 +392,7 @@ public:
     void doDraw(){m_bNeedDraw = true;};
 
     void setImage(IplImage* image){m_pCurrentImage = image; doDraw();};
+	const IplImage* getImage() const {return m_pCurrentImage;};
 
     void setViewport(const MT_Rectangle& requested = MT_BlankRectangle, bool force = false);
 
@@ -820,6 +821,8 @@ protected:
 
 	virtual void fillPopupMenu(wxMenu* menu){};
 	bool m_bAmSlave;
+	double m_dLastMouseRightX;
+	double m_dLastMouseRightY;
 
 public:
     /** Basic constructor.  Doesn't do much.  Most initialization
