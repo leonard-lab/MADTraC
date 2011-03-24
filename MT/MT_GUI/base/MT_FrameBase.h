@@ -818,6 +818,8 @@ protected:
     virtual void onPauseToggled(bool paused_state){};
     void doStep();
 
+	virtual void fillPopupMenu(wxMenu* menu){};
+
 public:
     /** Basic constructor.  Doesn't do much.  Most initialization
      * occurs in MT_FrameBase::doMasterInitialization, which calls

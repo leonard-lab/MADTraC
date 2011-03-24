@@ -125,7 +125,8 @@ MT_TrackerFrameBase::MT_TrackerFrameBase(wxFrame* parent,
     m_pCapture(NULL),
     m_pTracker(NULL),
     m_pCurrentFrame(NULL),
-    m_lTrackerDrawingFlags(0xFF)
+    m_lTrackerDrawingFlags(0xFF),
+	m_pTrackerFrameGroup(NULL)
 {
 }
 
@@ -176,36 +177,64 @@ void MT_TrackerFrameBase::updateMenusOnStartTracker()
     wxFrame::SetMenuBar(menubar);
 }
 
+void MT_TrackerFrameBase::fillPopupMenu(wxMenu* menu)
+{
+	if(m_pTrackerFrameGroup)
+	{
+		wxMenu* subMenu = new wxMenu(wxT("Views"));
+		addFrameGroupToMenu(subMenu, MT_TFB_ID_POPUP_VIEW_FRAME00);
+		if(subMenu->GetMenuItemCount())
+		{
+			menu->AppendSubMenu(subMenu,
+				wxT("Views"));
+		}
+		else
+		{
+			delete subMenu;
+		}
+	}
+}
+
+void MT_TrackerFrameBase::addFrameGroupToMenu(wxMenu* menu, long base_id)
+{
+	if(!m_pTracker || !m_pTrackerFrameGroup)
+	{
+		return;
+	}
+
+    menu->AppendRadioItem(base_id, wxT("&Frame"));
+    Connect(base_id,
+		wxEVT_COMMAND_MENU_SELECTED, 
+            wxCommandEventHandler(MT_TrackerFrameBase::onMenuViewSelect));
+
+	std::vector<string> FrameNames = m_pTrackerFrameGroup->getFrameNames();
+	unsigned int n_views = MT_MIN(FrameNames.size(), MT_TFB_MAX_NUM_VIEWS);
+	for(unsigned int i = 0; i < n_views; i++)
+	{
+		menu->AppendRadioItem(base_id+1+i, MT_StringToWxString(FrameNames[i]));
+		Connect(base_id+1+i,
+			wxEVT_COMMAND_MENU_SELECTED, 
+			wxCommandEventHandler(MT_TrackerFrameBase::onMenuViewSelect));
+        if(i == (m_iView - 1))
+        {
+            menu->Check(base_id+i+1, true);
+        }
+
+	}
+}
+
 void MT_TrackerFrameBase::addTrackerToViewMenu(wxMenu* view_menu)
 {
     /* if there's no tracker and/or the tracker only has one
      * frame view, there's no need to do any of this */
-    if(!m_pTracker || !(m_pTracker->getNumProcessedFrames()))
+    if(!m_pTracker || !m_pTrackerFrameGroup)
     {
         return;
     }
 
     view_menu->AppendSeparator();
 
-    view_menu->AppendRadioItem(MT_TFB_ID_MENU_VIEW_FRAME00, wxT("&Frame"));
-    Connect(MT_TFB_ID_MENU_VIEW_FRAME00, 
-            wxEVT_COMMAND_MENU_SELECTED, 
-            wxCommandEventHandler(MT_TrackerFrameBase::onMenuViewSelect));
-
-    MT_TrackerFrameGroup* frames = m_pTracker->getFrameGroup();
-    if(frames)
-    {
-        std::vector<string> FrameNames = frames->getFrameNames();
-        unsigned int n_views = MT_MIN(FrameNames.size(), MT_TFB_MAX_NUM_VIEWS);
-        for(unsigned int i = 0; i < n_views; i++)
-        {
-            view_menu->AppendRadioItem(MT_TFB_ID_MENU_VIEW_FRAME01+i, MT_StringToWxString(FrameNames[i]));
-            Connect(MT_TFB_ID_MENU_VIEW_FRAME01+i, 
-                    wxEVT_COMMAND_MENU_SELECTED, 
-                    wxCommandEventHandler(MT_TrackerFrameBase::onMenuViewSelect));
-        }
-    }
-
+	addFrameGroupToMenu(view_menu, MT_TFB_ID_MENU_VIEW_FRAME00);
 }
 
 void MT_TrackerFrameBase::addDataGroupsToTrackerMenu(wxMenu* tracker_menu)
@@ -264,19 +293,6 @@ void MT_TrackerFrameBase::addDataReportsToTrackerMenu(wxMenu* tracker_menu)
     }
 }
 
-void MT_TrackerFrameBase::enableFrame()
-{
-
-    if(m_iView > 0 && m_pTracker)
-    {
-        setImage(m_pTracker->getProcessedFrame(m_iView - 1));
-    }
-    else  // should always be OK
-    {
-        setImage(m_pCurrentFrame);
-    }
-
-}
 /********************************************************************/
 /*     MT_TrackerFrameBase protected member functions               */
 /********************************************************************/
@@ -721,6 +737,10 @@ bool MT_TrackerFrameBase::startTracking()
         }
 
         initTracker();
+		if(!m_pTrackerFrameGroup)
+		{
+			m_pTrackerFrameGroup = m_pTracker->getFrameGroup();
+		}
 
         m_pTracker->setSourceName((const char*) m_sAVIPath.mb_str());
 
@@ -855,35 +875,49 @@ void MT_TrackerFrameBase::onMenuFileSelectDataFile(wxCommandEvent& WXUNUSED(even
 
 void MT_TrackerFrameBase::onMenuViewSelect(wxCommandEvent& event)
 {
+	printf("AA\n");
 
-    wxMenuBar* menubar = GetMenuBar();
-    int viewmenuid = menubar->FindMenu(wxT("View"));
-    if(viewmenuid == wxNOT_FOUND)
-    {
-        return;
-    }
+	long id = event.GetId();
+	long base_id = 0;
 
-    unsigned int nframes;
-    if(!m_pTracker)
-    {
-        nframes = 1;
-    }
-    else
-    {
-        nframes = m_pTracker->getNumProcessedFrames() + 1;
-    }
+	if(id >= MT_TFB_ID_MENU_VIEW_FRAME00 && 
+		id <= (MT_TFB_ID_MENU_VIEW_FRAME00+MT_TFB_MAX_NUM_VIEWS))
+	{
+		base_id = MT_TFB_ID_MENU_VIEW_FRAME00;
+	}
+	else if(id >= MT_TFB_ID_POPUP_VIEW_FRAME00 && 
+		id <= (MT_TFB_ID_POPUP_VIEW_FRAME00+MT_TFB_MAX_NUM_VIEWS))
+	{
+		base_id = MT_TFB_ID_POPUP_VIEW_FRAME00;
+	}
+	else
+	{
+		fprintf(stderr, "MT_TrackerFrameBase::onMenuViewSelect error: Unknown ID sent event.\n");
+		return;
+	}
 
-    for(unsigned int i = 0; i < nframes; i++)
-    {
-        if(menubar->IsChecked(MT_TFB_ID_MENU_VIEW_FRAME00+i))
-        {
-            m_iView = i;
-        }
-    }
+	setView(id - base_id);
 
-    enableFrame();
-
+	wxMenuBar* mb = GetMenuBar();
+	if(mb)
+	{
+		mb->Check(id - base_id + MT_TFB_ID_MENU_VIEW_FRAME00, true);
+	}
 }
+
+void MT_TrackerFrameBase::setView(unsigned int i)
+{
+    m_iView = i;
+	if(i > 0)
+	{
+		setImage(m_pTrackerFrameGroup->getFrame(i - 1));
+	}
+	else
+	{
+		setImage(m_pCurrentFrame);
+	}
+}
+
 
 void MT_TrackerFrameBase::onMenuTrackerTrain(wxCommandEvent& WXUNUSED(event))
 {

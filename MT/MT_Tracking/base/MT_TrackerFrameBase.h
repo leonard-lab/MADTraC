@@ -104,6 +104,16 @@ enum
     MT_TFB_ID_MENU_VIEW_FRAME07,
     MT_TFB_ID_MENU_VIEW_FRAME08,
     MT_TFB_ID_MENU_VIEW_FRAME09,
+    MT_TFB_ID_POPUP_VIEW_FRAME00,
+    MT_TFB_ID_POPUP_VIEW_FRAME01,
+    MT_TFB_ID_POPUP_VIEW_FRAME02,
+    MT_TFB_ID_POPUP_VIEW_FRAME03,
+    MT_TFB_ID_POPUP_VIEW_FRAME04,
+    MT_TFB_ID_POPUP_VIEW_FRAME05,
+    MT_TFB_ID_POPUP_VIEW_FRAME06,
+    MT_TFB_ID_POPUP_VIEW_FRAME07,
+    MT_TFB_ID_POPUP_VIEW_FRAME08,
+    MT_TFB_ID_POPUP_VIEW_FRAME09,
     MT_TFB_ID_MENU_TRACKER_TRAIN,
     MT_TFB_ID_MENU_TRACKER_PARAMS00,
     MT_TFB_ID_MENU_TRACKER_PARAMS01,
@@ -209,7 +219,6 @@ private:
     void addTrackerToViewMenu(wxMenu* view_menu);
     void addDataGroupsToTrackerMenu(wxMenu* tracker_menu);
     void addDataReportsToTrackerMenu(wxMenu* tracker_menu);
-    void enableFrame();
 
 protected:
 
@@ -254,6 +263,12 @@ protected:
 
     /* virtual because the robot frame needs to interject here */
     virtual bool startTracking();
+
+	virtual void fillPopupMenu(wxMenu* menu);
+	
+	MT_TrackerFrameGroup* m_pTrackerFrameGroup;
+	void addFrameGroupToMenu(wxMenu* menu, long base_id);
+	void setView(unsigned int i);
 
 public:
     // constructor
@@ -330,6 +345,9 @@ public:
     virtual void initTracker();
 
     bool getIsTracking(){return m_bTracking;};
+
+	void setTracker(MT_TrackerBase* tracker);
+	void setTrackerFrameGroup(MT_TrackerFrameGroup* frameGroup);
 
 };
 

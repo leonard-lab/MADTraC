@@ -1359,6 +1359,19 @@ bool MT_FrameBase::doMouseCallback(wxMouseEvent& event,
                                    double viewport_x, 
                                    double viewport_y)
 {
+	bool result = MT_DO_BASE_MOUSE;
+
+	if(event.RightUp())
+	{
+		wxMenu pmenu;
+		fillPopupMenu(&pmenu);
+		if(pmenu.GetMenuItemCount())
+		{
+			PopupMenu(&pmenu);
+			result = MT_SKIP_BASE_MOUSE;
+		}
+	}
+
     long y = event.GetY();
 
     if(y > (1.0-g_StatusBarFrac)*GetClientSize().y)
@@ -1371,7 +1384,7 @@ bool MT_FrameBase::doMouseCallback(wxMouseEvent& event,
     }
     ensureDraw();
 
-    return MT_DO_BASE_MOUSE;
+    return result;
 }
 
 void MT_FrameBase::onMenuFileSaveScreen(wxCommandEvent& event)
