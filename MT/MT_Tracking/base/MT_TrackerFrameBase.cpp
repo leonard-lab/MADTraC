@@ -1024,8 +1024,8 @@ void MT_TrackerFrameBase::showPixelValuesAtLocation(double viewport_x,
 		}
 		else if(I->nChannels == 3)
 		{
-			msg.Printf(wxT("Pixel values at (%d, %d): %f, %f, %f"),
-				x, y, v.val[0], v.val[1], v.val[2]);
+			msg.Printf(wxT("Pixel values at (%d, %d): %f, %f, %f (RGB)"),
+				x, y, v.val[2], v.val[1], v.val[0]);
 		}
 		MT_ShowMessageDialog(this, msg);
 	}
