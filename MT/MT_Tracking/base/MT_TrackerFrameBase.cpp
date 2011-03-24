@@ -132,13 +132,13 @@ MT_TrackerFrameBase::MT_TrackerFrameBase(wxFrame* parent,
 
 MT_TrackerFrameBase::~MT_TrackerFrameBase()
 {
-    if(m_pCapture)
+    if(!m_bAmSlave && m_pCapture)
     {
         delete m_pCapture;
         m_pCapture = NULL;
     }
 
-    if(m_pTracker)
+    if(!m_bAmSlave && m_pTracker)
     {
         delete m_pTracker;
         m_pTracker = NULL;
@@ -883,8 +883,6 @@ void MT_TrackerFrameBase::onMenuFileSelectDataFile(wxCommandEvent& WXUNUSED(even
 
 void MT_TrackerFrameBase::onMenuViewSelect(wxCommandEvent& event)
 {
-	printf("AA\n");
-
 	long id = event.GetId();
 	long base_id = 0;
 
@@ -1083,6 +1081,21 @@ void MT_TrackerFrameBase::initTracker()
     m_pTracker = new MT_TrackerBase(m_pCurrentFrame);
 }
 
+void MT_TrackerFrameBase::setTracker(MT_TrackerBase* tracker)
+{
+	if(!m_pTracker)
+	{
+		m_pTracker = tracker;
+	}
+}
+
+void MT_TrackerFrameBase::setTrackerFrameGroup(MT_TrackerFrameGroup* frameGroup)
+{
+	if(!m_pTrackerFrameGroup)
+	{
+		m_pTrackerFrameGroup = frameGroup;
+	}
+}
 
 MT_XDFNoteDialog::MT_XDFNoteDialog(wxFrame* parent, wxString* note)
     : wxDialog(parent,

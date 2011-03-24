@@ -13,18 +13,15 @@
 /* wx-specific includes */
 #include <wx/glcanvas.h>
 
-#include "MT/MT_GUI/base/MT_FrameBase.h"
-#include "MT/MT_Tracking/base/MT_TrackerBase.h"
-#include "MT/MT_Core/gl/glSupport.h"
+#include "MT/MT_Tracking/base/MT_TrackerFrameBase.h"
+//#include "MT/MT_Tracking/base/MT_TrackerBase.h"
+//#include "MT/MT_Core/gl/glSupport.h"
 
-class MT_CameraSlaveFrame : public MT_FrameBase
+class MT_CameraSlaveFrame : public MT_TrackerFrameBase
 {
 protected:
-	MT_TrackerFrameGroup* m_pTrackerFrameGroup;
-	MT_TrackerBase* m_pTracker;
 	IplImage* m_pCurrentFrame;
 	int m_iIndex;
-    int m_iView;
     bool m_bHaveFrame;
 
 public:
@@ -37,10 +34,9 @@ public:
 
     virtual void doMasterInitialization();
 
-	virtual bool doMouseCallback(wxMouseEvent& event, 
-		double viewport_x,
-		double viewport_y);
 	virtual bool doKeyboardCallback(wxKeyEvent& event);
+
+	virtual void doUserStep();
 
     void setImage(IplImage* image)
     {
@@ -48,16 +44,7 @@ public:
     }
 	void setFrame(IplImage* frame);
 
-	virtual void fillPopupMenu(wxMenu* pmenu);
-
-	void setTracker(MT_TrackerBase* tracker);
-	void setTrackerFrameGroup(MT_TrackerFrameGroup* frameGroup);
 	void setIndex(int index){m_iIndex = index;};
-	void setView(unsigned int i);
-
-	void addTrackerFrameGroupToPopupMenu(wxMenu* pmenu);
-
-	virtual void onPopupFrameSelect(wxCommandEvent& event);
 
 	virtual void prepareToClose();
 	virtual void setTimer(int period_msec);

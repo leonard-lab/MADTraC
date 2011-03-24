@@ -256,7 +256,8 @@ protected:
     void doTrackerGLDrawing();
     void initTrackerFrameData();
     void writeTrackerXML();
-    void doTrackerStep();
+
+	void doTrackerStep();
 
 	virtual void acquireFrames();
 	virtual void runTracker();

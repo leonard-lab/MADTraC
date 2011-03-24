@@ -819,6 +819,7 @@ protected:
     void doStep();
 
 	virtual void fillPopupMenu(wxMenu* menu){};
+	bool m_bAmSlave;
 
 public:
     /** Basic constructor.  Doesn't do much.  Most initialization
