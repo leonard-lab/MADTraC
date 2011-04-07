@@ -270,7 +270,6 @@ protected:
 	
 	MT_TrackerFrameGroup* m_pTrackerFrameGroup;
 	void addFrameGroupToMenu(wxMenu* menu, long base_id);
-	void setView(unsigned int i);
 
 public:
     // constructor
@@ -283,6 +282,8 @@ public:
     // destructor needs to handle memory management
     virtual ~MT_TrackerFrameBase();
 
+	void setView(unsigned int i);
+
     virtual void doUserQuit()
     { MT_FrameBase::doUserQuit(); };
 
@@ -291,6 +292,10 @@ public:
 
     virtual bool doKeyboardCallback(wxKeyEvent& event);
     virtual bool doMouseCallback(wxMouseEvent& event, double viewport_x, double viewport_y);
+    virtual bool doSlaveKeyboardCallback(wxKeyEvent& event, int slave_index)
+	{return MT_DO_BASE_KEY;};
+    virtual bool doSlaveMouseCallback(wxMouseEvent& event, double viewport_x, double viewport_y, int slave_index)
+	{return MT_DO_BASE_MOUSE;};
 
     virtual void onMenuFileQuit(wxCommandEvent& event)
     { MT_FrameBase::onMenuFileQuit(event); };
@@ -342,6 +347,7 @@ public:
     virtual void doUserGLInitialization()
     { MT_FrameBase::doUserGLInitialization(); };
     virtual void doUserGLDrawing();
+	virtual void doSlaveGLDrawing(int slave_index){};
 
     virtual void doUserTimedEvents()
     { MT_FrameBase::doUserTimedEvents(); };

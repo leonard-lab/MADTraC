@@ -21,6 +21,7 @@ class MT_CameraSlaveFrame : public MT_TrackerFrameBase
 {
 protected:
 	int m_iIndex;
+	MT_TrackerFrameBase* m_pTFBParent;
 
 public:
     MT_CameraSlaveFrame(wxFrame* parent,
@@ -30,9 +31,12 @@ public:
                         const wxSize& size = wxSize(640,480),
                         long style = MT_FIXED_SIZE_FRAME);
 
+	virtual void setMTParent(MT_TrackerFrameBase* parent);
+
     virtual void doMasterInitialization();
 
 	virtual bool doKeyboardCallback(wxKeyEvent& event);
+	virtual bool doMouseCallback(wxMouseEvent& event, double viewport_x, double viewport_y);
 
 	virtual void doUserStep();
 

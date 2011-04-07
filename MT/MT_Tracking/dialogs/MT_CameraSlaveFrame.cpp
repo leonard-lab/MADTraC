@@ -15,7 +15,8 @@ MT_CameraSlaveFrame::MT_CameraSlaveFrame(wxFrame* parent,
                                          const wxSize& size,
                                          long style)
     : MT_TrackerFrameBase(parent, id, title, pos, size, style),
-      m_iIndex(0)
+      m_iIndex(0),
+	  m_pTFBParent(NULL)
 {
 }
 
@@ -69,6 +70,38 @@ void MT_CameraSlaveFrame::doUserGLDrawing()
 	{
 		m_pTracker->doGLDrawing(m_iIndex);
 	}
+	if(m_pTFBParent)
+	{
+		m_pTFBParent->doSlaveGLDrawing(m_iIndex);
+	}
+}
+
+void MT_CameraSlaveFrame::setMTParent(MT_TrackerFrameBase* parent)
+{
+	if(!m_pTFBParent)
+	{
+		m_pTFBParent = parent;
+	}
+}
+
+bool MT_CameraSlaveFrame::doMouseCallback(wxMouseEvent& event, double viewport_x, double viewport_y)
+{
+    bool result = MT_DO_BASE_MOUSE;
+
+	bool presult = MT_DO_BASE_MOUSE;
+	if(m_pTFBParent)
+	{
+		presult = m_pTFBParent->doSlaveMouseCallback(event, viewport_x, viewport_y, m_iIndex);
+	}
+	result = result && presult;
+
+    bool tresult = result;
+    if(result == MT_DO_BASE_MOUSE)
+    {
+        tresult = MT_TrackerFrameBase::doMouseCallback(event, viewport_x, viewport_y);
+    }
+    
+    return tresult && result;
 }
 
 bool MT_CameraSlaveFrame::doKeyboardCallback(wxKeyEvent& event)
@@ -82,6 +115,13 @@ bool MT_CameraSlaveFrame::doKeyboardCallback(wxKeyEvent& event)
         result = MT_SKIP_BASE_KEY;
         break;
     }
+
+	bool presult = MT_DO_BASE_KEY;
+	if(m_pTFBParent)
+	{
+		presult = m_pTFBParent->doSlaveKeyboardCallback(event, m_iIndex);
+	}
+	result = result && presult;
 
     bool tresult = result;
     if(result == MT_DO_BASE_KEY)
