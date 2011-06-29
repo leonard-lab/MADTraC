@@ -39,6 +39,8 @@ public:
 	virtual void SetControl(std::vector<double> control){};
 	virtual std::vector<double> GetControl(){std::vector<double> u; u.resize(0); return u;};
 
+	virtual std::vector<double> GetMeasurements(){std::vector<double> z; z.resize(0); return z;};
+
     virtual const char* getInfo() const {return "MT_RobotBase...";};
 
     virtual unsigned char IsConnected() const
