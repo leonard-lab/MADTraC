@@ -81,7 +81,11 @@ for ix = 1 : length(XMLStruct.Children)
         for jx = 1 : length(ParamsNode.Children),
             if ~isjunknode(ParamsNode.Children(jx)),
                 pn.Name = strtrim(ParamsNode.Children(jx).Name);
-                pn.Value = strtrim(ParamsNode.Children(jx).Children(1).Data);
+                if ~isempty(ParamsNode.Children(jx).Children) > 0
+                    pn.Value = strtrim(ParamsNode.Children(jx).Children(1).Data);
+                else
+                    pn.Value = '';
+                end
                 if strcmp(pn.Name, 'Video_Source'),
                     XDInfo.VideoSource = pn.Value;
                 end
