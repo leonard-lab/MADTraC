@@ -87,6 +87,8 @@ private:
     void registerDialogForXML(wxWindow* dialog);
     void onChildMove(wxCommandEvent& event);
 
+    bool m_bDisableWZ;
+
 protected:
 
 public:

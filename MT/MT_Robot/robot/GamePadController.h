@@ -26,7 +26,7 @@ protected:
     MT_RobotBase* myWZRobot; /**< Robot assigned to the WZ axis */
   
     unsigned int connected;  /**< Allow for a poll of whether the gamepad is connected and operational or not. */
-  
+
     /** Common initializations - sets parameter values to defaults
         and calls MT_HIDGamePad.Init() */
     void common_init();
@@ -70,6 +70,8 @@ public:
   
     /** Function to query whether the gamepad is connected and operational or not. */
     unsigned int IsConnected() const { return connected; };
+
+    bool m_bDisableWZ;
   
     void SetParameters(float setMaxSpeed, float setMaxTurning, unsigned int setSpeedDeadBand, unsigned int setTurningDeadBand);
 
@@ -91,7 +93,7 @@ public:
     /** Function to return a pointer to the XY robot (for comparison) */
     MT_RobotBase* getXYRobot() const { return myXYRobot; };
     /** Function to return a pointer to the WZ robot (for comparison) */
-    MT_RobotBase* getWZRobot() const { return myWZRobot; };
+	MT_RobotBase* getWZRobot() const { return m_bDisableWZ ? NULL : myWZRobot; };
     /** Function to cycle the XY axis robot to the next available in the specified direction. 
         @param direction +1 for robot with the next highest ID, -1 for robot with the next lowest ID
         @see cycle_robot

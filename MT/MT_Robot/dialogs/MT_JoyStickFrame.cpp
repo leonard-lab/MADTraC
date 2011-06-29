@@ -61,6 +61,7 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
     myGamePadController(),
     m_RobotConfigXML(),    
     m_bOwnRobots(false),
+	m_bDisableWZ(true),
     m_pTimer(NULL)
 {
     if(!inRobots)
@@ -72,6 +73,8 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
     {
         TheRobots = inRobots;
     }
+
+    myGamePadController.m_bDisableWZ = m_bDisableWZ;
 
     // This needs to be initialized false - e.g. MSW does not do this for us!
     DoEvents = false;
@@ -142,6 +145,7 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
     //WZChoices.Add("----");
     WZRobotChoice = new wxChoice(this, ID_WZROBOTCHC, wxDefaultPosition, wxSize(100,20), WZChoices);
     wzbox->Add(WZRobotChoice, 0, wxTOP, 10);
+	WZRobotChoice->Enable(!m_bDisableWZ);
 
     hbox0->Add(xybox, 0, wxALL, 10);
     hbox0->Add(wzbox, 0, wxALL, 10);
@@ -314,10 +318,10 @@ void MT_JoyStickFrame::UpdateRobotChoices(bool FlaggedChanges)
                     xychoiceindex = i;
                 }
             }
-            if(TheRobots->GetRobot(i) == myGamePadController.getWZRobot())
+            if(!m_bDisableWZ && TheRobots->GetRobot(i) == myGamePadController.getWZRobot())
             {
                 // if this is the WZ robot, remove it from the XY list
-                MT_SafeRemoveString(&XYChoices, MT_StringToWxString(TheRobots->RobotName[i]));
+                //MT_SafeRemoveString(&XYChoices, MT_StringToWxString(TheRobots->RobotName[i]));
                 // also make sure it is "selected" in the WZ list
                 if(wzchoiceindex != i)
                 {
@@ -355,8 +359,15 @@ void MT_JoyStickFrame::UpdateRobotChoices(bool FlaggedChanges)
     botname = MT_StringToWxString(TheRobots->RobotName[wzchoiceindex]);
     unsigned int wzchoiceindex_inlist = WZChoices.Index(botname);
     // set the selection in the control
-    XYRobotChoice->SetSelection(xychoiceindex_inlist);
-    WZRobotChoice->SetSelection(wzchoiceindex_inlist);
+    XYRobotChoice->SetSelection(xychoiceindex_inlist + 1);
+	if(!m_bDisableWZ)
+	{
+		WZRobotChoice->SetSelection(wzchoiceindex_inlist + 1);
+	}
+	else
+	{
+		WZRobotChoice->SetSelection(0);
+	}
 
 }
 
@@ -441,6 +452,7 @@ void MT_JoyStickFrame::OnXYChoice(wxCommandEvent& WXUNUSED(event))
             }
         }
 
+		printf("rchoice = %d\n", rchoice);
         // rchoice = -1 means not found
         if(rchoice >= 0)
         {
@@ -457,6 +469,11 @@ void MT_JoyStickFrame::OnXYChoice(wxCommandEvent& WXUNUSED(event))
 
 void MT_JoyStickFrame::OnWZChoice(wxCommandEvent& WXUNUSED(event))
 {
+	if(m_bDisableWZ)
+	{
+		WZRobotChoice->SetSelection(0);
+		return;
+	}
 
     // no choices => something odd happened
     if(WZChoices.Count())

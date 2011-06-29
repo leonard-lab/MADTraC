@@ -136,12 +136,12 @@ void MT_ComIO::ComInit(bool handshaking, MT_Baudrate baud_rate)
 		{
 			t[i] = PortString[i];
 		}
-		lLastError = serial.Open(t, 0, 0, false);
+		lLastError = serial.Open((LPCTSTR)t, 0, 0, false);
 #else
         lLastError = serial.Open((LPCTSTR)(PortString),0,0,false);
 #endif
         if (lLastError != ERROR_SUCCESS){
-            printf("Unable to open COM-port\n");
+			printf("Unable to open COM-port: %ld\n", lLastError);
             connected = 0;
         }
 

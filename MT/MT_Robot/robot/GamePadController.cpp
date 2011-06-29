@@ -48,6 +48,8 @@ void MT_GamePadController::common_init()
   
     // Initially we have no robots
     AvailableRobots.resize(0);
+
+	m_bDisableWZ = false;
   
 }
 
@@ -173,6 +175,11 @@ unsigned char MT_GamePadController::SetXYRobot(MT_RobotBase* setXYRobot)
 unsigned char MT_GamePadController::SetWZRobot(MT_RobotBase* setWZRobot)
 {
 
+	if(m_bDisableWZ)
+	{
+		return MT_ROBOT_ASSIGNMENT_ERROR;
+	}
+
     // make the robot non-autonomous
     return AssignRobot(myWZRobot,setWZRobot); 
   
@@ -184,16 +191,17 @@ unsigned char MT_GamePadController::AssignRobot(MT_RobotBase*& RobotToChange, MT
     {
         RobotToChange = NULL;
     }
+	DisplayAssignedRobots();
     
     // This is the same robot, treat as an error
     if(NewBot == RobotToChange){
-        //printf("C1\n");
+        printf("C1\n");
         return MT_ROBOT_ASSIGNMENT_ERROR;
     }
   
     // This robot already has an axis, so just bail
     if(NewBot == myXYRobot || NewBot == myWZRobot){
-        //printf("C2\n");
+        printf("C2\n");
         return MT_ROBOT_ASSIGNMENT_ERROR;
     }
   
@@ -259,7 +267,7 @@ void MT_GamePadController::PollAndUpdate(bool DoControl)
     js_axes[1] = Zf;
     js_axes[2] = Xf;
     js_axes[3] = Yf;
-    if(myWZRobot){
+    if(!m_bDisableWZ && myWZRobot){
         myWZRobot->JoyStickControl(js_axes, js_buttons);
     }
   
