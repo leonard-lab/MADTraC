@@ -201,16 +201,6 @@ class MT_TrackerFrameBase : public MT_FrameBase
     friend class MT_TrackerControlFrameBase;
 private:
 
-    // various directories / paths
-    wxString m_sAVIDirectory;
-    wxString m_sROIDirectory;
-    wxString m_sBackgroundDirectory;
-    wxString m_sDataFileDirectory;
-    wxString m_sAVIPath;
-    wxString m_sROIPath;
-    wxString m_sBackgroundPath;
-    wxString m_sDataFilePath;
-
     // state flags
     bool m_bTracking;
     // keep track of which frame we should be viewing (from the enum above)
@@ -222,6 +212,16 @@ private:
     void addDataReportsToTrackerMenu(wxMenu* tracker_menu);
 
 protected:
+    
+    // various directories / paths
+    wxString m_sAVIDirectory;
+    wxString m_sROIDirectory;
+    wxString m_sBackgroundDirectory;
+    wxString m_sDataFileDirectory;
+    wxString m_sAVIPath;
+    wxString m_sROIPath;
+    wxString m_sBackgroundPath;
+    wxString m_sDataFilePath;
 
     /* pointer to the control frame 
      *  - protected b/c needs to be available to children,
