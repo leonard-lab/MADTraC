@@ -13,8 +13,10 @@
 
 #include "MixGaussians.h"
 
+#define MAX_ITERS 1000
 
 int intpow(int& a, int& n);
+void calculate_axes_and_angle(double xx, double xy, double yy, double* M, double* m, double* o);
 
 MixGaussians::MixGaussians()
 {
@@ -22,6 +24,10 @@ MixGaussians::MixGaussians()
 
     m_vMeans.resize(0);
     m_vCovariances.resize(0);
+
+    m_dMaxEccentricity = 0;
+    m_dMaxDistance = -1;              
+    m_dMaxSizePercentChange = -1;
 }
 
 MixGaussians::MixGaussians(int numdists, const CvRect& boundingbox)
@@ -31,6 +37,15 @@ MixGaussians::MixGaussians(int numdists, const CvRect& boundingbox)
     m_vMeans.resize(numdists);
     m_vCovariances.resize(numdists);
 
+    m_dMaxEccentricity = 0;
+    m_dMaxDistance = -1;              
+    m_dMaxSizePercentChange = -1;    
+
+    CoverBox(numdists, boundingbox);
+}
+
+void MixGaussians::CoverBox(int numdists, const CvRect& boundingbox)
+{
     double x = (double) boundingbox.x;
     double y = (double) boundingbox.y;
     double width = (double) boundingbox.width;
@@ -49,11 +64,16 @@ MixGaussians::MixGaussians(int numdists, const CvRect& boundingbox)
     {
         temp_vector.data[0] = x + (width - 1)/2.0;
         temp_vector.data[1] = y + ((height - 1)*(i+1))/((double) numdists + 1);
-                
-        m_vMeans[i] = temp_vector;
-                
-        m_vCovariances[i] = temp_matrix;
+
+        AddDist(temp_vector, temp_matrix);
     }
+}
+
+void MixGaussians::ClearDists()
+{
+    m_iNumDists = 0;
+    m_vMeans.resize(0);
+    m_vCovariances.resize(0);
 }
 
 void MixGaussians::AddDist(const MT_Vector2& newmean, const MT_Matrix2x2& newcovariance)
@@ -108,12 +128,17 @@ void MixGaussians::GetCovariances(std::vector<MT_Matrix2x2>& covariances)
    The algorithm followed is a standard expectation maximisation for a mixture of Gaussians
    with the exception that all distributions are assumed to have equal weight in the
    mixture. */
-void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int framenumber)
+void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int max_iters)
 {
     // Retrieving relevant data
     int numpixels = RawData->GetNumPixels();
     std::vector<CvPoint> pixellist(numpixels);
     RawData->GetPixelList(pixellist);
+
+    if(max_iters <= 0)
+    {
+        max_iters = MAX_ITERS;
+    }
         
     // Check on the length of the pixelalloc vector
     if (pixelalloc.size() != (unsigned int) numpixels)
@@ -130,6 +155,26 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int fr
     double *oldxs;
     double *oldys;
     double *oldangles;
+    double *oldms;
+    double *oldMs;
+
+    double *orig_xs = new double[m_iNumDists];
+    double *orig_ys = new double[m_iNumDists];
+    double *orig_Ms = new double[m_iNumDists];
+    double *orig_ms = new double[m_iNumDists];
+    
+    double m, M, Mdiff, mdiff, o;
+    for(int i = 0; i < m_iNumDists; i++)
+    {
+        orig_xs[i] = m_vMeans[i].data[0];
+        orig_ys[i] = m_vMeans[i].data[1];
+        calculate_axes_and_angle(m_vCovariances[i].data[0],
+                                 m_vCovariances[i].data[1],
+                                 m_vCovariances[i].data[3],
+                                 &M, &m, &o);
+        orig_Ms[i] = M;
+        orig_ms[i] = m;
+    }
         
     ps = new double[m_iNumDists*numpixels];
     pls = new double[m_iNumDists*numpixels];
@@ -138,10 +183,12 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int fr
     oldxs = new double[m_iNumDists];
     oldys = new double[m_iNumDists];
     oldangles = new double[m_iNumDists];
+    oldMs = new double[m_iNumDists];
+    oldms = new double[m_iNumDists];    
         
     // Temporary variables needed inside the main loop
     int i, j, k;
-    double mu_x, mu_y, D;
+    double mu_x, mu_y, D, s_xx, s_yy, s_xy, dx, dy;
         
     MT_Matrix2x2 V, T;
     MT_Matrix2x1 P;
@@ -160,15 +207,26 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int fr
     // maxchange measures the maximum amount that the distributions have varied, either in mean position or
     // in angle. We iterate until all means move by less than 1 pixel in either direction and all angles
     // shift by less than 1 degree.
-    while (maxchange > 1.0)
+    while (maxchange > 1.0 && numiters < max_iters)
     {
         numiters++;
+#ifdef SHOW_ITERS        
+        printf("\t\tn = %d\n", numiters);
+#endif
         // Measure the old parameters for comparison at the end of the loop
         for (i=0 ; i < m_iNumDists ; i++)
         {
+            calculate_axes_and_angle(m_vCovariances[i].data[0],
+                                     m_vCovariances[i].data[1],
+                                     m_vCovariances[i].data[3],
+                                     &M, &m, &o);
+            oldMs[i] = M;
+            oldms[i] = m;
+            oldangles[i] = o;
+            
             oldxs[i] = m_vMeans[i].data[0];
             oldys[i] = m_vMeans[i].data[1];
-            oldangles[i] = atan2(m_vCovariances[i].data[3] - m_vCovariances[i].data[0] + sqrt(pow(m_vCovariances[i].data[0] - m_vCovariances[i].data[3],2) + 4.0*pow(m_vCovariances[i].data[1],2)), 2*m_vCovariances[i].data[1]);
+            //oldangles[i] = atan2(m_vCovariances[i].data[3] - m_vCovariances[i].data[0] + sqrt(pow(m_vCovariances[i].data[0] - m_vCovariances[i].data[3],2) + 4.0*pow(m_vCovariances[i].data[1],2)), 2*m_vCovariances[i].data[1]);
         }
                 
         // Calculate the probability density for each pixel in each distribution
@@ -176,11 +234,22 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int fr
         {
             mu_x = m_vMeans[i].data[0];
             mu_y = m_vMeans[i].data[1];
-            D = m_vCovariances[i].data[0]*m_vCovariances[i].data[3] - pow(m_vCovariances[i].data[1],2);
+            s_xx = m_vCovariances[i].data[0];
+            s_xy = m_vCovariances[i].data[1];
+            s_yy = m_vCovariances[i].data[3];
+            D = s_xx*s_yy - s_xy*s_xy;
                         
             for (j=0 ; j < numpixels ; j++)
             {
-                ps[i + j*m_iNumDists] = 1.0/(2.0*M_PI*sqrt(D))*exp(-1.0/(2.0*D)*(m_vCovariances[i].data[3]*pow(pixellist[j].x - mu_x,2) + m_vCovariances[i].data[0]*pow(pixellist[j].y - mu_y,2) - 2.0*m_vCovariances[i].data[1]*(pixellist[j].x - mu_x)*(pixellist[j].y - mu_y)));
+                dx = (pixellist[j].x - mu_x);
+                dy = (pixellist[j].y - mu_y);
+                ps[i + j*m_iNumDists] = (0.5/(M_PI*sqrt(D)))*
+                    exp(-(0.5/D)*(s_yy*dx*dx + s_xx*dy*dy + 2.0*s_xy*dx*dy));
+/*                ps[i + j*m_iNumDists] =
+            1.0/(2.0*M_PI*sqrt(D))*exp(-1.0/(2.0*D)*(m_vCovariances[i].data[3]*pow(pixellist[j].x
+            - mu_x,2) + m_vCovariances[i].data[0]*pow(pixellist[j].y -
+            mu_y,2) - 2.0*m_vCovariances[i].data[1]*(pixellist[j].x -
+            mu_x)*(pixellist[j].y - mu_y))); */
             }
         }
                 
@@ -300,12 +369,83 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int fr
             {
                 maxdiff = ydiff;
             }
-                        
-            anglediff = abs(atan2(m_vCovariances[i].data[3] - m_vCovariances[i].data[0] + sqrt(pow(m_vCovariances[i].data[0] - m_vCovariances[i].data[3],2) + 4.0*pow(m_vCovariances[i].data[1],2)), 2*m_vCovariances[i].data[1]) - oldangles[i]);
+            
+            calculate_axes_and_angle(m_vCovariances[i].data[0],
+                                     m_vCovariances[i].data[1],
+                                     m_vCovariances[i].data[3],
+                                     &M,
+                                     &m,
+                                     &o);
+
+            anglediff = fabs(o - oldangles[i]);
+            //anglediff = abs(atan2(m_vCovariances[i].data[3] - m_vCovariances[i].data[0] + sqrt(pow(m_vCovariances[i].data[0] - m_vCovariances[i].data[3],2) + 4.0*pow(m_vCovariances[i].data[1],2)), 2*m_vCovariances[i].data[1]) - oldangles[i]);
+            anglediff *= 57.2958;
             if (anglediff > maxdiff)
             {
                 maxdiff = anglediff;
             }
+
+
+            Mdiff = 100.0*fabs(M - oldMs[i]);
+            mdiff = 100.0*fabs(m - oldms[i]);
+            if(Mdiff > maxdiff)
+            {
+                maxdiff = Mdiff;
+            }
+            if(mdiff > maxdiff)
+            {
+                maxdiff = mdiff;
+            }
+
+            dx = m_vMeans[i].data[0] - orig_xs[i];
+            dy = m_vMeans[i].data[1] - orig_ys[i];
+            if(m_dMaxDistance > 0 && (dx*dx + dy*dy >= m_dMaxDistance))
+            {
+                printf("Constrain distance\n");
+                double th = atan2(dy, dx);
+                m_vMeans[i].data[0] = orig_xs[i] + m_dMaxDistance*cos(th);
+                m_vMeans[i].data[1] = orig_ys[i] + m_dMaxDistance*sin(th);                
+            }
+
+            double area = M_PI*m*M;
+            double old_area = M_PI*orig_Ms[i]*orig_ms[i];
+            double eccentricity = M/m;
+            if(eccentricity == 0)
+            {
+                eccentricity = 1.0;
+            }
+            bool const_e = (m_dMaxEccentricity > 1.0 &&
+                                 (eccentricity > m_dMaxEccentricity));
+            bool const_a = (m_dMaxSizePercentChange > 0 &&
+                            ((fabs(area - old_area)/(old_area)) > 0.01*m_dMaxSizePercentChange));
+            if(const_e || const_a)
+            {
+                if(const_e)
+                {
+                    printf("Constrain eccentricity\n");
+                    eccentricity = m_dMaxEccentricity;
+                    M = m*m_dMaxEccentricity;
+                }
+                if(const_a)
+                {
+                    printf("Constrain area\n");
+                    area = old_area*(1.0 + 0.01*m_dMaxSizePercentChange);
+                    m = sqrt(area/(M_PI*eccentricity));
+                    M = m*eccentricity;
+                }
+                double c = cos(o);
+                double s = sin(o);
+                m_vCovariances[i].data[0] = 0.25*area*(c*c*M*M + s*s*m*m);
+                m_vCovariances[i].data[1] = 0.25*area*(c*s*(M*M - m*m));
+                m_vCovariances[i].data[2] = m_vCovariances[i].data[1];
+                m_vCovariances[i].data[3] = s*s*M*M + c*c*m*m;
+            }
+#define SHOW_ITERS            
+#ifdef SHOW_ITERS            
+            printf("\t\t%f, %f, %f, %f, %f (%f, %f)\n",
+                   xdiff, ydiff, anglediff, Mdiff, mdiff, M, m);
+#endif
+            
         }
                 
         maxchange = maxdiff;
@@ -321,10 +461,11 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int fr
                 
         maxlikelihood = -1.0;
         numberdists = 0;
+        distributionnumber = -1;
         for (i=0 ; i < m_iNumDists ; i++)
         {
             // Determine which distribution has the maximum likelihood of containing the pixel
-            if (pls[i + j*m_iNumDists] > maxlikelihood)
+            if (pls[i + j*m_iNumDists] > maxlikelihood && ps[i + j*m_iNumDists] > 0.002)
             {
                 maxlikelihood = pls[i + j*m_iNumDists];
                 distributionnumber = i;
@@ -343,7 +484,7 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int fr
         }
                 
         // If the pixel doesn't already belong to the distribution with the maximum likelihood, we include it
-        if (distmembership[distributionnumber] == 0)
+        if (distributionnumber >= 0 && distmembership[distributionnumber] == 0)
         {
             distmembership[distributionnumber] = 1;
             numberdists++;
@@ -368,7 +509,15 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int fr
     delete[] oldxs;
     delete[] oldys;
     delete[] oldangles;
+    delete[] oldMs;
+    delete[] oldms;
     delete[] distmembership;
+
+    delete[] orig_xs;
+    delete[] orig_ys;
+    delete[] orig_Ms;
+    delete[] orig_ms;    
+    
 }
 
 int intpow(int& a, int& n)
@@ -394,4 +543,17 @@ int intpow(int& a, int& n)
     {
         return 0;
     }
+}
+
+void calculate_axes_and_angle(double xx, double xy, double yy, double* M, double* m, double* o)
+{
+    double d = sqrt(4.0*xy*xy + (xx - yy)*(xx - yy));
+    double a = pow(16.0*M_PI*M_PI*(xx*yy - xy*xy), 0.25);
+    if(a == 0)
+    {
+        a = 1;
+    }
+    *M = sqrt((2*(xx + yy + d))/a);
+    *m = sqrt((2*(xx + yy - d))/a);
+    *o = -0.5*atan2(xy, (xx - yy));
 }
