@@ -20,9 +20,11 @@
 GYBlob::GYBlob()
 {
     m_dXCentre = m_dYCentre = m_dArea = m_dOrientation = m_dMajorAxis = m_dMinorAxis = 0.0;
+    m_dXXMoment = m_dYYMoment = m_dXYMoment = 0;
 }
 
-GYBlob::GYBlob(double x, double y, double A, double phi, double major, double minor)
+GYBlob::GYBlob(double x, double y, double A, double phi, double major, double minor,
+               double xx, double xy, double yy)
 {
     m_dXCentre = x;
     m_dYCentre = y;
@@ -30,6 +32,9 @@ GYBlob::GYBlob(double x, double y, double A, double phi, double major, double mi
     m_dOrientation = phi;
     m_dMajorAxis = major;
     m_dMinorAxis = minor;
+    m_dXXMoment = xx;
+    m_dXYMoment = xy;
+    m_dYYMoment = yy;    
 }
 
 

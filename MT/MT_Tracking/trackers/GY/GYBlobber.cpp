@@ -265,6 +265,9 @@ void GYBlobber::doSegmentation()
             m_CurrentBlobs[currentblob].m_dArea = m_RawBlobData[i]->GetArea();
             m_CurrentBlobs[currentblob].m_dXCentre = m_RawBlobData[i]->GetXCentre();
             m_CurrentBlobs[currentblob].m_dYCentre = m_RawBlobData[i]->GetYCentre();
+            m_CurrentBlobs[currentblob].m_dXXMoment = m_RawBlobData[i]->GetXXMoment();
+            m_CurrentBlobs[currentblob].m_dXYMoment = m_RawBlobData[i]->GetXYMoment();
+            m_CurrentBlobs[currentblob].m_dYYMoment = m_RawBlobData[i]->GetYYMoment();            
 
             // Calculating ellipse (semi) major and minor axes from the moments
             XXMoment = m_RawBlobData[i]->GetXXMoment();
@@ -502,7 +505,9 @@ void GYBlobber::doSegmentation()
                 m_CurrentBlobs[currentblob].m_dArea = ExtractedBlobs[k]->GetArea();
                 m_CurrentBlobs[currentblob].m_dXCentre = ExtractedBlobs[k]->GetXCentre();
                 m_CurrentBlobs[currentblob].m_dYCentre = ExtractedBlobs[k]->GetYCentre();
-
+                m_CurrentBlobs[currentblob].m_dXXMoment = ExtractedBlobs[k]->GetXXMoment();
+                m_CurrentBlobs[currentblob].m_dXYMoment = ExtractedBlobs[k]->GetXYMoment();
+                m_CurrentBlobs[currentblob].m_dYYMoment = ExtractedBlobs[k]->GetYYMoment();            
                 // Calculating ellipse (semi) major and minor axes from the moments
                 XXMoment = ExtractedBlobs[k]->GetXXMoment();
                 YYMoment = ExtractedBlobs[k]->GetYYMoment();

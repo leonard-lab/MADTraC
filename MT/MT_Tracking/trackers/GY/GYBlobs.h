@@ -52,9 +52,13 @@ public:
     double m_dOrientation;
     double m_dMajorAxis;
     double m_dMinorAxis;
+    double m_dXXMoment;
+    double m_dXYMoment;
+    double m_dYYMoment;    
 
     GYBlob();
-    GYBlob(double x, double y, double A, double phi, double major, double minor);
+    GYBlob(double x, double y, double A, double phi, double major, double minor,
+           double xx, double xy, double yy);
 };
 
 
