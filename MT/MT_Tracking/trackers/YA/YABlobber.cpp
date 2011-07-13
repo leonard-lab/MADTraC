@@ -9,6 +9,7 @@
 #include "MT/MT_Core/support/mathsupport.h"
 
 YABlobber::YABlobber(bool UseBoundingBoxes)
+    : m_bCopySequences(false)
 {
     m_bUseBoundingBoxes = UseBoundingBoxes;
     m_BoundingBoxes.resize(0);
@@ -31,8 +32,10 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
     perimeters.resize(0);
     areas.resize(0);
   
-    static CvMemStorage* mem_storage = cvCreateMemStorage(0);
-    static CvSeq* contours = NULL;
+    /*static CvMemStorage* mem_storage = cvCreateMemStorage(0);
+      static CvSeq* contours = NULL;*/
+    CvMemStorage* mem_storage = cvCreateMemStorage(0);
+    CvSeq* contours = NULL;
   
     if(mem_storage)
     {
@@ -126,6 +129,7 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
     double orientangle;
     double qx, qy;
     double x, y;
+    double d, a, major, minor;
     cvZero( maskTemp );
   
     int i;
@@ -212,6 +216,11 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
         mu21 = M21 - 2.0*(M10/M00)*M11 - (M01/M00)*M20 + 2.0*(M10/M00)*(M10/M00)*M01;
         mu30 = M30 - 3.0*(M10/M00)*M20 + 2.0*(M10/M00)*(M10/M00)*M10;
         mu03 = M03 - 3.0*(M01/M00)*M02 + 2.0*(M01/M00)*(M01/M00)*M01;
+
+        d = sqrt(4.0*mu11*mu11 + (mu20 - mu02)*(mu20 - mu02));
+        a = pow(16.0*MT_PI*MT_PI*(mu20*mu02 - mu11*mu11), 0.25);
+        minor = sqrt(sqrt(M00)*(2.0*(mu20 + mu02 - d))/a);
+        major = sqrt(sqrt(M00)*(2.0*(mu20 + mu02 + d))/a);        
     
         orientangle =  180.0 - MT_RAD2DEG * 0.5*atan2( (mu11*2.0), (mu20-mu02) );
     
@@ -260,7 +269,15 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
         tz = MT_getTimeSec();
     
         ////printf("area %f, perimeter %f\n", areas[i], perimeters[i]);
-        m_blobs.push_back(YABlob(perimeters[i], areas[i], x, y, orientangle, mu20, mu11, mu02, qx, qy));
+        m_blobs.push_back(
+            YABlob(perimeters[i],
+                   areas[i],
+                   x, y, orientangle, mu20, mu11, mu02, qx, qy,
+                   minor, major));
+        if(m_bCopySequences)
+        {
+            m_blobs[m_blobs.size()-1].copySequence(cs);
+        }
     
         // end looping over contours
         //*num = numFilled;
@@ -275,8 +292,10 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
   
     //free(lenstore);
     cvReleaseImage( &maskTemp );  
-    if( mem_storage != NULL ) cvClearMemStorage( mem_storage );
-    if( contours != NULL ) cvClearSeq( contours );
+/*    if( mem_storage != NULL ) cvClearMemStorage( mem_storage );
+      if( contours != NULL ) cvClearSeq( contours );*/
+    cvClearSeq(contours);
+    cvReleaseMemStorage(&mem_storage);
   
     return m_blobs;
   
