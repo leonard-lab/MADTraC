@@ -18,7 +18,7 @@
 
 class MT_LoadXDFDialog : public wxDialog
 {
-private:
+protected:
     MT_ExperimentDataFile* m_pXDF;
     MT_DataGroup* m_pDG;
 
@@ -32,16 +32,26 @@ private:
     wxString m_sXChoice;
     wxString m_sYChoice;
     
-    void onTSChanged(wxCommandEvent& event);
-    void onOKClicked(wxCommandEvent& event);
+    bool m_bAmDerived;
+
+    unsigned int m_iFramePeriodMSec;
+    unsigned int m_iXIndex;
+    unsigned int m_iYIndex;
+
+    virtual void initData();
+    virtual void initGUI();
     
 public:
     MT_LoadXDFDialog(wxWindow* parent,
-                     MT_ExperimentDataFile* pXDF);
+                     MT_ExperimentDataFile* pXDF,
+                     bool am_derived = false);
 
-    void getInfo(std::string* x_name,
-                 std::string* y_name,
-                 unsigned int* frame_period_msec);
+    void onTSChanged(wxCommandEvent& event);
+    void onOKClicked(wxCommandEvent& event);
+
+    virtual void getInfo(std::string* x_name,
+                         std::string* y_name,
+                         unsigned int* frame_period_msec);
 
 };
 

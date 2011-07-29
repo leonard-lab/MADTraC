@@ -8,23 +8,34 @@ enum
 };
 
 MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
-                                   MT_ExperimentDataFile* pXDF)
+                                   MT_ExperimentDataFile* pXDF,
+                                   bool am_derived)
     : wxDialog(parent,
                wxID_ANY,
                wxT("XDF Settings"),
                wxDefaultPosition,
                wxDefaultSize,
                wxDEFAULT_DIALOG_STYLE),
-      m_pXDF(pXDF)
+      m_pXDF(pXDF),
+      m_bAmDerived(am_derived),
+      m_iFramePeriodMSec(32),
+      m_iXIndex(0),
+      m_iYIndex(1)
+{
+    if(!m_bAmDerived)
+    {
+        initData();
+        initGUI();
+    }
+}
+
+void MT_LoadXDFDialog::initData()
 {
     /* gather relevant information from XDF */
     std::vector<std::string> datanames;
     std::vector<std::string> datafiles;
     m_pXDF->getFilesFromXML(&datanames, &datafiles);
 
-    unsigned int x_guess = 0;
-    unsigned int y_guess = 0;
-    unsigned int frame_period_guess = 32;
     for(unsigned int i = 0; i < datanames.size(); i++)
     {
         wxString cname(MT_StringToWxString(datanames[i].c_str()));
@@ -33,12 +44,12 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
         if(cname.Find(wxT("X")) != wxNOT_FOUND ||
            cname.Find(wxT("x")) != wxNOT_FOUND)
         {
-            x_guess = i;
+            m_iXIndex = i;
         }
         if(cname.Find(wxT("Y")) != wxNOT_FOUND ||
            cname.Find(wxT("y")) != wxNOT_FOUND)
         {
-            y_guess = i;
+            m_iYIndex = i;
         }
     }
 
@@ -54,7 +65,7 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
             int j = m_asXChoices.Index(X_Found);
             if(j != wxNOT_FOUND)
             {
-                x_guess = j;
+                m_iXIndex = j;
             }
         }
         i = pDG->GetIndexByName(MT_XDFSettingsGroup::YPlaybackName);
@@ -64,7 +75,7 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
             int j = m_asXChoices.Index(Y_Found);
             if(j != wxNOT_FOUND)
             {
-                y_guess = j;
+                m_iYIndex = j;
             }
         }
         i = pDG->GetIndexByName(MT_XDFSettingsGroup::PlaybackFramePeriodName);
@@ -73,14 +84,19 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
             int v = (int) pDG->GetNumericValue(i);
             if(v > 0)
             {
-                frame_period_guess = v;
+                m_iFramePeriodMSec = v;
             }
         }
     }
-    if(x_guess == y_guess)
+    if(m_iXIndex == m_iYIndex)
     {
-        y_guess = x_guess + 1;
+        m_iYIndex = m_iXIndex + 1;
     }
+
+}
+
+void MT_LoadXDFDialog::initGUI()
+{
 
     /* GUI setup */
     wxBoxSizer* vbox0 = new wxBoxSizer(wxVERTICAL);
@@ -119,7 +135,7 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
     hbox1->Add(new wxStaticText(this, wxID_ANY, wxT("Time Step [msec]")),
                0, wxLEFT | wxRIGHT, 10);
     wxString sDt;
-    sDt.Printf(wxT("%d"), frame_period_guess);
+    sDt.Printf(wxT("%d"), m_iFramePeriodMSec);
     m_pTimeStepCtrl = new wxTextCtrl(this,
                                      ID_TIMESTEP,
                                      sDt,
@@ -140,8 +156,8 @@ MT_LoadXDFDialog::MT_LoadXDFDialog(wxWindow* parent,
             wxEVT_COMMAND_TEXT_UPDATED,
             wxCommandEventHandler(MT_LoadXDFDialog::onTSChanged));
 
-    m_pXChoice->SetSelection(x_guess);
-    m_pYChoice->SetSelection(y_guess);
+    m_pXChoice->SetSelection(m_iXIndex);
+    m_pYChoice->SetSelection(m_iYIndex);
 }
 
 void MT_LoadXDFDialog::onTSChanged(wxCommandEvent& event)
