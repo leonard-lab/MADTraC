@@ -483,20 +483,35 @@ void GYBlobber::doSegmentation()
             m_RawBlobData[i]->GetPixelList(PixelList);
             for (k = 0 ; k < m_RawBlobData[i]->GetNumPixels() ; k++)
             {
-                int allocated;
-                int numdists = 1;
-                int dist_number = PixelAllocation[k] % numinrawblob;
-
-                ExtractedBlobs[dist_number]->AddPoint(PixelList[k]);
-                allocated = dist_number;
-
-                while (allocated != PixelAllocation[k])
+                int dists = PixelAllocation[k];
+                int p = 1;
+                for(int i = 0; i < numinrawblob; i++)
                 {
-                    dist_number = ((PixelAllocation[k] - allocated)/(ipow(numinrawblob, numdists))) % numinrawblob;
-                    ExtractedBlobs[dist_number]->AddPoint(PixelList[k]);
-                    allocated += dist_number*ipow(numinrawblob, numdists);
-                    numdists++;
+                    if(dists & p)
+                    {
+                        ExtractedBlobs[i]->AddPoint(PixelList[k]);
+                    }
+                    p *= 2;
                 }
+
+                /* int allocated;
+                 * int numdists = 1;
+                 * int dist_number = PixelAllocation[k] % numinrawblob;
+                 * if(dist_number < 0)
+                 * {
+                 *     continue;
+                 * }
+                 * 
+                 * ExtractedBlobs[dist_number]->AddPoint(PixelList[k]);
+                 * allocated = dist_number;
+                 * 
+                 * while (allocated != PixelAllocation[k])
+                 * {
+                 *     dist_number = ((PixelAllocation[k] - allocated)/(ipow(numinrawblob, numdists))) % numinrawblob;
+                 *     ExtractedBlobs[dist_number]->AddPoint(PixelList[k]);
+                 *     allocated += dist_number*ipow(numinrawblob, numdists);
+                 *     numdists++;
+                 * } */
             }           // end for (k = 0 ; k < m_RawBlobData[i]->GetNumPixels() ; k++)
 
             // Loop through the new blobs and extract their parameters

@@ -36,6 +36,7 @@ protected:
     int m_iNumDists;
     std::vector<MT_Vector2> m_vMeans;
     std::vector<MT_Matrix2x2> m_vCovariances;
+    FILE* m_pDebugFile;
                 
 public:
     // Constructors
@@ -54,6 +55,8 @@ public:
     int GetNumDists();
     void GetMeans(std::vector<MT_Vector2>& means);
     void GetCovariances(std::vector<MT_Matrix2x2>& covariances);
+
+    void setDebugFile(FILE* fp){m_pDebugFile = fp;};
 
     double m_dMaxEccentricity;
     double m_dMaxDistance;
