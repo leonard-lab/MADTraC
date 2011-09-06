@@ -47,7 +47,8 @@ set(support_srcs
   ./support/filesupport.cpp    ./support/filesupport.h
   ./support/kbsupport.cpp      ./support/kbsupport.h
   ./support/OpenCVmath.cpp     ./support/OpenCVmath.h
-  ./support/UKF.cpp            ./support/UKF.h)
+  ./support/UKF.cpp            ./support/UKF.h
+  ./support/BiCC.cpp           ./support/BiCC.h)
 
 set(module_name "MT_Core")
 set(module_srcs ${3rdparty_srcs} ${fileio_srcs} ${gl_srcs} ${primitives_srcs} ${support_srcs})
