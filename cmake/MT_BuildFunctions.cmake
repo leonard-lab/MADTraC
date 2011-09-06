@@ -74,6 +74,7 @@ function(MT_TRANSPOSE_FILE_IN_TREE module_name filename src_path dest_path)
   # using a custom command here makes sure the headers get copied whenever they change
   add_custom_command(TARGET "${module_name}"
     POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${dest_path}/${tree_part}"
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${filename}" "${dest_path}/${tree_part}/"
     )
 endfunction(MT_TRANSPOSE_FILE_IN_TREE)
