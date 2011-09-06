@@ -58,7 +58,9 @@ set(trackers_srcs
   ./trackers/GY/MixGaussians.cpp  ./trackers/GY/MixGaussians.h
   ./trackers/GY/GYBlobber.cpp     ./trackers/GY/GYBlobber.h
   ./trackers/YA/YABlobber.cpp     ./trackers/YA/YABlobber.h
-  ./trackers/YA/YASegmenter.cpp     ./trackers/YA/YASegmenter.h)  
+  ./trackers/YA/YASegmenter.cpp     ./trackers/YA/YASegmenter.h
+  ./trackers/DS/DSGYA_Segmenter.cpp ./trackers/DS/DSGYA_Segmenter.h
+  ./trackers/DS/DSGYBlobber.cpp    ./trackers/DS/DSGYBlobber.h)  
 
 include_directories(${WX_INCLUDE})
 add_definitions(${WX_DEFS})
