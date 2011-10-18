@@ -107,6 +107,11 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
     tA = tB;
   
     contours = cvEndFindContours( &scanner );
+
+    if(!contours)
+    {
+        return m_blobs;
+    }
   
     // Some convenience variables
     const CvScalar CVX_WHITE = CV_RGB(0xff, 0xff, 0xff);
