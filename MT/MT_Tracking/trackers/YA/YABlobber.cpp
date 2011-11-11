@@ -32,15 +32,20 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
     perimeters.resize(0);
     areas.resize(0);
   
-    /*static CvMemStorage* mem_storage = cvCreateMemStorage(0);
-      static CvSeq* contours = NULL;*/
     CvMemStorage* mem_storage = cvCreateMemStorage(0);
     CvSeq* contours = NULL;
   
-    if(mem_storage)
-    {
-        cvClearMemStorage(mem_storage);
-    }
+	if(!mem_storage)
+	{
+		fprintf(stderr, "YABlobber error:  Could not allocate cvMemStorage\n");
+		return m_blobs;
+	}
+
+	if(!BWFrame)
+	{
+		fprintf(stderr, "YABlobber error:  Image is NULL\n");
+		return m_blobs;
+	}
   
     CvContourScanner scanner = cvStartFindContours(BWFrame,
                                                    mem_storage,
@@ -58,10 +63,9 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
     tA = tB;
   
     while( (cs = cvFindNextContour( scanner )) != NULL){
-    
         perimeter = cvContourPerimeter( cs );
         area = fabs(cvContourArea(cs));
-    
+
         // Get rid of blobs that don't fit our criteria
         if (perimeter < MinBlobPerimeter)  /* blob filtering */
         {
@@ -136,19 +140,19 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
     double x, y;
     double d, a, major, minor;
     cvZero( maskTemp );
-  
+
     int i;
     int numFilled = 0;
     //double t0 = MT_getTimeSec();
     double tz;
     double ta = 0, tb = 0, tc = 0, td = 0, te = 0, tf = 0;
-  
+ 
+
     tB = MT_getTimeSec();
     //printf("Middle %f\n", tB-tA);
     tA = tB;
     for (i = 0, cs = contours; cs != NULL; cs = cs->h_next, i++)
     {
-    
         tz = MT_getTimeSec();
         // Only process up to *num of them
         cvDrawContours(
@@ -162,7 +166,7 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
             );
         ta += MT_getTimeSec() - tz;
         tz = MT_getTimeSec();
-    
+
         // Update color
         cont_color.val[0] -= 5; 
     
@@ -301,7 +305,7 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
       if( contours != NULL ) cvClearSeq( contours );*/
     cvClearSeq(contours);
     cvReleaseMemStorage(&mem_storage);
-  
+
     return m_blobs;
   
 }
