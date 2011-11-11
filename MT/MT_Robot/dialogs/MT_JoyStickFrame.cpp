@@ -19,6 +19,7 @@ enum
     ID_MENU_ROBOTS_COMMAND,
     ID_XYROBOTCHC,
     ID_BUTTONTXT,
+    ID_MEASUREMENT_TEXT,
     ID_WZROBOTCHC,
     ID_BUTTON_TOGGLE_JOYSTICK,
     ID_BUTTON_XY_PARAMETERS,
@@ -169,9 +170,16 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
                                         ID_BUTTON_TOGGLE_JOYSTICK,
                                         wxT("Disable"));
 
+
+
     vbox1->Add(m_pButtonXYParameters, 0, wxTOP | wxALIGN_CENTER, 10);
     vbox1->Add(m_pButtonWZParameters, 0, wxTOP | wxALIGN_CENTER, 10);    
     vbox1->Add(ButtonToggleJoyStick, 0, wxTOP | wxALIGN_CENTER, 10);
+
+    m_pMeasurementText = new wxStaticText(this,
+                                          ID_MEASUREMENT_TEXT,
+                                          wxT("XY Measurements: "));
+    vbox0->Add(m_pMeasurementText, 0, wxLEFT | wxBOTTOM, 10);
 
     hbox->Add(vbox0);
     hbox->Add(vbox1, 0, wxALL, 10);
@@ -558,6 +566,19 @@ void MT_JoyStickFrame::DoTimedEvents()
     {
         ButtonText->SetLabel(wxT("Buttons: ") + MT_UIntToBitString(b,12));
         bprev = b;
+    }
+
+    wxString MeasString(wxT("XY Measurements: "));
+    MT_RobotBase* bot = myGamePadController.getXYRobot();
+    if(bot)
+    {
+        std::vector<double> z = bot->GetMeasurements();
+        for(unsigned int i = 0; i < z.size(); i++)
+        {
+            ValString.Printf(wxT("%3.2f "), z[i]);
+            MeasString += ValString;
+        }
+        m_pMeasurementText->SetLabel(MeasString);
     }
 
 }

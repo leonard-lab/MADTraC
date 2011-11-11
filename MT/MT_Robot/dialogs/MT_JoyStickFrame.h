@@ -55,6 +55,7 @@ private:
     wxStaticText* XYPosText;
     wxStaticText* WZPosText;
     wxStaticText* ButtonText;
+    wxStaticText* m_pMeasurementText;    
 
     wxChoice* XYRobotChoice;
     wxChoice* WZRobotChoice;
