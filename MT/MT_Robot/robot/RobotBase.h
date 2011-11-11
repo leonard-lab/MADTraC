@@ -40,6 +40,7 @@ public:
 	virtual std::vector<double> GetControl(){std::vector<double> u; u.resize(0); return u;};
 
 	virtual std::vector<double> GetMeasurements(){std::vector<double> z; z.resize(0); return z;};
+	virtual std::string GetStatusString(){return m_sName + std::string(" status:");};
 
     virtual const char* getInfo() const {return "MT_RobotBase...";};
 

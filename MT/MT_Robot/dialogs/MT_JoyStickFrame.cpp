@@ -178,7 +178,7 @@ MT_JoyStickFrame::MT_JoyStickFrame(wxFrame* parent,
 
     m_pMeasurementText = new wxStaticText(this,
                                           ID_MEASUREMENT_TEXT,
-                                          wxT("XY Measurements: "));
+                                          wxT("Status: "));
     vbox0->Add(m_pMeasurementText, 0, wxLEFT | wxBOTTOM, 10);
 
     hbox->Add(vbox0);
@@ -568,19 +568,17 @@ void MT_JoyStickFrame::DoTimedEvents()
         bprev = b;
     }
 
-    wxString MeasString(wxT("XY Measurements: "));
     MT_RobotBase* bot = myGamePadController.getXYRobot();
+	wxString StatusString;
     if(bot)
     {
-        std::vector<double> z = bot->GetMeasurements();
-        for(unsigned int i = 0; i < z.size(); i++)
-        {
-            ValString.Printf(wxT("%3.2f "), z[i]);
-            MeasString += ValString;
-        }
-        m_pMeasurementText->SetLabel(MeasString);
+		StatusString = MT_StringToWxString(bot->GetStatusString());
     }
-
+	else
+	{
+		StatusString = wxT("-Status N/A-");
+	}
+	m_pMeasurementText->SetLabel(StatusString);
 }
 
 void MT_JoyStickFrame::DoQuit()
