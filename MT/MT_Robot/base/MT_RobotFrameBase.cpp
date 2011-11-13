@@ -16,10 +16,10 @@ MT_RobotFrameBase::MT_RobotFrameBase(wxFrame* parent,
                                      const wxSize& size,     
                                      long style)
   : MT_TrackerFrameBase(parent, id, title, pos, size, style),
-    m_pRobotControlFrame(NULL),
     m_pJoyStickFrame(NULL),
     m_bAutoIdentify(false),
     m_bRobotsIdentified(false),
+    m_pRobotControlFrame(NULL),    
     m_Robots(),
     m_pTrackedObjects(NULL)
 {

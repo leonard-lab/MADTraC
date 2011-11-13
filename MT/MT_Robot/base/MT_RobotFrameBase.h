@@ -46,9 +46,6 @@ class MT_RobotFrameBase : public MT_TrackerFrameBase
     friend class MT_RobotControlFrameBase;
 
 private:
-    /* correctly-cast pointer to control frame */
-    MT_RobotControlFrameBase* m_pRobotControlFrame;
-
     /* joystick control dialog */
     MT_JoyStickFrame* m_pJoyStickFrame;
 
@@ -59,6 +56,8 @@ private:
     bool m_bRobotsIdentified;
 
 protected:
+    /* correctly-cast pointer to control frame */
+    MT_RobotControlFrameBase* m_pRobotControlFrame;
 
     /* Robot variables */
     /* robot container object */
