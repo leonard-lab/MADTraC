@@ -43,6 +43,8 @@ public:
         perimeter = area = COMx = COMy = orientation = XX = YY = QX = QY = 0;
         major_axis = minor_axis = 0;
         sequence = NULL; sequence_storage = NULL;
+        ref_count++;
+        ref_counted = true;
     };
     YABlob(double p, double a, double x, double y, double o, double xx, double xy, double yy, double qx, double qy, double m, double M)
     {
@@ -60,6 +62,8 @@ public:
         major_axis = M;
         sequence = NULL;
         sequence_storage = NULL;
+        ref_count++;
+        ref_counted = true;
     };
 
     YABlob(const YABlob& in_blob)
@@ -79,6 +83,8 @@ public:
           sequence_storage(NULL)
     {
         copySequence(in_blob.sequence);
+        ref_count++;
+        ref_counted = true;
     }
 
     YABlob& operator=(const YABlob& in_blob)
@@ -99,11 +105,17 @@ public:
             sequence = NULL;
             sequence_storage = NULL;
             copySequence(in_blob.sequence);
+            if(!ref_counted)
+            {
+                ref_count++;
+                ref_counted = true;
+            }
         }
         return *this;
     }
     
     ~YABlob(){
+        // printf("YAblob ref_count = %d\n", ref_count--);
         if(sequence)
         {
             cvClearSeq(sequence);
@@ -111,6 +123,7 @@ public:
         
         if(sequence_storage)
         {
+            cvClearMemStorage(sequence_storage);
             cvReleaseMemStorage(&sequence_storage);
         }
     };
@@ -127,9 +140,10 @@ public:
         }
         if(sequence_storage)
         {
+            cvClearMemStorage(sequence_storage);
             cvReleaseMemStorage(&sequence_storage);
         }
-        sequence_storage = cvCreateMemStorage(0);
+        sequence_storage = cvCreateMemStorage(256);
         sequence = cvCloneSeq(seq, sequence_storage);
     };
     
@@ -144,7 +158,10 @@ public:
     double QX;
     double QY;
     double minor_axis;
-    double major_axis;    
+    double major_axis;
+
+    static int ref_count;
+    bool ref_counted;
 
     CvSeq* sequence;
     CvMemStorage* sequence_storage;

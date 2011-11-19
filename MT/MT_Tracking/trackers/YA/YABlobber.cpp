@@ -8,6 +8,8 @@
 #include "YABlobber.h"
 #include "MT/MT_Core/support/mathsupport.h"
 
+int YABlob::ref_count = 0;
+
 YABlobber::YABlobber(bool UseBoundingBoxes)
     : m_bCopySequences(false)
 {
@@ -114,6 +116,8 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
 
     if(!contours)
     {
+        cvClearMemStorage(mem_storage);
+        cvReleaseMemStorage(&mem_storage);
         return m_blobs;
     }
   
@@ -304,6 +308,8 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
 /*    if( mem_storage != NULL ) cvClearMemStorage( mem_storage );
       if( contours != NULL ) cvClearSeq( contours );*/
     cvClearSeq(contours);
+    
+    cvClearMemStorage(mem_storage);
     cvReleaseMemStorage(&mem_storage);
 
     return m_blobs;

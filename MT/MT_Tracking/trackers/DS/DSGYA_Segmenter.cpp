@@ -315,6 +315,7 @@ std::vector<MT_DSGYA_Blob> MT_DSGYA_Segmenter::segmentFirstFrame(const IplImage*
     if(yblobs.size() == 0)
     {
         fprintf(stderr, "Error:  No blobs found!\n");
+        cvReleaseImage(&m_pBlobFrame);
         return out_blobs;
     }
     
@@ -325,6 +326,7 @@ std::vector<MT_DSGYA_Blob> MT_DSGYA_Segmenter::segmentFirstFrame(const IplImage*
         {
             out_blobs[i] = MT_DSGYA_Blob(yblobs[i]);
         }
+        cvReleaseImage(&m_pBlobFrame);        
         return out_blobs;
     }
 
