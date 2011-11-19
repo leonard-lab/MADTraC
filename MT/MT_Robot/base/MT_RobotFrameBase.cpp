@@ -302,7 +302,8 @@ MT_RobotControlFrameBase::MT_RobotControlFrameBase(MT_RobotFrameBase* parent,
                                                    const int Buttons,
                                                    const wxPoint& pos, 
                                                    const wxSize& size)
-  : MT_TrackerControlFrameBase(parent, Buttons, pos, size)
+  : MT_TrackerControlFrameBase(parent, Buttons, pos, size),
+  m_pButtonAutoIdentify(NULL)
 {
     m_pParentRobotFrame = parent;
 }
