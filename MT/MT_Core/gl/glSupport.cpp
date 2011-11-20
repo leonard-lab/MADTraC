@@ -124,7 +124,15 @@ void MT_DrawArrow(float length, float fixed_width)
 
 void MT_DrawUnitArrow(float scale)
 {  
-    double fscale = scale;
+    double fscale;
+    if(scale == 0)
+    {
+        fscale = 1.0;
+    }
+    else
+    {
+        fscale = scale;
+    }
     //float lscale = 0.02;
   
     float ahf = 2.0*fscale/0.5;  
@@ -154,6 +162,10 @@ void MT_DrawCircle(const MT_R3& center,
                    double radius,
                    bool fill)
 {
+    if(radius == 0)
+    {
+        radius = 1.0;
+    }
   
     double radius_inv = 1.0/radius;
   
@@ -196,6 +208,14 @@ void MT_DrawEllipse(const MT_R3& center,
                  float orientation, 
                  const MT_Color& color)
 {
+    if(majoraxislength == 0)
+    {
+        majoraxislength = 1.0;
+    }
+    if(minoraxislength == 0)
+    {
+        minoraxislength = 1.0;
+    }
   
     glColor3fv(color);
     MT_GLTranslatefv(center);
@@ -261,7 +281,16 @@ void MT_GLDrawGlyph(unsigned int Glyph, const MT_Color& color, const MT_R3& cent
   
     if(roll || pitch)
         printf("Warning:  3D orientations not yet implemented\n");
-  
+
+    if(size == 0)
+    {
+        size = 1.0;
+    }
+    if(aspect == 0)
+    {
+        aspect = 1.0;
+    }
+    
     double fscale = (size);
 
     if(Glyph == MT_ARROW)
@@ -297,6 +326,11 @@ void MT_GLDrawGlyph(unsigned int Glyph, const MT_Color& color, const MT_R3& cent
 
 void MT_DrawLineCenterLengthAngleColor(const MT_R3& center, float length, float angle, const MT_Color& color)
 {
+
+    if(length == 0)
+    {
+        length = 1.0;
+    }
     
     MT_GLTranslatefv(center);
     glColor3fv(color);
