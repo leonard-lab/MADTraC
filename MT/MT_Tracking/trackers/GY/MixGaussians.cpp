@@ -165,7 +165,9 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int ma
         return;
     }
         
-    // Arrays needed for the expectation maximisation algorithm and to determine when to stop iterating
+    // Arrays needed for the expectation maximisation algorithm and to
+    // determine when to stop iterating
+    double *pus;
     double *ps;
     double *pls;
     double *totalpls;
@@ -193,7 +195,8 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int ma
         orig_Ms[i] = M;
         orig_ms[i] = m;
     }
-        
+    
+    pus = new double[m_iNumDists*numpixels];        
     ps = new double[m_iNumDists*numpixels];
     pls = new double[m_iNumDists*numpixels];
     totalpls = new double[m_iNumDists];
@@ -259,13 +262,13 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int ma
             {
                 dx = (pixellist[j].x - mu_x);
                 dy = (pixellist[j].y - mu_y);
-                ps[i + j*m_iNumDists] = (0.5/(M_PI*sqrt(D)))*
-                    exp(-(0.5/D)*(s_yy*dx*dx + s_xx*dy*dy - 2.0*s_xy*dx*dy));
-/*                ps[i + j*m_iNumDists] =
-            1.0/(2.0*M_PI*sqrt(D))*exp(-1.0/(2.0*D)*(m_vCovariances[i].data[3]*pow(pixellist[j].x
-            - mu_x,2) + m_vCovariances[i].data[0]*pow(pixellist[j].y -
-            mu_y,2) - 2.0*m_vCovariances[i].data[1]*(pixellist[j].x -
-            mu_x)*(pixellist[j].y - mu_y))); */
+                /* f is the bit in the exponent, this will be saved as
+                   pu */
+                double f = (s_yy*dx*dx + s_xx*dy*dy - 2.0*s_xy*dx*dy)/D;
+                pus[i + j*m_iNumDists] = f;
+                /* the probability that this pixel comes from the ith
+                   distribution */
+                ps[i + j*m_iNumDists] = (0.5/(M_PI*sqrt(D)))*exp(-0.5*f);
             }
         }
                 
@@ -417,7 +420,7 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int ma
             dy = m_vMeans[i].data[1] - orig_ys[i];
             if(m_dMaxDistance > 0 && (dx*dx + dy*dy >= m_dMaxDistance))
             {
-                printf("Constrain distance\n");
+                if(m_pDebugFile){fprintf(m_pDebugFile, "Constrain distance\n");}
                 double th = atan2(dy, dx);
                 m_vMeans[i].data[0] = orig_xs[i] + m_dMaxDistance*cos(th);
                 m_vMeans[i].data[1] = orig_ys[i] + m_dMaxDistance*sin(th);                
@@ -438,13 +441,13 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int ma
             {
                 if(const_e)
                 {
-                    printf("Constrain eccentricity\n");
+                    if(m_pDebugFile){printf("Constrain eccentricity\n");}
                     eccentricity = m_dMaxEccentricity;
                     M = m*m_dMaxEccentricity;
                 }
                 if(const_a)
                 {
-                    printf("Constrain area\n");
+                    if(m_pDebugFile){printf("Constrain area\n");}
                     area = old_area*(1.0 + 0.01*m_dMaxSizePercentChange);
                     m = sqrt(area/(M_PI*eccentricity));
                     M = m*eccentricity;
@@ -467,8 +470,9 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int ma
                                          &o);
                 
                 fprintf(m_pDebugFile, "\t\tEMMG iter n = %d, i = %d, State: (x,y) = (%f, %f), "
-                        "M = %f, m = %f, o = %f \n", numiters, i,
-                        m_vMeans[i].data[0], m_vMeans[i].data[1], M, m, o);
+                        "M = %f, m = %f, o = %f, s_xx = %f, s_yy = %f \n", numiters, i,
+                        m_vMeans[i].data[0], m_vMeans[i].data[1], M, m, o,
+                        m_vCovariances[i].data[0], m_vCovariances[i].data[1]);
 
                 
                 fprintf(m_pDebugFile, "\t\tEMMG iter n = %d, i = %d, Diffs:%f, %f, %f, %f, %f\n",
@@ -485,6 +489,7 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int ma
     // pixel will belong to the distribution for which it has the greatest likelihood of membership.
     // However, since pixels could lie within multiple distributions, we also assign pixels to any
     // distribution for which it lies less than two standard deviations from the mean.
+
     for (j=0 ; j < numpixels ; j++)
     {
         pixelalloc[j] = 0;
@@ -492,16 +497,22 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int ma
         maxlikelihood = -1.0;
         numberdists = 0;
         distributionnumber = -1;
-        for (i=0 ; i < m_iNumDists ; i++)
+        
+        for(i=0 ; i < m_iNumDists ; i++)
         {
             // Determine which distribution has the maximum likelihood of containing the pixel
-            if (pls[i + j*m_iNumDists] > maxlikelihood && ps[i + j*m_iNumDists] > 0.002)
+            if (pls[i + j*m_iNumDists] > maxlikelihood
+                && ps[i + j*m_iNumDists] > 0.002)  // TODO: This is a
+                                                   // magic number and
+                                                   // should be
+                                                   // replaced with
+                                                   // something more meaningful
             {
                 maxlikelihood = pls[i + j*m_iNumDists];
                 distributionnumber = i;
             }
             // If the pixel lies within two standard deviations of the mean of any distribution, we include it
-            else if (ps[i + j*m_iNumDists] > 0.023)
+            else if (pus[i + j*m_iNumDists] < 4.0)
             {
                 distmembership[i] = 1;
                 numberdists++;
@@ -540,6 +551,7 @@ void MixGaussians::EMMG(RawBlobPtr RawData, std::vector<int>& pixelalloc, int ma
     }
         
     // Clear all temporary arrays
+    delete[] pus;
     delete[] ps;
     delete[] pls;
     delete[] totalpls;

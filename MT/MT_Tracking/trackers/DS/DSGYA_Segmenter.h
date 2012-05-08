@@ -74,6 +74,10 @@ public:
     double m_dOverlapFactor;
 
     void setDebugFile(FILE* file);
+
+    void setNumEMMGIterations(int n){m_iNumEMMGIterations = n;};
+    int getNumEMMGIterations(){return m_iNumEMMGIterations;};    
+    
 protected:
     virtual bool areAdjacent(MT_DSGYA_Blob* obj, const YABlob& blob);
     virtual bool areOverlapping(MT_DSGYA_Blob* obj, const YABlob& blob);
@@ -85,6 +89,8 @@ protected:
     std::vector<YABlob> m_vInitBlobs;
     unsigned int m_iAssignmentRows;
     unsigned int m_iAssignmentCols;
+
+    int m_iNumEMMGIterations;
     
 private:
     unsigned int m_iFrameWidth;

@@ -231,6 +231,7 @@ MT_DSGYA_Segmenter::MT_DSGYA_Segmenter()
       m_iMaxBlobArea(-1),      
       m_iMaxBlobPerimeter(-1),
       m_dOverlapFactor(1.0),
+      m_iNumEMMGIterations(10),
       m_iFrameWidth(0),
       m_iFrameHeight(0),
       m_pBlobFrame(NULL),
@@ -339,7 +340,7 @@ std::vector<MT_DSGYA_Blob> MT_DSGYA_Segmenter::segmentFirstFrame(const IplImage*
     
     MT_DSGYBlobber blobber(num_objs);
     blobber.setTestOut(m_pDebugFile);
-    std::vector<GYBlob> blobs = blobber.findBlobs(m_pBlobFrame, num_objs, 2);
+    std::vector<GYBlob> blobs = blobber.findBlobs(m_pBlobFrame, num_objs, m_iNumEMMGIterations);
 
     for(unsigned int k = 0; k < num_objs; k++)
     {
@@ -618,7 +619,9 @@ std::vector<MT_DSGYA_Blob> MT_DSGYA_Segmenter::doSegmentation(const IplImage* I,
                     MT_DSGYBlobber blobber(nobjs);
                     blobber.setTestOut(m_pDebugFile);
                     blobber.setInitials(x, y, xx, xy, yy);
-                    std::vector<GYBlob> blobs = blobber.findBlobs(m_pBlobFrame, nobjs, 3);
+                    std::vector<GYBlob> blobs = blobber.findBlobs(m_pBlobFrame,
+                                                                  nobjs,
+                                                                  m_iNumEMMGIterations);
 
                     for(unsigned int k = 0; k < nobjs; k++)
                     {
