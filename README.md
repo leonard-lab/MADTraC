@@ -5,3 +5,5 @@ Multi-Agent Dynamic Tracking and Control - A C++ tracking and control applicatio
 Contact:  dan.t.swain at gmail.com
 
 I hope to update this soon, but for now check out http://poincare.princeton.edu/mt/docs/
+
+MADTraC is released under the MIT license.  See the LICENSE file.
