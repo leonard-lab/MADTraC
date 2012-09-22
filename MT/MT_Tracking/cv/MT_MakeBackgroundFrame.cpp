@@ -7,6 +7,9 @@
 
 #include "MT/MT_Core/support/mathsupport.h"
 
+/* for cvInpaint */
+#include <opencv2/photo/photo_c.h>
+
 static void do_inpainting(IplImage* frame, int radius, const CvRect& roi);
 
 MT_BackgroundFrameCreator::MT_BackgroundFrameCreator(IplImage* BackgroundFrame, 
