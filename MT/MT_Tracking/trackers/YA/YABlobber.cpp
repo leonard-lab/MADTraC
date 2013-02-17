@@ -280,11 +280,14 @@ std::vector<YABlob> YABlobber::FindBlobs(IplImage* BWFrame,
             ); 
         tf += MT_getTimeSec() - tz;
         tz = MT_getTimeSec();
+
+        double perimeter = cvContourPerimeter( cs );
+        double area = fabs(cvContourArea(cs));
     
         ////printf("area %f, perimeter %f\n", areas[i], perimeters[i]);
         m_blobs.push_back(
-            YABlob(perimeters[i],
-                   areas[i],
+            YABlob(perimeter,
+                   area,
                    x, y, orientangle, mu20, mu11, mu02, qx, qy,
                    minor, major));
         if(m_bCopySequences)
